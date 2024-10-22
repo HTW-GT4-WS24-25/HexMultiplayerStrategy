@@ -668,8 +668,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7439059021769938836, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
+      propertyPath: m_Parameters.numCapVertices
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439059021769938836, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
       propertyPath: m_Parameters.widthMultiplier
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439059021769938836, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
+      propertyPath: m_Parameters.numCornerVertices
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7439059021769938836, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
