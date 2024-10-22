@@ -51,7 +51,7 @@ public class Unit : MonoBehaviour
         _waypoints.Clear();
         _waypoints = new Queue<Waypoint>(newWaypoints);
         
-        if(_previousWaypoint != null && _waypoints.Peek().Equals(_previousWaypoint.Value))
+        if(_previousWaypoint != null && _waypoints.Count > 0 && _waypoints.Peek().Equals(_previousWaypoint.Value))
             FetchNextWaypoint();
         
         UpdateTravelLine();
