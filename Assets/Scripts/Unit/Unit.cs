@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,16 +9,17 @@ public class Unit : MonoBehaviour
     [SerializeField] private UnitTravelLine travelLine;
     
     [Header("Settings")]
-    [SerializeField] private float moveTime = 1f;
+    [SerializeField] private float moveSpeed = 1f;
     
     public Waypoint NextWaypoint { get; private set; }
     
     private Queue<Waypoint> _waypoints = new ();
     private bool _isMoving;
-    private Waypoint _previousWaypoint;
+    private Waypoint? _previousWaypoint;
     private float _travelProgress;
     private float _currentTravelStartTime;
     private Vector3 _currentStartPosition;
+    private float _distanceToNextWaypoint;
 
     private void Start()
     {
@@ -51,7 +51,7 @@ public class Unit : MonoBehaviour
         _waypoints.Clear();
         _waypoints = new Queue<Waypoint>(newWaypoints);
         
-        if(_waypoints.Peek() == _previousWaypoint)
+        if(_previousWaypoint != null && _waypoints.Peek().Equals(_previousWaypoint.Value))
             FetchNextWaypoint();
         
         UpdateTravelLine();
@@ -75,35 +75,42 @@ public class Unit : MonoBehaviour
         
         _currentTravelStartTime = Time.time;
         _currentStartPosition = transform.position;
+        _distanceToNextWaypoint = Vector3.Distance(NextWaypoint.Position, transform.position);
         _travelProgress = 0f;
     }
     
     private void Move()
     {
         var traveledTime = Time.time - _currentTravelStartTime;
-        _travelProgress = traveledTime / moveTime;
+        var traveledDistance = traveledTime * moveSpeed;
+        _travelProgress = traveledDistance / _distanceToNextWaypoint;
+        _travelProgress = traveledDistance / _distanceToNextWaypoint;
         transform.position = Vector3.Lerp(_currentStartPosition, NextWaypoint.Position, _travelProgress);
         travelLine.SetFirstNodePosition(transform.position);
         
         if (_travelProgress >= 1f)
         {
+            _previousWaypoint = null;
             _isMoving = false;
             if(_waypoints.Count == 0)
                 travelLine.gameObject.SetActive(false);
         }
     }
     
-    public struct Waypoint{
+    public struct Waypoint : IEquatable<Waypoint>
+    {
         public AxialCoordinate Coordinates;
         public Vector3 Position;
-        
-        public static bool operator ==(Waypoint a, Waypoint b) => a.Coordinates == b.Coordinates;
-        public static bool operator !=(Waypoint a, Waypoint b) => a.Coordinates != b.Coordinates;
 
         public Waypoint(AxialCoordinate coordinates, Vector3 position)
         {
             Coordinates = coordinates;
             Position = position;
+        }
+
+        public bool Equals(Waypoint other)
+        {
+            return Coordinates.Equals(other.Coordinates);
         }
     }
 }
