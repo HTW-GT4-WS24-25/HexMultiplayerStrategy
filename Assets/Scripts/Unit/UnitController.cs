@@ -1,34 +1,40 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
 {
     [SerializeField] private Unit selectedUnit;
     [SerializeField] private LayerMask selectionLayer;
+    [SerializeField] private MapCreator mapCreator;
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (TryGetTilePositionOnMousePosition(out var tilePosition))
+            if (TryGetTraversableHexOnMouse(out var clickedHex))
             {
-                selectedUnit.AddWaypoint(tilePosition);
+                var currentUnitCoordinates = selectedUnit.NextWaypoint.Coordinates;
+                var clickedCoordinates = clickedHex.Coordinates;
+                
+                var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+                selectedUnit.SetAllWaypoints(newUnitPath.Select(hex => new Unit.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
             }
         }
     }
 
-    private bool TryGetTilePositionOnMousePosition(out Vector3 tilePosition)
+    private bool TryGetTraversableHexOnMouse(out Hexagon hexagon)
     {
-        tilePosition = Vector3.zero;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        hexagon = null;
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         var hits = Physics.RaycastAll(ray, 100f, selectionLayer);
         
         foreach (var raycastHit in hits)
         {
-            var clickedTile = raycastHit.collider.gameObject.GetComponentInParent<Tile>();
-            if (clickedTile != null && clickedTile.isTraversable)
+            var clickedHexagon = raycastHit.collider.gameObject.GetComponentInParent<Hexagon>();
+            if (clickedHexagon != null && clickedHexagon.IsTraversable)
             {
-                tilePosition = clickedTile.transform.position;
+                hexagon = clickedHexagon;       
                 return true;
             }
         }

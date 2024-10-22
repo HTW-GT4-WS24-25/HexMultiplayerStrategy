@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4582043746281608519}
-  - component: {fileID: 2021818402741139149}
+  - component: {fileID: 8503581652947059578}
   m_Layer: 6
   m_Name: Tile_Base
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 5808023247562864488}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2021818402741139149
+--- !u!114 &8503581652947059578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,9 +42,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5339175942601238811}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30d155a6e5259064ba6cef9ed9ca1def, type: 3}
+  m_Script: {fileID: 11500000, guid: 045d32e09385a97459ecf679481bdc94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsTraversable: 0
 --- !u!1001 &6273662862779781251
 PrefabInstance:
   m_ObjectHideFlags: 0

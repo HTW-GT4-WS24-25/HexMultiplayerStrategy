@@ -359,6 +359,7 @@ MonoBehaviour:
   selectionLayer:
     serializedVersion: 2
     m_Bits: 64
+  mapCreator: {fileID: 1588253353}
 --- !u!4 &694091048
 Transform:
   m_ObjectHideFlags: 0
@@ -540,8 +541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6f14f13dfdc04439c2be005e9cc984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassTilePrefab: {fileID: 6667907209154226785, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
-  mountainTilePrefab: {fileID: 7889577675969227359, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
+  grassTilePrefab: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
+  mountainTilePrefab: {fileID: 536300325094858728, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
   tileWidth: 1
   spacing: 0.1
   mountainChance: 0.2
