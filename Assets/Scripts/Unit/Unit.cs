@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using HexSystem;
+using TMPro;
 
 public class Unit : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UnitTravelLine travelLine;
+    [SerializeField] private TextMeshProUGUI numberText;
     
     [Header("Settings")]
     [SerializeField] private float moveSpeed = 1f;

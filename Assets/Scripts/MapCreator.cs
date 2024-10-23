@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using HexSystem;
 
 public class MapCreator : MonoBehaviour
 {

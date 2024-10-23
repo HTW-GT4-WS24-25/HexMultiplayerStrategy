@@ -1,16 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Event.Demo
+namespace GameEvent.Demo
 {
     public class DemoEventInvoker : MonoBehaviour
     {
-        [SerializeField] private FloatEvent demoEvent;
+        [FormerlySerializedAs("demoEvent")] [SerializeField] private FloatGameEvent demoGameEvent;
         
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                demoEvent.Invoke(Time.timeSinceLevelLoad);
+                demoGameEvent.Invoke(Time.timeSinceLevelLoad);
             }
         }
     }

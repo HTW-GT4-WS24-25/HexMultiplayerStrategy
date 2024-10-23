@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
-namespace Event
+namespace GameEvent
 {
     public abstract class EventListener<T> : MonoBehaviour
     {
-        [SerializeField] private Event<T> listenEvent;
+        [FormerlySerializedAs("listenEvent")] [SerializeField] private GameEvent<T> listenGameEvent;
         [SerializeField] private UnityEvent<T> onEventRaised;
 
         private void OnEnable()
         {
-            listenEvent.RegisterListener(this);
+            listenGameEvent.RegisterListener(this);
         }
         
         private void OnDisable()
         {
-            listenEvent.UnregisterListener(this);
+            listenGameEvent.UnregisterListener(this);
         }
         
         public void Raise(T value)

@@ -1,13 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-public class Hexagon : MonoBehaviour
-{ 
-    public AxialCoordinate Coordinates { get; private set; }
-    public bool IsTraversable;
-
-    public void Initialize(AxialCoordinate coordinate)
+namespace HexSystem
+{
+    public class Hexagon : MonoBehaviour
     {
-        Coordinates = coordinate;
+        public AxialCoordinate Coordinates { get; private set; }
+        public bool IsTraversable;
+
+        public void Initialize(AxialCoordinate coordinate)
+        {
+            Coordinates = coordinate;
+        }
     }
 }

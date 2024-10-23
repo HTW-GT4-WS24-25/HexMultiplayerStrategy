@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace Event.Demo
+namespace GameEvent.Demo
 {
     public class DemoEventHandler : MonoBehaviour
     {
