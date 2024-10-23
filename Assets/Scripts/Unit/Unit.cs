@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameEvent;
 using UnityEngine;
 using HexSystem;
 using TMPro;
@@ -10,12 +11,14 @@ public class Unit : MonoBehaviour
     [Header("References")]
     [SerializeField] private UnitTravelLine travelLine;
     [SerializeField] private TextMeshProUGUI numberText;
+    [SerializeField] private UnitHexChangeEvent hexChangeEvent;
     
     [Header("Settings")]
     [SerializeField] private float moveSpeed = 1f;
     
     public Waypoint NextWaypoint { get; private set; }
-    
+    public Hexagon Hexagon { get; set; }
+
     private Queue<Waypoint> _waypoints = new ();
     private bool _isMoving;
     private Waypoint? _previousWaypoint;
@@ -23,6 +26,7 @@ public class Unit : MonoBehaviour
     private float _currentTravelStartTime;
     private Vector3 _currentStartPosition;
     private float _distanceToNextWaypoint;
+    private bool _isHexChangeEventTriggered = false;
 
     private void Start()
     {
@@ -34,6 +38,21 @@ public class Unit : MonoBehaviour
         if (_isMoving)
         {
             Move();
+
+            if (!_isHexChangeEventTriggered && Vector3.Distance(NextWaypoint.Position, transform.position) < MapCreator.tileWidth * 0.5f)
+            {
+                hexChangeEvent.Invoke((this, NextWaypoint.Coordinates));
+                _isHexChangeEventTriggered = true;
+            }
+            
+            if (_travelProgress >= 1f)
+            {
+                _previousWaypoint = null;
+                _isMoving = false;
+                if(_waypoints.Count == 0)
+                    travelLine.gameObject.SetActive(false);
+            }
+            
         }
         else if (_waypoints.Count > 0)
         {
@@ -80,6 +99,7 @@ public class Unit : MonoBehaviour
         _currentStartPosition = transform.position;
         _distanceToNextWaypoint = Vector3.Distance(NextWaypoint.Position, transform.position);
         _travelProgress = 0f;
+        _isHexChangeEventTriggered = false;
     }
     
     private void Move()
@@ -87,17 +107,8 @@ public class Unit : MonoBehaviour
         var traveledTime = Time.time - _currentTravelStartTime;
         var traveledDistance = traveledTime * moveSpeed;
         _travelProgress = traveledDistance / _distanceToNextWaypoint;
-        _travelProgress = traveledDistance / _distanceToNextWaypoint;
         transform.position = Vector3.Lerp(_currentStartPosition, NextWaypoint.Position, _travelProgress);
         travelLine.SetFirstNodePosition(transform.position);
-        
-        if (_travelProgress >= 1f)
-        {
-            _previousWaypoint = null;
-            _isMoving = false;
-            if(_waypoints.Count == 0)
-                travelLine.gameObject.SetActive(false);
-        }
     }
     
     public struct Waypoint : IEquatable<Waypoint>

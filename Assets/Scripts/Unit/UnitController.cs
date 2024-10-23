@@ -2,44 +2,52 @@ using System;
 using System.Linq;
 using UnityEngine;
 using HexSystem;
+using JetBrains.Annotations;
+using TMPro;
 
 public class UnitController : MonoBehaviour
 {
-    [SerializeField] private Unit selectedUnit;
-    [SerializeField] private LayerMask selectionLayer;
     [SerializeField] private MapCreator mapCreator;
+    
+    private Unit _selectedUnit;
 
-    private void Update()
+    public void HandleHexClick(Hexagon clickedHex)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (_selectedUnit != null)
         {
-            if (TryGetTraversableHexOnMouse(out var clickedHex))
+            if (CanMoveOnHex(clickedHex))
             {
-                var currentUnitCoordinates = selectedUnit.NextWaypoint.Coordinates;
-                var clickedCoordinates = clickedHex.Coordinates;
-                
-                var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
-                selectedUnit.SetAllWaypoints(newUnitPath.Select(hex => new Unit.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
+                SetUnitMovement(clickedHex);
             }
         }
+        else
+        {
+            SetSelectedUnit(clickedHex);
+        }
+        
     }
 
-    private bool TryGetTraversableHexOnMouse(out Hexagon hexagon)
+    public void DeselectUnit()
     {
-        hexagon = null;
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        var hits = Physics.RaycastAll(ray, 100f, selectionLayer);
-        
-        foreach (var raycastHit in hits)
-        {
-            var clickedHexagon = raycastHit.collider.gameObject.GetComponentInParent<Hexagon>();
-            if (clickedHexagon != null && clickedHexagon.IsTraversable)
-            {
-                hexagon = clickedHexagon;       
-                return true;
-            }
-        }
+        _selectedUnit = null;
+    }
 
-        return false;
+    private void SetSelectedUnit(Hexagon clickedHex)
+    {
+        _selectedUnit = clickedHex.units.FirstOrDefault();
+    }
+
+    private void SetUnitMovement(Hexagon clickedHex)
+    {
+        var currentUnitCoordinates = _selectedUnit.NextWaypoint.Coordinates;
+        var clickedCoordinates = clickedHex.Coordinates;
+                
+        var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+        _selectedUnit.SetAllWaypoints(newUnitPath.Select(hex => new Unit.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
+    }
+
+    private bool CanMoveOnHex(Hexagon hexagon)
+    {
+        return hexagon.IsTraversable;
     }
 }

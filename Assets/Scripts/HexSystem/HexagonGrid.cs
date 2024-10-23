@@ -143,5 +143,18 @@ namespace HexSystem
 
             return ExtractPathFromHexToPredecessorMatching(srcHex, destHex, hexToPredecessor);
         }
+
+        public void UpdateUnitHexagon(Unit unit, AxialCoordinate newCoord)
+        {
+            _grid[unit.Hexagon.Coordinates].units.Remove(unit);
+            _grid[newCoord].units.Add(unit);
+            unit.Hexagon = _grid[newCoord];
+        }
+
+        public void AddUnitToHexagon(AxialCoordinate coord, Unit unit)
+        {
+            _grid[coord].units.Add(unit);
+            unit.Hexagon = _grid[coord];
+        }
     }
 }

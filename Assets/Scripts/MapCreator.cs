@@ -8,15 +8,17 @@ public class MapCreator : MonoBehaviour
     [Header("References")] 
     [SerializeField] private Hexagon grassTilePrefab;
     [SerializeField] private Hexagon mountainTilePrefab;
+    [SerializeField] private Unit testUnit;
     
     public HexagonGrid Grid;
-    
+
     [Header("Settings")]
-    [SerializeField] private float tileWidth;
     [SerializeField] private float spacing;
     [Range(0f, 1f)]
     [SerializeField] private float mountainChance;
 
+    public const float tileWidth = 1;
+    
     private float _horizontalSpacing;
     private float _verticalSpacing;
 
@@ -39,6 +41,7 @@ public class MapCreator : MonoBehaviour
     private void Start()
     {
         CreateRingMap(3);
+        Grid.AddUnitToHexagon(new AxialCoordinate(0, 0), testUnit);
     }
 
     private void CreateRingMap(int rings)
@@ -92,5 +95,11 @@ public class MapCreator : MonoBehaviour
             var newHexagon = Instantiate(randomTilePrefab, tilePosition, randomTileRotation, transform);
             tilePosition.x += _horizontalSpacing;
         }
+    }
+
+    public void OnUnitNexHexReached((Unit unit, AxialCoordinate coordinate) tuple)
+    {
+        Grid.UpdateUnitHexagon(tuple.unit, tuple.coordinate);
+        Debug.Log(tuple.coordinate);
     }
 }
