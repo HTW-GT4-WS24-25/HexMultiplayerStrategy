@@ -11,7 +11,6 @@ public class Unit : MonoBehaviour
     [Header("References")]
     [SerializeField] private UnitTravelLine travelLine;
     [SerializeField] private TextMeshProUGUI numberText;
-    [SerializeField] private UnitHexChangeEvent hexChangeEvent;
     
     [Header("Settings")]
     [SerializeField] private float moveSpeed = 1f;
@@ -41,7 +40,7 @@ public class Unit : MonoBehaviour
 
             if (!_isHexChangeEventTriggered && Vector3.Distance(NextWaypoint.Position, transform.position) < MapCreator.tileWidth * 0.5f)
             {
-                hexChangeEvent.Invoke((this, NextWaypoint.Coordinates));
+                GameEvents.Unit.OnUnitNextHexReached.Invoke(this, NextWaypoint.Coordinates);
                 _isHexChangeEventTriggered = true;
             }
             

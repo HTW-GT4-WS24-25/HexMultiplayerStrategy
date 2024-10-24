@@ -36,9 +36,9 @@ namespace HexSystem
 
         public void Add(Hexagon hex) => _grid.Add(hex.Coordinates, hex);
 
-        public Hexagon? Get(int q, int r) => Get(new AxialCoordinate(q, r));
+        public Hexagon Get(int q, int r) => Get(new AxialCoordinate(q, r));
 
-        public Hexagon? Get(AxialCoordinate coordinate) => _grid.GetValueOrDefault(coordinate);
+        public Hexagon Get(AxialCoordinate coordinate) => _grid.GetValueOrDefault(coordinate);
 
         public Hexagon GetNeighborOf(AxialCoordinate coord, Direction dir)
         {

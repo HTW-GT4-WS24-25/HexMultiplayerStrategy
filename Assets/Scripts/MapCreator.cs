@@ -1,4 +1,5 @@
 using System;
+using GameEvent;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
@@ -38,6 +39,16 @@ public class MapCreator : MonoBehaviour
         Grid = new HexagonGrid();
     }
 
+    private void OnEnable()
+    {
+        GameEvents.Unit.OnUnitNextHexReached += OnUnitNexHexReached;
+    }
+    
+    private void OnDisable()
+    {
+        GameEvents.Unit.OnUnitNextHexReached -= OnUnitNexHexReached;
+    }
+
     private void Start()
     {
         CreateRingMap(3);
@@ -73,33 +84,9 @@ public class MapCreator : MonoBehaviour
         }
     }
 
-    private void CreateMap()
+    private void OnUnitNexHexReached(Unit unit, AxialCoordinate coordinate)
     {
-        CreateRow(transform.position + new Vector3(-_horizontalSpacing, 0, 2*_verticalSpacing), 3);
-        CreateRow(transform.position + new Vector3(-1.5f*_horizontalSpacing, 0, _verticalSpacing), 4);
-        CreateRow(transform.position + new Vector3(-2*_horizontalSpacing, 0, 0), 5);
-        CreateRow(transform.position + new Vector3(-1.5f*_horizontalSpacing, 0, -_verticalSpacing), 4);
-        CreateRow(transform.position + new Vector3(-_horizontalSpacing, 0, -2*_verticalSpacing), 3);
-    }
-
-    private void CreateRow(Vector3 leftPosition, int amount)
-    {
-        var tilePosition = leftPosition;
-        var rotation180 = Quaternion.Euler(0, 180, 0);
-        
-        for (var i = 0; i < amount; i++)
-        {
-            var randomTilePrefab = Random.Range(0f, 1f) <= mountainChance ? mountainTilePrefab : grassTilePrefab;
-            var randomTileRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
-            
-            var newHexagon = Instantiate(randomTilePrefab, tilePosition, randomTileRotation, transform);
-            tilePosition.x += _horizontalSpacing;
-        }
-    }
-
-    public void OnUnitNexHexReached((Unit unit, AxialCoordinate coordinate) tuple)
-    {
-        Grid.UpdateUnitHexagon(tuple.unit, tuple.coordinate);
-        Debug.Log(tuple.coordinate);
+        Grid.UpdateUnitHexagon(unit, coordinate);
+        Debug.Log(coordinate);
     }
 }

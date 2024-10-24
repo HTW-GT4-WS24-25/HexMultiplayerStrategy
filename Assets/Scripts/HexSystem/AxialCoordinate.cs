@@ -40,7 +40,7 @@ namespace HexSystem
         public AxialCoordinate this[int i] => GetNeighbors()[i];
         public AxialCoordinate this[Direction dir] => GetNeighbors()[(int)dir];
 
-        public override bool Equals(object? obj) => obj is AxialCoordinate coordinate && Equals(coordinate);
+        public override bool Equals(object obj) => obj is AxialCoordinate coordinate && Equals(coordinate);
         public override int GetHashCode() => HashCode.Combine(Q, R);
         public override string ToString() => $"({Q}, {R})";
         public bool Equals(AxialCoordinate other) => Q == other.Q && R == other.R;
