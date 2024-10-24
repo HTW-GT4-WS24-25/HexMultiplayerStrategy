@@ -2,30 +2,39 @@ using HexSystem;
 using UnityEngine;
 public class InputHandler : MonoBehaviour
 {
-       
+    [SerializeField] private InputReader inputReader;
     [SerializeField] private UnitController unitController;
     [SerializeField] private LayerMask selectionLayer;
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (TryGetTraversableHexOnMouse(out var clickedHex))
-            {
-                unitController.HandleHexClick(clickedHex);
-            }
-        }
+        inputReader.OnMainPointerDown += HandleMainPointerDown;
+        inputReader.OnRightMouseButtonDown += HandleRightClick;
+    }
+    
+    private void OnDisable()
+    {
+        inputReader.OnMainPointerDown += HandleMainPointerDown;
+        inputReader.OnRightMouseButtonDown += HandleRightClick;
+    }
 
-        if (Input.GetMouseButtonDown(1))
+    private void HandleMainPointerDown()
+    {
+        if (TryGetHexOnScreenPosition(inputReader.MainPointerPosition, out var clickedHex))
         {
-            unitController.DeselectUnit();
+            unitController.HandleHexClick(clickedHex);
         }
     }
+
+    private void HandleRightClick()
+    {
+        unitController.DeselectUnit();
+    }
        
-    private bool TryGetTraversableHexOnMouse(out Hexagon hexagon)
+    private bool TryGetHexOnScreenPosition(Vector2 screenPosition, out Hexagon hexagon)
     {
         hexagon = null;
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var ray = Camera.main.ScreenPointToRay(screenPosition);
         var hits = Physics.RaycastAll(ray, 100f, selectionLayer);
         
         foreach (var raycastHit in hits)
