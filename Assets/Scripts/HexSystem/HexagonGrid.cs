@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ExtensionMethods;
 
 namespace HexSystem
 {
@@ -99,7 +99,7 @@ namespace HexSystem
                 for (var i = numExploredHexes; i < numDiscoveredHexes; i++)
                 {
                     foreach (var neighbor in GetAllNeighborsOf(reachableHexes[i].Coordinates)
-                                 .Where(neighbor => neighbor.IsTraversable && !reachableHexes.Contains(neighbor)))
+                                 .Where(neighbor => neighbor.isTraversable && !reachableHexes.Contains(neighbor)))
                     {
                         reachableHexes.Add(neighbor);
                     }
@@ -133,7 +133,7 @@ namespace HexSystem
                 if (currentHex == destHex) break;
 
                 foreach (var neighbor in GetAllNeighborsOf(currentHex.Coordinates)
-                             .Where(neighbor => neighbor.IsTraversable && !hexToPredecessor.ContainsKey(neighbor)))
+                             .Where(neighbor => neighbor.isTraversable && !hexToPredecessor.ContainsKey(neighbor)))
                 {
                     Console.WriteLine(neighbor.Coordinates);
                     hexQueue.Enqueue(neighbor);
@@ -144,14 +144,14 @@ namespace HexSystem
             return ExtractPathFromHexToPredecessorMatching(srcHex, destHex, hexToPredecessor);
         }
 
-        public void UpdateUnitHexagon(Unit unit, AxialCoordinate newCoord)
+        public void UpdateUnitHexagon(Unit.Unit unit, AxialCoordinate newCoord)
         {
             _grid[unit.Hexagon.Coordinates].units.Remove(unit);
             _grid[newCoord].units.Add(unit);
             unit.Hexagon = _grid[newCoord];
         }
 
-        public void AddUnitToHexagon(AxialCoordinate coord, Unit unit)
+        public void AddUnitToHexagon(AxialCoordinate coord, Unit.Unit unit)
         {
             _grid[coord].units.Add(unit);
             unit.Hexagon = _grid[coord];

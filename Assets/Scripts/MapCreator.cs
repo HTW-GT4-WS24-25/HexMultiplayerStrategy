@@ -1,5 +1,4 @@
 using System;
-using GameEvent;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
@@ -9,7 +8,7 @@ public class MapCreator : MonoBehaviour
     [Header("References")] 
     [SerializeField] private Hexagon grassTilePrefab;
     [SerializeField] private Hexagon mountainTilePrefab;
-    [SerializeField] private Unit testUnit;
+    [SerializeField] private Unit.Unit testUnit;
     
     public HexagonGrid Grid;
 
@@ -84,7 +83,7 @@ public class MapCreator : MonoBehaviour
         }
     }
 
-    private void OnUnitNexHexReached(Unit unit, AxialCoordinate coordinate)
+    private void OnUnitNexHexReached(Unit.Unit unit, AxialCoordinate coordinate)
     {
         Grid.UpdateUnitHexagon(unit, coordinate);
         Debug.Log(coordinate);

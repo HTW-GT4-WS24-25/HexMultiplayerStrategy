@@ -1,45 +1,47 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-[RequireComponent(typeof(LineRenderer))]
-public class UnitTravelLine : MonoBehaviour
+namespace Unit
 {
-    [Header("References")] 
-    [SerializeField] private GameObject lineEndPoint;
-    [SerializeField] private LineRenderer lineRenderer;
-    
-    [Header("Settings")]
-    [SerializeField] private Vector3 lineOffset;
-    
-    private void Awake()
+    [RequireComponent(typeof(LineRenderer))]
+    public class UnitTravelLine : MonoBehaviour
     {
-        lineRenderer = GetComponent<LineRenderer>();
-    }
-
-    public void SetAllPositions(Vector3[] positions)
-    {
-        lineRenderer.positionCount = positions.Length;
-        for (var i = 0; i < positions.Length; i++)
+        [Header("References")] 
+        [SerializeField] private GameObject lineEndPoint;
+        [SerializeField] private LineRenderer lineRenderer;
+    
+        [Header("Settings")]
+        [SerializeField] private Vector3 lineOffset;
+    
+        private void Awake()
         {
-            lineRenderer.SetPosition(i, positions[i] + lineOffset);
+            lineRenderer = GetComponent<LineRenderer>();
         }
-        
-        UpdateEndPointPosition();
-        gameObject.SetActive(true);
-    }
 
-    public void SetFirstNodePosition(Vector3 position)
-    {
-        lineRenderer.SetPosition(0, position + lineOffset);
+        public void SetAllPositions(Vector3[] positions)
+        {
+            lineRenderer.positionCount = positions.Length;
+            for (var i = 0; i < positions.Length; i++)
+            {
+                lineRenderer.SetPosition(i, positions[i] + lineOffset);
+            }
         
-        UpdateEndPointPosition();
-    }
+            UpdateEndPointPosition();
+            gameObject.SetActive(true);
+        }
 
-    private void UpdateEndPointPosition()
-    {
-        if (lineRenderer.positionCount <= 1)
-            return;
+        public void SetFirstNodePosition(Vector3 position)
+        {
+            lineRenderer.SetPosition(0, position + lineOffset);
         
-        lineEndPoint.transform.position = lineRenderer.GetPosition(lineRenderer.positionCount - 1);
+            UpdateEndPointPosition();
+        }
+
+        private void UpdateEndPointPosition()
+        {
+            if (lineRenderer.positionCount <= 1)
+                return;
+        
+            lineEndPoint.transform.position = lineRenderer.GetPosition(lineRenderer.positionCount - 1);
+        }
     }
 }
