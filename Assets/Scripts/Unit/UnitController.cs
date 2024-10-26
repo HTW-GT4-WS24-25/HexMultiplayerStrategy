@@ -10,12 +10,15 @@ namespace Unit
         [SerializeField] private MapCreator mapCreator;
     
         private UnitGroup _selectedUnitGroup;
+        private int _selectedUnitCount;
 
         private void OnEnable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
             GameEvents.INPUT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += DeselectUnit;
+            GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
+            GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
         }
         
         private void OnDisable()
@@ -23,6 +26,8 @@ namespace Unit
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
             GameEvents.INPUT.OnUnitGroupDeselected -= DeselectUnit;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= DeselectUnit;
+            GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
+            GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
         }
 
         private void HandleHexClick(Hexagon clickedHex)
@@ -31,6 +36,7 @@ namespace Unit
             {
                 if (CanMoveOnHex(clickedHex))
                 {
+                    SplitSelectedUnit();
                     SetUnitMovement(clickedHex);
                 }
             }
@@ -44,6 +50,15 @@ namespace Unit
         {
             return hexagon.isTraversable;
         }
+
+        private void SplitSelectedUnit()
+        {
+            if (_selectedUnitCount == _selectedUnitGroup.UnitCount) return;
+            
+            _selectedUnitGroup = _selectedUnitGroup.SplitUnitGroup(_selectedUnitCount);
+            GameEvents.UNIT.OnUnitGroupSelected.Invoke(_selectedUnitGroup);
+        }
+        
         
         private void SetUnitMovement(Hexagon clickedHex)
         {
@@ -56,6 +71,7 @@ namespace Unit
         
         private void SetSelectedUnit(Hexagon clickedHex)
         {
+            clickedHex.unitGroups.RemoveAll(unitGroup => unitGroup == null); //Unfortunately necessary, because sometimes deleted Groups are still referenced from the hex
             _selectedUnitGroup = clickedHex.unitGroups.FirstOrDefault();
             
             if(_selectedUnitGroup != null)
@@ -65,6 +81,18 @@ namespace Unit
         private void DeselectUnit()
         {
             _selectedUnitGroup = null;
+        }
+
+        private void UpdateSelectedUnitCount(int count)
+        {
+            _selectedUnitCount = count;
+        }
+
+        private void DeselectDeletedUnit(UnitGroup unitGroup)
+        {
+            if (_selectedUnitGroup != unitGroup) return;
+            
+            GameEvents.INPUT.OnUnitGroupDeselected.Invoke();
         }
     }
 }

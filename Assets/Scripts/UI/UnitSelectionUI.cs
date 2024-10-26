@@ -15,17 +15,18 @@ namespace UI
         //Update Slider On Unit Selection
         private void OnEnable()
         {
-            unitSlider.onValueChanged.AddListener(UpdateUnitAmountText);
+            unitSlider.onValueChanged.AddListener(UpdateUnitCount);
         }
 
         private void OnDisable()
         {
-            unitSlider.onValueChanged.RemoveListener(UpdateUnitAmountText);
+            unitSlider.onValueChanged.RemoveListener(UpdateUnitCount);
         }
         
-        private void UpdateUnitAmountText(float amount)
+        private void UpdateUnitCount(float count)
         {
-            unitAmountText.text = amount.ToString("0");
+            GameEvents.UNIT.OnUnitSelectionSliderUpdate.Invoke((int)count);
+            unitAmountText.text = count.ToString("0");
         }
 
         public void SetSliderMaximum(int unitCount)

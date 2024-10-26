@@ -86,8 +86,8 @@ namespace Unit
 
         public void SetAllWaypoints(List<Hexagon> newWaypoints)
         {
-            if(_hexWaypoints.Count == 0 && newWaypoints.Count > 0)
-                UnitGroup.Hexagon.ChangeStationaryUnitGroupToMoving();
+            if(_hexWaypoints.Count == 0 && newWaypoints.Count > 0 && UnitGroup.Hexagon.StationaryUnitGroup == UnitGroup)
+                UnitGroup.Hexagon.RemoveStationaryUnitGroup();
                 
             _hexWaypoints.Clear();
             _hexWaypoints = new Queue<Hexagon>(newWaypoints);
@@ -150,7 +150,8 @@ namespace Unit
                     
                     var stationaryGroup = NextHexagon.StationaryUnitGroup;
                     stationaryGroup.AddUnits(UnitGroup.UnitCount);
-                    Destroy(gameObject);
+                    UnitGroup.Delete();
+                    GameEvents.UNIT.OnUnitGroupDeleted.Invoke(UnitGroup);
                 }
             }
             

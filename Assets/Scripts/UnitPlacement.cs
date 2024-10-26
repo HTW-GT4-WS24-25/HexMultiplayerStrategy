@@ -45,7 +45,6 @@ public class UnitPlacement : MonoBehaviour
         var newUnitGroup = Instantiate(unitGroupPrefab, hex.transform.position, Quaternion.identity);
         newUnitGroup.Initialize(hex, _unitAmount);
         
-        hex.unitGroups.Add(newUnitGroup);
         hex.ChangeUnitGroupOnHexToStationary(newUnitGroup);
     }
 }
