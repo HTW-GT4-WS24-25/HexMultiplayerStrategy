@@ -757,6 +757,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitSlider: {fileID: 434677771}
   unitAmountText: {fileID: 960385440}
+  unitController: {fileID: 694091047}
 --- !u!1 &758280285
 GameObject:
   m_ObjectHideFlags: 0

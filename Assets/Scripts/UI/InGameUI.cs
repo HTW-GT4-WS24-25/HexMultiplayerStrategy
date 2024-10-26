@@ -22,7 +22,10 @@ namespace UI
 
         private void HandleGroupSelected(UnitGroup selectedGroup)
         {
-            unitSelectionUI.gameObject.SetActive(true);   
+            if (selectedGroup.UnitCount <= 1) return;
+            
+            unitSelectionUI.gameObject.SetActive(true);
+            unitSelectionUI.SetSliderMaximum(selectedGroup.UnitCount);
         }
         
         private void HandleGroupDeselected()
