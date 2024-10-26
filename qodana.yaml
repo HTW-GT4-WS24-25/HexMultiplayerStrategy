@@ -12,14 +12,19 @@ profile:
   name: qodana.starter
 
 #Enable inspections
-#include:
-#  - name: <SomeEnabledInspectionId>
+include:
+  - name: Scripts
+    paths:
+      - Assets/Scripts
 
 #Disable inspections
-#exclude:
-#  - name: <SomeDisabledInspectionId>
-#    paths:
-#      - <path/where/not/run/inspection>
+exclude:
+  - name: Other
+    paths:
+      - Assets/ConsolePro
+      - Assets/Plugins
+      - Assets/Polaris - Low Poly Ecosystem
+      - Assets/TextMesh Pro
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh

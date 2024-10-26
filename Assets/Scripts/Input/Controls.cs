@@ -53,6 +53,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TestSwitchCycle"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed90d52b-1d3a-4eb6-a668-97b1df3788c7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -84,8 +93,19 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard & Mouse"",
                     ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0886fd98-528a-4e92-b2b3-e7431615e702"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""TestSwitchCycle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -116,6 +136,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
         m_Player_MainPointer = m_Player.FindAction("MainPointer", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
+        m_Player_TestSwitchCycle = m_Player.FindAction("TestSwitchCycle", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -185,6 +206,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PointerPosition;
     private readonly InputAction m_Player_MainPointer;
     private readonly InputAction m_Player_RightClick;
+    private readonly InputAction m_Player_TestSwitchCycle;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -192,6 +214,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
         public InputAction @MainPointer => m_Wrapper.m_Player_MainPointer;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
+        public InputAction @TestSwitchCycle => m_Wrapper.m_Player_TestSwitchCycle;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -210,6 +233,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @RightClick.started += instance.OnRightClick;
             @RightClick.performed += instance.OnRightClick;
             @RightClick.canceled += instance.OnRightClick;
+            @TestSwitchCycle.started += instance.OnTestSwitchCycle;
+            @TestSwitchCycle.performed += instance.OnTestSwitchCycle;
+            @TestSwitchCycle.canceled += instance.OnTestSwitchCycle;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -223,6 +249,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @RightClick.started -= instance.OnRightClick;
             @RightClick.performed -= instance.OnRightClick;
             @RightClick.canceled -= instance.OnRightClick;
+            @TestSwitchCycle.started -= instance.OnTestSwitchCycle;
+            @TestSwitchCycle.performed -= instance.OnTestSwitchCycle;
+            @TestSwitchCycle.canceled -= instance.OnTestSwitchCycle;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -254,5 +283,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnPointerPosition(InputAction.CallbackContext context);
         void OnMainPointer(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
+        void OnTestSwitchCycle(InputAction.CallbackContext context);
     }
 }

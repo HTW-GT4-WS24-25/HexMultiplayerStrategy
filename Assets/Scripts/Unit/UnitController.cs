@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using HexSystem;
 using UnityEngine;
@@ -8,11 +9,23 @@ namespace Unit
     {
         [SerializeField] private MapCreator mapCreator;
     
-        private global::Unit.Unit _selectedUnit;
+        private UnitGroup _selectedUnitGroup;
 
-        public void HandleHexClick(Hexagon clickedHex)
+        private void OnEnable()
         {
-            if (_selectedUnit != null)
+            GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
+            GameEvents.INPUT.OnUnitDeselected += DeselectUnit;
+        }
+        
+        private void OnDisable()
+        {
+            GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
+            GameEvents.INPUT.OnUnitDeselected -= DeselectUnit;
+        }
+
+        private void HandleHexClick(Hexagon clickedHex)
+        {
+            if (_selectedUnitGroup != null)
             {
                 if (CanMoveOnHex(clickedHex))
                 {
@@ -24,29 +37,29 @@ namespace Unit
                 SetSelectedUnit(clickedHex);
             }
         }
-
-        public void DeselectUnit()
-        {
-            _selectedUnit = null;
-        }
-
-        private void SetSelectedUnit(Hexagon clickedHex)
-        {
-            _selectedUnit = clickedHex.units.FirstOrDefault();
-        }
-
-        private void SetUnitMovement(Hexagon clickedHex)
-        {
-            var currentUnitCoordinates = _selectedUnit.NextWaypoint.Coordinates;
-            var clickedCoordinates = clickedHex.Coordinates;
-                
-            var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
-            _selectedUnit.SetAllWaypoints(newUnitPath.Select(hex => new global::Unit.Unit.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
-        }
-
+        
         private bool CanMoveOnHex(Hexagon hexagon)
         {
             return hexagon.isTraversable;
+        }
+        
+        private void SetUnitMovement(Hexagon clickedHex)
+        {
+            var currentUnitCoordinates = _selectedUnitGroup.Movement.NextWaypoint.Coordinates;
+            var clickedCoordinates = clickedHex.Coordinates;
+                
+            var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+            _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath.Select(hex => new UnitGroupMovement.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
+        }
+        
+        private void SetSelectedUnit(Hexagon clickedHex)
+        {
+            _selectedUnitGroup = clickedHex.unitGroups.FirstOrDefault();
+        }
+
+        private void DeselectUnit()
+        {
+            _selectedUnitGroup = null;
         }
     }
 }

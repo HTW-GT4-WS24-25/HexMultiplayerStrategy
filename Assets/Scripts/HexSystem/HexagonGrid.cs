@@ -144,17 +144,17 @@ namespace HexSystem
             return ExtractPathFromHexToPredecessorMatching(srcHex, destHex, hexToPredecessor);
         }
 
-        public void UpdateUnitHexagon(Unit.Unit unit, AxialCoordinate newCoord)
+        public void UpdateUnitHexagon(Unit.UnitGroup unitGroup, AxialCoordinate newCoord)
         {
-            _grid[unit.Hexagon.Coordinates].units.Remove(unit);
-            _grid[newCoord].units.Add(unit);
-            unit.Hexagon = _grid[newCoord];
+            _grid[unitGroup.Hexagon.Coordinates].unitGroups.Remove(unitGroup);
+            _grid[newCoord].unitGroups.Add(unitGroup);
+            unitGroup.Hexagon = _grid[newCoord];
         }
 
-        public void AddUnitToHexagon(AxialCoordinate coord, Unit.Unit unit)
+        public void AddUnitToHexagon(AxialCoordinate coord, Unit.UnitGroup unitGroup)
         {
-            _grid[coord].units.Add(unit);
-            unit.Hexagon = _grid[coord];
+            _grid[coord].unitGroups.Add(unitGroup);
+            unitGroup.Hexagon = _grid[coord];
         }
     }
 }
