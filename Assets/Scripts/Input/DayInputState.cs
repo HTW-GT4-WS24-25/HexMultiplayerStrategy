@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Input
 {
@@ -9,6 +10,9 @@ namespace Input
 
         public override void HandleMainPointerDown()
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+            
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
                 GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement?.Invoke(clickedHexagon);
@@ -17,7 +21,7 @@ namespace Input
 
         public override void HandleRightClick()
         {
-            GameEvents.INPUT.OnUnitDeselected?.Invoke();
+            GameEvents.INPUT.OnUnitGroupDeselected?.Invoke();
         }
     }
 }

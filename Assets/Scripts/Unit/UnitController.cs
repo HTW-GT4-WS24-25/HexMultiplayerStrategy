@@ -14,14 +14,14 @@ namespace Unit
         private void OnEnable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
-            GameEvents.INPUT.OnUnitDeselected += DeselectUnit;
+            GameEvents.INPUT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += DeselectUnit;
         }
         
         private void OnDisable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
-            GameEvents.INPUT.OnUnitDeselected -= DeselectUnit;
+            GameEvents.INPUT.OnUnitGroupDeselected -= DeselectUnit;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= DeselectUnit;
         }
 
@@ -57,6 +57,9 @@ namespace Unit
         private void SetSelectedUnit(Hexagon clickedHex)
         {
             _selectedUnitGroup = clickedHex.unitGroups.FirstOrDefault();
+            
+            if(_selectedUnitGroup != null)
+                GameEvents.UNIT.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
 
         private void DeselectUnit()

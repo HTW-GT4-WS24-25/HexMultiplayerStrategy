@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Input
@@ -35,6 +36,9 @@ namespace Input
         {
             if (context.performed)
             {
+                if (EventSystem.current.IsPointerOverGameObject()) // is over UI
+                    return;
+                
                 OnMainPointerDown?.Invoke();   
             }
         }

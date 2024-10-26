@@ -1,5 +1,5 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Input
 {
@@ -16,6 +16,9 @@ namespace Input
 
         public override void HandleMainPointerDown()
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+            
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
                 _unitPlacement.TryAddUnitsToHex(clickedHexagon);
