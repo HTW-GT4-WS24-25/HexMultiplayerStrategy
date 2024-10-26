@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Unit
 {
@@ -10,22 +11,22 @@ namespace Unit
     public class UnitGroupMovement : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private UnitTravelLine travelLine;
+        [SerializeField] private UnitGroupTravelLine groupTravelLine;
         
         [Header("Settings")]
         [SerializeField] private float moveSpeed = 1f;
     
         public UnitGroup UnitGroup { get; private set; }
-        public Waypoint NextWaypoint { get; private set; }
+        public Hexagon NextHexagon { get; private set; }
         
-        private Queue<Waypoint> _waypoints = new ();
-        private Waypoint? _previousWaypoint;
-        private float _distanceToNextWaypoint;
+        private Queue<Hexagon> _hexWaypoints = new ();
+        private Hexagon _previousHexagon;
+        private float _distanceToNextHexagon;
         private float _travelProgress;
         private float _currentTravelStartTime;
         private Vector3 _currentStartPosition;
         private bool _isMoving;
-        private bool _isHexChangeEventTriggered;
+        private bool _assignedToNextHexagon;
         private bool _isResting;
 
         private void Awake()
@@ -47,7 +48,7 @@ namespace Unit
 
         public void Initialize(Hexagon startHexagon)
         {
-            NextWaypoint = new Waypoint(startHexagon.Coordinates, startHexagon.transform.position);   
+            NextHexagon = startHexagon;
         }
 
         private void Update()
@@ -59,21 +60,23 @@ namespace Unit
             {
                 Move();
 
-                if (!_isHexChangeEventTriggered && Vector3.Distance(NextWaypoint.Position, transform.position) < MapCreator.TileWidth * 0.5f)
+                if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapCreator.TileWidth * 0.5f)
                 {
-                    GameEvents.UNIT.OnUnitNextHexReached.Invoke(UnitGroup, NextWaypoint.Coordinates);
-                    _isHexChangeEventTriggered = true;
+                    Debug.Log("Unit reached next hex");
+
+                    _previousHexagon.unitGroups.Remove(UnitGroup);
+                    NextHexagon.unitGroups.Add(UnitGroup);
+                    UnitGroup.Hexagon = NextHexagon;
+                    
+                    _assignedToNextHexagon = true;
                 }
             
                 if (_travelProgress >= 1f)
                 {
-                    _previousWaypoint = null;
-                    _isMoving = false;
-                    if(_waypoints.Count == 0)
-                        travelLine.gameObject.SetActive(false);
+                    OnWaypointReached();
                 }
             }
-            else if (_waypoints.Count > 0)
+            else if (_hexWaypoints.Count > 0)
             {
                 FetchNextWaypoint();
                 _isMoving = true;
@@ -81,12 +84,15 @@ namespace Unit
             }
         }
 
-        public void SetAllWaypoints(List<Waypoint> newWaypoints)
+        public void SetAllWaypoints(List<Hexagon> newWaypoints)
         {
-            _waypoints.Clear();
-            _waypoints = new Queue<Waypoint>(newWaypoints);
+            if(_hexWaypoints.Count == 0 && newWaypoints.Count > 0)
+                UnitGroup.Hexagon.ChangeStationaryUnitGroupToMoving();
+                
+            _hexWaypoints.Clear();
+            _hexWaypoints = new Queue<Hexagon>(newWaypoints);
         
-            if(_previousWaypoint != null && _waypoints.Count > 0 && _waypoints.Peek().Equals(_previousWaypoint.Value))
+            if(_previousHexagon != null && _hexWaypoints.Count > 0 && _hexWaypoints.Peek().Equals(_previousHexagon))
                 FetchNextWaypoint();
         
             UpdateTravelLine();
@@ -96,49 +102,60 @@ namespace Unit
         { 
             var linePoints = new List<Vector3> { transform.position };
             if(_isMoving)
-                linePoints.Add(NextWaypoint.Position);
+                linePoints.Add(NextHexagon.transform.position);
         
-            linePoints.AddRange(_waypoints.Select(waypoint => waypoint.Position));
+            linePoints.AddRange(_hexWaypoints.Select(hex => hex.transform.position));
             if (linePoints.Count > 1)
-                travelLine.SetAllPositions(linePoints.ToArray());
+                groupTravelLine.SetAllPositions(linePoints.ToArray());
         }
 
         private void FetchNextWaypoint()
         {
-            _previousWaypoint = NextWaypoint;
-            NextWaypoint = _waypoints.Dequeue();
+            _previousHexagon = NextHexagon;
+            NextHexagon = _hexWaypoints.Dequeue();
         
             _currentTravelStartTime = Time.time;
             _currentStartPosition = transform.position;
-            _distanceToNextWaypoint = Vector3.Distance(NextWaypoint.Position, transform.position);
+            _distanceToNextHexagon = Vector3.Distance(NextHexagon.transform.position, transform.position);
             _travelProgress = 0f;
-            _isHexChangeEventTriggered = false;
+
+            _assignedToNextHexagon = false;
         }
     
         private void Move()
         {
             var traveledTime = Time.time - _currentTravelStartTime;
             var traveledDistance = traveledTime * moveSpeed;
-            _travelProgress = traveledDistance / _distanceToNextWaypoint;
-            transform.position = Vector3.Lerp(_currentStartPosition, NextWaypoint.Position, _travelProgress);
-            travelLine.SetFirstNodePosition(transform.position);
+            _travelProgress = traveledDistance / _distanceToNextHexagon;
+            
+            transform.position = Vector3.Lerp(_currentStartPosition, NextHexagon.transform.position, _travelProgress);
+            
+            groupTravelLine.SetFirstNodePosition(transform.position);
         }
-    
-        public struct Waypoint : IEquatable<Waypoint>
+
+        private void OnWaypointReached()
         {
-            public AxialCoordinate Coordinates;
-            public Vector3 Position;
-
-            public Waypoint(AxialCoordinate coordinates, Vector3 position)
+            if (_hexWaypoints.Count == 0)
             {
-                Coordinates = coordinates;
-                Position = position;
-            }
+                groupTravelLine.gameObject.SetActive(false);
 
-            public bool Equals(Waypoint other)
-            {
-                return Coordinates.Equals(other.Coordinates);
+                if (NextHexagon.StationaryUnitGroup == null)
+                {
+                    Debug.Log("Unit should become stationary");
+                    NextHexagon.ChangeUnitGroupOnHexToStationary(UnitGroup);
+                }
+                else
+                {
+                    Debug.Log("Unit should be added to other stationary group");
+                    
+                    var stationaryGroup = NextHexagon.StationaryUnitGroup;
+                    stationaryGroup.AddUnits(UnitGroup.UnitCount);
+                    Destroy(gameObject);
+                }
             }
+            
+            _previousHexagon = null;
+            _isMoving = false;
         }
     }
 }

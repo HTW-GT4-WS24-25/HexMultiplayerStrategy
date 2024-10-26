@@ -143,18 +143,5 @@ namespace HexSystem
 
             return ExtractPathFromHexToPredecessorMatching(srcHex, destHex, hexToPredecessor);
         }
-
-        public void UpdateUnitHexagon(Unit.UnitGroup unitGroup, AxialCoordinate newCoord)
-        {
-            _grid[unitGroup.Hexagon.Coordinates].unitGroups.Remove(unitGroup);
-            _grid[newCoord].unitGroups.Add(unitGroup);
-            unitGroup.Hexagon = _grid[newCoord];
-        }
-
-        public void AddUnitToHexagon(AxialCoordinate coord, Unit.UnitGroup unitGroup)
-        {
-            _grid[coord].unitGroups.Add(unitGroup);
-            unitGroup.Hexagon = _grid[coord];
-        }
     }
 }

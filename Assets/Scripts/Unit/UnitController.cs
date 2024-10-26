@@ -15,12 +15,14 @@ namespace Unit
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
             GameEvents.INPUT.OnUnitDeselected += DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += DeselectUnit;
         }
         
         private void OnDisable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
             GameEvents.INPUT.OnUnitDeselected -= DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= DeselectUnit;
         }
 
         private void HandleHexClick(Hexagon clickedHex)
@@ -45,11 +47,11 @@ namespace Unit
         
         private void SetUnitMovement(Hexagon clickedHex)
         {
-            var currentUnitCoordinates = _selectedUnitGroup.Movement.NextWaypoint.Coordinates;
+            var currentUnitCoordinates = _selectedUnitGroup.Movement.NextHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
                 
             var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
-            _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath.Select(hex => new UnitGroupMovement.Waypoint(hex.Coordinates, hex.transform.position)).ToList());
+            _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath);
         }
         
         private void SetSelectedUnit(Hexagon clickedHex)

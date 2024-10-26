@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
+using Unit;
 using UnityEngine.Serialization;
 
 public class MapCreator : MonoBehaviour
@@ -38,16 +39,6 @@ public class MapCreator : MonoBehaviour
         Grid = new HexagonGrid();
     }
 
-    private void OnEnable()
-    {
-        GameEvents.UNIT.OnUnitNextHexReached += OnUnitNexHexReached;
-    }
-    
-    private void OnDisable()
-    {
-        GameEvents.UNIT.OnUnitNextHexReached -= OnUnitNexHexReached;
-    }
-
     private void Start()
     {
         CreateRingMap(3);
@@ -80,11 +71,5 @@ public class MapCreator : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void OnUnitNexHexReached(Unit.UnitGroup unitGroup, AxialCoordinate coordinate)
-    {
-        Grid.UpdateUnitHexagon(unitGroup, coordinate);
-        Debug.Log(coordinate);
     }
 }

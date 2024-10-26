@@ -12,27 +12,26 @@ namespace Unit
         [SerializeField] private TextMeshProUGUI unitCountText;
         
         public Hexagon Hexagon { get; set; }
-
-        private int _unitCount;
+        public int UnitCount { get; private set; }
 
         public void Initialize(Hexagon hexagon, int unitCount)
         {
             Hexagon = hexagon;
             Movement.Initialize(Hexagon);
             
-            _unitCount = unitCount;
+            UnitCount = unitCount;
             UpdateUnitCountText();
         }
 
         public void AddUnits(int amount)
         {
-            _unitCount += amount;
+            UnitCount += amount;
             UpdateUnitCountText();
         }
 
         private void UpdateUnitCountText()
         {
-            unitCountText.text = _unitCount.ToString();
+            unitCountText.text = UnitCount.ToString();
         }
 
     }

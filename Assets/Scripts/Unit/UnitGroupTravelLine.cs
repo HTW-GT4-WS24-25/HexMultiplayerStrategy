@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Unit
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class UnitTravelLine : MonoBehaviour
+    public class UnitGroupTravelLine : MonoBehaviour
     {
         [Header("References")] 
         [SerializeField] private GameObject lineEndPoint;
