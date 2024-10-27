@@ -6,7 +6,7 @@ namespace UI
 {
     public class InGameUI : MonoBehaviour
     {
-        [SerializeField] UnitSelectionUI unitSelectionUI;
+        [SerializeField] private UnitSelectionUI unitSelectionUI;
 
         private void OnEnable()
         {
@@ -22,7 +22,9 @@ namespace UI
 
         private void HandleGroupSelected(UnitGroup selectedGroup)
         {
-            unitSelectionUI.gameObject.SetActive(true);   
+            if (selectedGroup.UnitCount > 1) unitSelectionUI.gameObject.SetActive(true);
+            
+            unitSelectionUI.SetSliderMaximum(selectedGroup.UnitCount);
         }
         
         private void HandleGroupDeselected()

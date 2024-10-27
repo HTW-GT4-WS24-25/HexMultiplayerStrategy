@@ -28,6 +28,8 @@ public static class GameEvents
 
     public class UnitEvents
     {
-        public UnityAction<UnitGroup> OnUnitGroupSelected; 
+        public UnityAction<UnitGroup> OnUnitGroupSelected;
+        public UnityAction<int> OnUnitSelectionSliderUpdate;
+        public UnityAction<UnitGroup> OnUnitGroupDeleted;
     }
 }

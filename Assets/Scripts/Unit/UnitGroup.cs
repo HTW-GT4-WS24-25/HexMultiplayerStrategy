@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HexSystem;
 using TMPro;
 using UnityEngine;
@@ -16,22 +17,40 @@ namespace Unit
 
         public void Initialize(Hexagon hexagon, int unitCount)
         {
-            Hexagon = hexagon;
+            PlaceOnHex(hexagon);
             Movement.Initialize(Hexagon);
-            
-            UnitCount = unitCount;
-            UpdateUnitCountText();
+            UpdateUnitCount(unitCount);
         }
 
         public void AddUnits(int amount)
         {
-            UnitCount += amount;
-            UpdateUnitCountText();
+            UpdateUnitCount(UnitCount + amount);
         }
 
-        private void UpdateUnitCountText()
+        public UnitGroup SplitUnitGroup(int newUnitCount)
         {
-            unitCountText.text = UnitCount.ToString();
+            UpdateUnitCount(UnitCount - newUnitCount);
+            UnitGroup newUnitGroup = Instantiate(this);
+            newUnitGroup.Initialize(Hexagon, newUnitCount);
+            return newUnitGroup;
+        }
+
+        public void Delete()
+        {
+            Hexagon.unitGroups.Remove(this);
+            Destroy(gameObject);
+        }
+        
+        private void PlaceOnHex(Hexagon hexagon)
+        {
+            Hexagon = hexagon;
+            hexagon.unitGroups.Add(this);
+        }
+        
+        private void UpdateUnitCount(int unitCount)
+        {
+            UnitCount = unitCount;
+            unitCountText.text = unitCount.ToString();
         }
 
     }

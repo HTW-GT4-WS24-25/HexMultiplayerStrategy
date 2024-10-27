@@ -26,7 +26,7 @@ namespace HexSystem
             StationaryUnitGroup = unitGroup;
         }
 
-        public void ChangeStationaryUnitGroupToMoving()
+        public void RemoveStationaryUnitGroup()
         {
             StationaryUnitGroup = null;
         }
