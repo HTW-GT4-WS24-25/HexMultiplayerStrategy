@@ -12,18 +12,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI unitAmountText;
         [SerializeField] private UnitController unitController;
         
-        //Update Slider On Unit Selection
-        private void OnEnable()
-        {
-            unitSlider.onValueChanged.AddListener(UpdateUnitCount);
-        }
-
-        private void OnDisable()
-        {
-            unitSlider.onValueChanged.RemoveListener(UpdateUnitCount);
-        }
-        
-        private void UpdateUnitCount(float count)
+        public void UpdateUnitCount(float count)
         {
             GameEvents.UNIT.OnUnitSelectionSliderUpdate.Invoke((int)count);
             unitAmountText.text = count.ToString("0");

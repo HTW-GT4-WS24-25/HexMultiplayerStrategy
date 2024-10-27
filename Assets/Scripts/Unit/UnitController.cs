@@ -8,6 +8,7 @@ namespace Unit
     public class UnitController : MonoBehaviour
     {
         [SerializeField] private MapCreator mapCreator;
+        [SerializeField] private UnitGroup unitGroupPrefab;
     
         private UnitGroup _selectedUnitGroup;
         private int _selectedUnitCount;
@@ -36,8 +37,8 @@ namespace Unit
             {
                 if (CanMoveOnHex(clickedHex))
                 {
-                    SplitSelectedUnit();
-                    SetUnitMovement(clickedHex);
+                    var isSplitAndRunsWithGroup = SplitSelectedUnit(clickedHex);
+                    SetUnitMovement(clickedHex, isSplitAndRunsWithGroup);
                 }
             }
             else
@@ -51,21 +52,34 @@ namespace Unit
             return hexagon.isTraversable;
         }
 
-        private void SplitSelectedUnit()
+        private bool SplitSelectedUnit(Hexagon clickedHex)
         {
-            if (_selectedUnitCount == _selectedUnitGroup.UnitCount) return;
+            if (_selectedUnitCount == _selectedUnitGroup.UnitCount) return false;
             
-            _selectedUnitGroup = _selectedUnitGroup.SplitUnitGroup(_selectedUnitCount);
+            var isSplitAndRunsWithGroup = _selectedUnitGroup.Movement.PreviousHexagon != clickedHex;
+            _selectedUnitGroup.AddUnits(-_selectedUnitCount);
+            
+            _selectedUnitGroup = CreateNewUnitGroup();
             GameEvents.UNIT.OnUnitGroupSelected.Invoke(_selectedUnitGroup);
+            
+            return isSplitAndRunsWithGroup;
         }
-        
-        
-        private void SetUnitMovement(Hexagon clickedHex)
+
+        private UnitGroup CreateNewUnitGroup()
+        {
+            var newUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
+            newUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount);
+            return newUnitGroup;
+        }
+
+
+        private void SetUnitMovement(Hexagon clickedHex, bool isSplitAndRunsWithGroup)
         {
             var currentUnitCoordinates = _selectedUnitGroup.Movement.NextHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
                 
             var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+            if (isSplitAndRunsWithGroup) newUnitPath.Insert(0, _selectedUnitGroup.Movement.NextHexagon);
             _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath);
         }
         

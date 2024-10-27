@@ -17,10 +17,12 @@ namespace Unit
         [SerializeField] private float moveSpeed = 1f;
     
         public UnitGroup UnitGroup { get; private set; }
+        
+        public Hexagon PreviousHexagon { get; private set; }
         public Hexagon NextHexagon { get; private set; }
         
         private Queue<Hexagon> _hexWaypoints = new ();
-        private Hexagon _previousHexagon;
+       
         private float _distanceToNextHexagon;
         private float _travelProgress;
         private float _currentTravelStartTime;
@@ -64,7 +66,7 @@ namespace Unit
                 {
                     Debug.Log("Unit reached next hex");
 
-                    _previousHexagon.unitGroups.Remove(UnitGroup);
+                    PreviousHexagon.unitGroups.Remove(UnitGroup);
                     NextHexagon.unitGroups.Add(UnitGroup);
                     UnitGroup.Hexagon = NextHexagon;
                     
@@ -92,7 +94,7 @@ namespace Unit
             _hexWaypoints.Clear();
             _hexWaypoints = new Queue<Hexagon>(newWaypoints);
         
-            if(_previousHexagon != null && _hexWaypoints.Count > 0 && _hexWaypoints.Peek().Equals(_previousHexagon))
+            if(PreviousHexagon != null && _hexWaypoints.Count > 0 && _hexWaypoints.Peek().Equals(PreviousHexagon))
                 FetchNextWaypoint();
         
             UpdateTravelLine();
@@ -111,7 +113,7 @@ namespace Unit
 
         private void FetchNextWaypoint()
         {
-            _previousHexagon = NextHexagon;
+            PreviousHexagon = NextHexagon;
             NextHexagon = _hexWaypoints.Dequeue();
         
             _currentTravelStartTime = Time.time;
@@ -155,7 +157,7 @@ namespace Unit
                 }
             }
             
-            _previousHexagon = null;
+            PreviousHexagon = null;
             _isMoving = false;
         }
     }
