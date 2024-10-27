@@ -67,10 +67,11 @@ namespace Unit
                     Debug.Log("Unit reached next hex");
 
                     PreviousHexagon.unitGroups.Remove(UnitGroup);
-                    NextHexagon.unitGroups.Add(UnitGroup);
-                    UnitGroup.Hexagon = NextHexagon;
                     
+                    UnitGroup.PlaceOnHex(NextHexagon);
                     _assignedToNextHexagon = true;
+                    
+                    NextHexagon.UpdateDominance(UnitGroup.DominanceColor);
                 }
             
                 if (_travelProgress >= 1f)

@@ -11,7 +11,7 @@ namespace Unit
         [SerializeField] private UnitGroup unitGroupPrefab;
     
         private UnitGroup _selectedUnitGroup;
-        private int _selectedUnitCount;
+        private int _selectedUnitCount = 1;
 
         private void OnEnable()
         {
@@ -54,7 +54,7 @@ namespace Unit
 
         private bool SplitSelectedUnit(Hexagon clickedHex)
         {
-            if (_selectedUnitCount == _selectedUnitGroup.UnitCount) return false;
+            if (_selectedUnitCount == _selectedUnitGroup.UnitCount || _selectedUnitGroup.UnitCount == 1) return false;
             
             var isSplitAndRunsWithGroup = _selectedUnitGroup.Movement.PreviousHexagon != clickedHex;
             _selectedUnitGroup.AddUnits(-_selectedUnitCount);
