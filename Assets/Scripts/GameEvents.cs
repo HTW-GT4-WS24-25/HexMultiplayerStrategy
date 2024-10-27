@@ -17,7 +17,6 @@ public static class GameEvents
     public class InputEvents
     {
         public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
-        public UnityAction OnUnitGroupDeselected;
     }
 
     public class DayNightCycleEvents
@@ -29,6 +28,7 @@ public static class GameEvents
     public class UnitEvents
     {
         public UnityAction<UnitGroup> OnUnitGroupSelected;
+        public UnityAction OnUnitGroupDeselected;
         public UnityAction<int> OnUnitSelectionSliderUpdate;
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
     }

@@ -16,17 +16,17 @@ namespace Unit
         private void OnEnable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
-            GameEvents.INPUT.OnUnitGroupDeselected += DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
             GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
+            GameEvents.UNIT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
         }
         
         private void OnDisable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
-            GameEvents.INPUT.OnUnitGroupDeselected -= DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= DeselectUnit;
+            GameEvents.UNIT.OnUnitGroupDeselected -= DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
             GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
             GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
         }
@@ -106,7 +106,7 @@ namespace Unit
         {
             if (_selectedUnitGroup != unitGroup) return;
             
-            GameEvents.INPUT.OnUnitGroupDeselected.Invoke();
+            GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
         }
     }
 }
