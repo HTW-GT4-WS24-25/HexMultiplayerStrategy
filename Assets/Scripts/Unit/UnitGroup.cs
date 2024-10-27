@@ -17,10 +17,8 @@ namespace Unit
 
         public void Initialize(Hexagon hexagon, int unitCount)
         {
-            Hexagon = hexagon;
-            hexagon.unitGroups.Add(this);
+            PlaceOnHex(hexagon);
             Movement.Initialize(Hexagon);
-
             UpdateUnitCount(unitCount);
         }
 
@@ -29,16 +27,10 @@ namespace Unit
             UpdateUnitCount(UnitCount + amount);
         }
 
-        private void UpdateUnitCount(int unitCount)
-        {
-            UnitCount = unitCount;
-            unitCountText.text = unitCount.ToString();
-        }
-
         public UnitGroup SplitUnitGroup(int newUnitCount)
         {
             UpdateUnitCount(UnitCount - newUnitCount);
-            var newUnitGroup = Instantiate(this);
+            UnitGroup newUnitGroup = Instantiate(this);
             newUnitGroup.Initialize(Hexagon, newUnitCount);
             return newUnitGroup;
         }
@@ -47,6 +39,18 @@ namespace Unit
         {
             Hexagon.unitGroups.Remove(this);
             Destroy(gameObject);
+        }
+        
+        private void PlaceOnHex(Hexagon hexagon)
+        {
+            Hexagon = hexagon;
+            hexagon.unitGroups.Add(this);
+        }
+        
+        private void UpdateUnitCount(int unitCount)
+        {
+            UnitCount = unitCount;
+            unitCountText.text = unitCount.ToString();
         }
 
     }
