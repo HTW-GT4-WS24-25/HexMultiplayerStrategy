@@ -1,3 +1,4 @@
+using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,13 +10,10 @@ namespace UI
     {
         [SerializeField] TMP_InputField nameInputField;
         [SerializeField] Button continueButton;
-    
-        private const string PlayerNameKey = "PlayerName";
 
         private void Start()
         {
-            var playerName = PlayerPrefs.GetString(PlayerNameKey, "");
-            nameInputField.text = playerName;
+            nameInputField.text = PlayerNameStorage.Name;
         
             UpdateButtonState();
         }
@@ -27,6 +25,8 @@ namespace UI
 
         public void OnContinueClicked()
         {
+            PlayerNameStorage.Name = nameInputField.text;
+            
             var nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
             SceneManager.LoadScene(nextSceneIndex);
         }

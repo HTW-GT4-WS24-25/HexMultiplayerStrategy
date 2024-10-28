@@ -1,41 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using Networking.Client;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ApplicationController : MonoBehaviour
+namespace Networking
 {
-    [SerializeField] private HostSingleton hostPrefab;
-    [SerializeField] private ClientSingleton clientPrefab;
-
-    private async void Start()
+    public class ApplicationController : MonoBehaviour
     {
-        DontDestroyOnLoad(gameObject);
+        [SerializeField] private HostSingleton hostPrefab;
+        [SerializeField] private ClientSingleton clientPrefab;
 
-        var isDedicatedServer = SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null;
-        if (isDedicatedServer)
-            await LaunchDedicatedServer();
-        else
-            await LaunchClient();
-    }
-
-    private async Task LaunchDedicatedServer()
-    {
-
-    }
-
-    private async Task LaunchClient()
-    {
-        var client = Instantiate(clientPrefab);
-        var authenticated = await client.CreateClient();
-
-        var host = Instantiate(hostPrefab);
-        host.CreateHost();
-
-        if(authenticated)
+        private async void Start()
         {
-            client.GameManager.GoToMenu();
+            DontDestroyOnLoad(gameObject);
+
+            await LaunchClient();
+        }
+
+        private async Task LaunchClient()
+        {
+            var client = Instantiate(clientPrefab);
+            var authenticated = await client.CreateClient();
+
+            var host = Instantiate(hostPrefab);
+            host.CreateHost();
+
+            if(authenticated)
+            {
+                client.GameManager.GoToMenu();
+            }
         }
     }
 }

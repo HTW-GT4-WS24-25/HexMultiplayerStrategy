@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Networking.Shared;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,9 +8,9 @@ namespace Networking.Server
 {
     public class NetworkServer : IDisposable
     {
-        private NetworkManager _networkManager;
-        private Dictionary<ulong, string> _authIdsByClientIds = new();
-        private Dictionary<string, PlayerData> _playersByAuthIds = new();
+        private readonly NetworkManager _networkManager;
+        private readonly Dictionary<ulong, string> _authIdsByClientIds = new();
+        private readonly Dictionary<string, PlayerIdentificationData> _playersByAuthIds = new();
     
         public NetworkServer(NetworkManager networkManager)
         {
@@ -32,7 +33,7 @@ namespace Networking.Server
             }
         }
 
-        public PlayerData GetPlayerDataByClientId(ulong clientId)
+        public PlayerIdentificationData GetPlayerDataByClientId(ulong clientId)
         {
             if (_authIdsByClientIds.TryGetValue(clientId, out var authId))
             {
@@ -48,7 +49,7 @@ namespace Networking.Server
         private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
             var payload = System.Text.Encoding.UTF8.GetString(request.Payload);
-            var playerData = JsonUtility.FromJson<PlayerData>(payload);
+            var playerData = JsonUtility.FromJson<PlayerIdentificationData>(payload);
         
             _authIdsByClientIds[request.ClientNetworkId] = playerData.playerAuthId;
             _playersByAuthIds[playerData.playerAuthId] = playerData;

@@ -1,9 +1,13 @@
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using Networking.Server;
+using Networking.Shared;
+using Player;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
+using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
@@ -14,13 +18,13 @@ namespace Networking.Host
     public class HostGameManager : IDisposable
     {
         public NetworkServer NetworkServer { get; private set; }
+        public PlayerDataStorage PlayerData { get; private set; }
+        public string JoinCode { get; private set; }
     
         private const int MaxConnections = 20;
         private const string GameSceneName = "Game";
-        private const string PlayerNameKey = "PlayerName";
     
         private Allocation _allocation;
-        private string _joinCode;
     
         public void Dispose()
         {
@@ -41,8 +45,8 @@ namespace Networking.Host
 
             try
             {
-                _joinCode = await Relay.Instance.GetJoinCodeAsync(_allocation.AllocationId);
-                Debug.Log($"JoinCode: {_joinCode}");
+                JoinCode = await Relay.Instance.GetJoinCodeAsync(_allocation.AllocationId);
+                Debug.Log($"JoinCode: {JoinCode}");
             }
             catch (Exception e)
             {
@@ -53,6 +57,19 @@ namespace Networking.Host
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             var relayServerData = new RelayServerData(_allocation, "dtls");
             transport.SetRelayServerData(relayServerData);
+
+            NetworkServer = new NetworkServer(NetworkManager.Singleton);
+            PlayerData = new PlayerDataStorage(NetworkServer);
+
+            var playerData = new PlayerIdentificationData
+            {
+                playerName = PlayerNameStorage.Name,
+                playerAuthId = AuthenticationService.Instance.PlayerId
+            };
+            var payload = JsonUtility.ToJson(playerData);
+            var payloadBytes = Encoding.UTF8.GetBytes(payload);
+
+            NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         
             NetworkManager.Singleton.StartHost();
 

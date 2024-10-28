@@ -1,5 +1,6 @@
 using HexSystem;
 using Unit;
+using Unity.Collections;
 using UnityEngine.Events;
 
 public static class GameEvents
@@ -8,6 +9,7 @@ public static class GameEvents
     public static readonly InputEvents INPUT = new();
     public static readonly DayNightCycleEvents DAY_NIGHT_CYCLE = new();
     public static readonly UnitEvents UNIT = new();
+    public static readonly NetworkServerEvents NETWORK_SERVER = new();
 
     public class DemoEvents
     {
@@ -31,5 +33,11 @@ public static class GameEvents
         public UnityAction<UnitGroup> OnUnitGroupSelected;
         public UnityAction<int> OnUnitSelectionSliderUpdate;
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
+    }
+
+    // These events are only meant to be called and received from the server
+    public class NetworkServerEvents
+    {
+        public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
     }
 }

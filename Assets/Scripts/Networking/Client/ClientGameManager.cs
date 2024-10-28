@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Networking.Shared;
+using Player;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
@@ -14,8 +16,9 @@ namespace Networking.Client
 {
     public class ClientGameManager : IDisposable
     {
-        private const string menuSceneName = "Menu";
-        private const string playerNameKey = "PlayerName";
+        public string UsedJoinCode { get; private set; }
+        
+        private const string MenuSceneName = "Menu";
     
         private JoinAllocation _joinAllocation;
         private NetworkClient _networkClient;
@@ -38,7 +41,7 @@ namespace Networking.Client
 
         public void GoToMenu()
         {
-            SceneManager.LoadScene(menuSceneName);
+            SceneManager.LoadScene(MenuSceneName);
         }
 
         public async Task StartClientAsync(string joinCode)
@@ -57,9 +60,9 @@ namespace Networking.Client
             var relayServerData = new RelayServerData(_joinAllocation, "dtls");
             transport.SetRelayServerData(relayServerData);
 
-            var playerData = new PlayerData()
+            var playerData = new PlayerIdentificationData()
             {
-                playerName = PlayerPrefs.GetString(playerNameKey, "Missing Name"),
+                playerName = PlayerNameStorage.Name,
                 playerAuthId = AuthenticationService.Instance.PlayerId
             };
 
@@ -69,6 +72,8 @@ namespace Networking.Client
             NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         
             NetworkManager.Singleton.StartClient();
+
+            UsedJoinCode = joinCode;
         }
     
         public void Dispose()

@@ -9,6 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1456c347a1fc4818bb1f297aba6217c4, type: 3}
-  m_Name: DemoEvent
+  m_Script: {fileID: 11500000, guid: 4d2a7c46b4deb8b4d9dcacf3e951a17c, type: 3}
+  m_Name: PlayerGreen
   m_EditorClassIdentifier: 
+  playerColor: {r: 0.26855642, g: 0.6698113, b: 0.2899229, a: 1}
+  unitMaterial: {fileID: 0}
