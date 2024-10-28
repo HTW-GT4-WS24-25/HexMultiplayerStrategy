@@ -14,6 +14,7 @@ namespace Unit
         
         public Hexagon Hexagon { get; set; }
         public int UnitCount { get; private set; }
+        public Color DominanceColor { get; private set; } = Color.yellow;
 
         public void Initialize(Hexagon hexagon, int unitCount)
         {
@@ -41,7 +42,7 @@ namespace Unit
             Destroy(gameObject);
         }
         
-        private void PlaceOnHex(Hexagon hexagon)
+        public void PlaceOnHex(Hexagon hexagon)
         {
             Hexagon = hexagon;
             hexagon.unitGroups.Add(this);

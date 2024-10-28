@@ -11,22 +11,22 @@ namespace Unit
         [SerializeField] private UnitGroup unitGroupPrefab;
     
         private UnitGroup _selectedUnitGroup;
-        private int _selectedUnitCount;
+        private int _selectedUnitCount = 1;
 
         private void OnEnable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
-            GameEvents.INPUT.OnUnitGroupDeselected += DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
             GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
+            GameEvents.UNIT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
         }
         
         private void OnDisable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
-            GameEvents.INPUT.OnUnitGroupDeselected -= DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= DeselectUnit;
+            GameEvents.UNIT.OnUnitGroupDeselected -= DeselectUnit;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
             GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
             GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
         }
@@ -54,7 +54,7 @@ namespace Unit
 
         private bool SplitSelectedUnit(Hexagon clickedHex)
         {
-            if (_selectedUnitCount == _selectedUnitGroup.UnitCount) return false;
+            if (_selectedUnitCount == _selectedUnitGroup.UnitCount || _selectedUnitGroup.UnitCount == 1) return false;
             
             var isSplitAndRunsWithGroup = _selectedUnitGroup.Movement.PreviousHexagon != clickedHex;
             _selectedUnitGroup.AddUnits(-_selectedUnitCount);
@@ -106,7 +106,7 @@ namespace Unit
         {
             if (_selectedUnitGroup != unitGroup) return;
             
-            GameEvents.INPUT.OnUnitGroupDeselected.Invoke();
+            GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
         }
     }
 }

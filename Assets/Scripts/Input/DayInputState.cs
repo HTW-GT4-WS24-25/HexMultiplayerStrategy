@@ -21,7 +21,8 @@ namespace Input
 
         public override void HandleRightClick()
         {
-            GameEvents.INPUT.OnUnitGroupDeselected?.Invoke();
+            GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
+            HandleMainPointerDown();
         }
     }
 }

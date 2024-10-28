@@ -244,6 +244,8 @@ MonoBehaviour:
   - {fileID: 3323462815351184819}
   - {fileID: 2894212927354355084}
   - {fileID: 1259860502124646236}
+  highlightMaterial: {fileID: 2100000, guid: 7dbb02430bc1af3458e9f34173453772, type: 2}
+  highlightWidthMultiplier: 0.05
 --- !u!120 &8749054821632605366
 LineRenderer:
   serializedVersion: 2
@@ -427,6 +429,10 @@ PrefabInstance:
       propertyPath: IsTraversable
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8503581652947059578, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
+      propertyPath: hexBorderLine
+      value: 
+      objectReference: {fileID: 6193883969223273786}
     - target: {fileID: 8503581652947059578, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
       propertyPath: isTraversable
       value: 1
