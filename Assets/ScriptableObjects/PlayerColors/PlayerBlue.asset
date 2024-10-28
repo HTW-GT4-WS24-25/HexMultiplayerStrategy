@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2a7c46b4deb8b4d9dcacf3e951a17c, type: 3}
   m_Name: PlayerBlue
   m_EditorClassIdentifier: 
-  playerColor: {r: 0.18396229, g: 0.39078465, b: 1, a: 1}
+  colorType: 2
+  baseColor: {r: 0.011614433, g: 0.25481582, b: 0.8207547, a: 1}
   unitMaterial: {fileID: 0}

@@ -22,7 +22,7 @@ namespace Networking.Host
         public string JoinCode { get; private set; }
     
         private const int MaxConnections = 20;
-        private const string GameSceneName = "Game";
+        private const string LobbySceneName = "Lobby";
     
         private Allocation _allocation;
     
@@ -73,7 +73,7 @@ namespace Networking.Host
         
             NetworkManager.Singleton.StartHost();
 
-            NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene(LobbySceneName, LoadSceneMode.Single);
         }
     }
 }

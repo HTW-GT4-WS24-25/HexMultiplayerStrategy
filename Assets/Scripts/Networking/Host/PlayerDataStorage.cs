@@ -21,6 +21,12 @@ namespace Networking.Host
             return _playersByClientId.Select(keyValuePair => keyValuePair.Value).ToList();
         }
 
+        public void SetPlayerColorType(ulong playerClientId, PlayerColor.ColorType newColorType)
+        {
+            _playersByClientId[playerClientId].PlayerColorType = newColorType;
+            GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(playerClientId, (int)newColorType);
+        }
+
         public void RegisterNewPlayer(Player.Player newPlayer)
         {
             var playerClientId = newPlayer.OwnerClientId;
@@ -28,7 +34,7 @@ namespace Networking.Host
             {
                 ClientId = playerClientId,
                 PlayerName = _networkServer.GetPlayerDataByClientId(playerClientId).playerName,
-                PlayerColor = null,
+                PlayerColorType = PlayerColor.ColorType.None,
                 PlayerGameObject = newPlayer
             };
             Debug.Log($"Player {newPlayerData.PlayerName} registered!");
@@ -41,7 +47,7 @@ namespace Networking.Host
         {
             public ulong ClientId;
             public string PlayerName;
-            public PlayerColor PlayerColor;
+            public PlayerColor.ColorType PlayerColorType;
             public Player.Player PlayerGameObject;
         }
     }

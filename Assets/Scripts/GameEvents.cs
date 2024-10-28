@@ -39,5 +39,6 @@ public static class GameEvents
     public class NetworkServerEvents
     {
         public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
+        public UnityAction<ulong, int> OnPlayerColorChanged;
     }
 }

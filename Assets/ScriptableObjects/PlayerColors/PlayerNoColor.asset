@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d2a7c46b4deb8b4d9dcacf3e951a17c, type: 3}
-  m_Name: PlayerRed
+  m_Name: PlayerNoColor
   m_EditorClassIdentifier: 
-  colorType: 1
-  baseColor: {r: 0.735849, g: 0.045122836, b: 0.045122836, a: 1}
+  colorType: 0
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
   unitMaterial: {fileID: 0}

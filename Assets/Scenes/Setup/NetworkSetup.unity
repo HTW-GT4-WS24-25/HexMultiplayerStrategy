@@ -829,6 +829,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hostPrefab: {fileID: 5455908810269041207, guid: 4a122d863cb729248b494d11a52c90f7, type: 3}
   clientPrefab: {fileID: 2733555397600357799, guid: 02ac5b8da0a20764483ccb9e100b0aaa, type: 3}
+  playerColors:
+  - {fileID: 11400000, guid: acbf42db6f4fa6d4cbacc137980485ff, type: 2}
+  - {fileID: 11400000, guid: 95239fe1abaa2fa409ef99c3fdc18ea6, type: 2}
+  - {fileID: 11400000, guid: c5b5427605baf4c4f834d8eb95eb9c6d, type: 2}
+  - {fileID: 11400000, guid: 50e51a5f5d5d33949b952af436314199, type: 2}
 --- !u!4 &1964027574
 Transform:
   m_ObjectHideFlags: 0
