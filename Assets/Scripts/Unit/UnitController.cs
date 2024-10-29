@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using UnityEngine;
@@ -35,16 +36,33 @@ namespace Unit
         {
             if (_selectedUnitGroup != null)
             {
-                if (CanMoveOnHex(clickedHex))
-                {
-                    var isSplitAndRunsWithGroup = SplitSelectedUnit(clickedHex);
-                    SetUnitMovement(clickedHex, isSplitAndRunsWithGroup);
-                }
+                ProcessMoveCommand(clickedHex);
             }
             else
             {
                 SetSelectedUnit(clickedHex);
             }
+        }
+
+        private void ProcessMoveCommand(Hexagon clickedHex)
+        {
+            if (!CanMoveOnHex(clickedHex))
+                return;
+            
+            var newUnitPath = GetPathForSelectedUnitGroup(clickedHex);
+            
+            if(_selectedUnitCount < _selectedUnitGroup.UnitCount && _selectedUnitGroup.UnitCount > 1)
+            {
+                var splitUnit = SplitSelectedUnit();
+                var splitUnitFollowsOldOne = !newUnitPath.Contains(_selectedUnitGroup.Movement.PreviousHexagon);
+
+                _selectedUnitGroup = splitUnit;
+                
+                if(splitUnitFollowsOldOne)
+                    newUnitPath.Insert(0, _selectedUnitGroup.Movement.NextHexagon);
+            }
+            
+            _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath);
         }
         
         private bool CanMoveOnHex(Hexagon hexagon)
@@ -52,35 +70,22 @@ namespace Unit
             return hexagon.isTraversable;
         }
 
-        private bool SplitSelectedUnit(Hexagon clickedHex)
+        private UnitGroup SplitSelectedUnit()
         {
-            if (_selectedUnitCount == _selectedUnitGroup.UnitCount || _selectedUnitGroup.UnitCount == 1) return false;
+            _selectedUnitGroup.ChangeUnitCount(-_selectedUnitCount);
             
-            var isSplitAndRunsWithGroup = _selectedUnitGroup.Movement.PreviousHexagon != clickedHex;
-            _selectedUnitGroup.AddUnits(-_selectedUnitCount);
-            
-            _selectedUnitGroup = CreateNewUnitGroup();
-            GameEvents.UNIT.OnUnitGroupSelected.Invoke(_selectedUnitGroup);
-            
-            return isSplitAndRunsWithGroup;
+            var splitUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
+            splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount);
+
+            return splitUnitGroup;
         }
-
-        private UnitGroup CreateNewUnitGroup()
-        {
-            var newUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
-            newUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount);
-            return newUnitGroup;
-        }
-
-
-        private void SetUnitMovement(Hexagon clickedHex, bool isSplitAndRunsWithGroup)
+        
+        private List<Hexagon> GetPathForSelectedUnitGroup(Hexagon clickedHex)
         {
             var currentUnitCoordinates = _selectedUnitGroup.Movement.NextHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
                 
-            var newUnitPath = mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
-            if (isSplitAndRunsWithGroup) newUnitPath.Insert(0, _selectedUnitGroup.Movement.NextHexagon);
-            _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath);
+            return mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
         }
         
         private void SetSelectedUnit(Hexagon clickedHex)

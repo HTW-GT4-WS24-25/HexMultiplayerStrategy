@@ -152,7 +152,7 @@ namespace Unit
                     Debug.Log("Unit should be added to other stationary group");
                     
                     var stationaryGroup = NextHexagon.StationaryUnitGroup;
-                    stationaryGroup.AddUnits(UnitGroup.UnitCount);
+                    stationaryGroup.ChangeUnitCount(UnitGroup.UnitCount);
                     UnitGroup.Delete();
                     GameEvents.UNIT.OnUnitGroupDeleted.Invoke(UnitGroup);
                 }

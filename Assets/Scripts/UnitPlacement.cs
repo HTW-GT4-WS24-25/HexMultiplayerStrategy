@@ -37,7 +37,7 @@ public class UnitPlacement : MonoBehaviour
 
     private void AddUnitsToUnitGroup(UnitGroup unitGroup)
     {
-        unitGroup.AddUnits(_unitAmount);
+        unitGroup.ChangeUnitCount(_unitAmount);
     }
 
     private void PlaceUnitGroupOnHex(Hexagon hex)

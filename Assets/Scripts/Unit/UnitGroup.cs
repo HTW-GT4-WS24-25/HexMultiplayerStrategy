@@ -23,17 +23,9 @@ namespace Unit
             UpdateUnitCount(unitCount);
         }
 
-        public void AddUnits(int amount)
+        public void ChangeUnitCount(int changeAmount)
         {
-            UpdateUnitCount(UnitCount + amount);
-        }
-
-        public UnitGroup SplitUnitGroup(int newUnitCount)
-        {
-            UpdateUnitCount(UnitCount - newUnitCount);
-            UnitGroup newUnitGroup = Instantiate(this);
-            newUnitGroup.Initialize(Hexagon, newUnitCount);
-            return newUnitGroup;
+            UpdateUnitCount(UnitCount + changeAmount);
         }
 
         public void Delete()
