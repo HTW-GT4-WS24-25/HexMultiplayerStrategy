@@ -19,6 +19,11 @@ namespace Input
         public abstract void HandleMainPointerDown();
         public abstract void HandleRightClick();
 
+        public void HandleMainPointerDrag(Vector2 dragValue)
+        {
+            GameEvents.INPUT.OnDragInput(dragValue);
+        }
+
         protected bool TryGetHexOnScreenPosition(Vector2 screenPosition, out Hexagon hexagon)
         {
             hexagon = null;

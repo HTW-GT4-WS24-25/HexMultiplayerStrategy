@@ -37,12 +37,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""MainPointer"",
+                    ""name"": ""MainPointerDown"",
                     ""type"": ""Button"",
                     ""id"": ""f0083a93-fd69-4e35-b3f5-db8d6dc50ef0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MainPointerUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""16f8579f-5bc6-48c7-a027-0c6cc20ab62d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -62,6 +71,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomScroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""aaf40730-3a1a-47c4-8bfa-9a1777a2a5a4"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -83,7 +101,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard & Mouse"",
-                    ""action"": ""MainPointer"",
+                    ""action"": ""MainPointerDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -106,6 +124,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard & Mouse"",
                     ""action"": ""TestSwitchCycle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""50b90715-9ab4-45fe-afda-44d0fbc9eaf3"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""ZoomScroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cfcd833b-b863-455d-b18e-28cb6b2496c3"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MainPointerUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -134,9 +174,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
-        m_Player_MainPointer = m_Player.FindAction("MainPointer", throwIfNotFound: true);
+        m_Player_MainPointerDown = m_Player.FindAction("MainPointerDown", throwIfNotFound: true);
+        m_Player_MainPointerUp = m_Player.FindAction("MainPointerUp", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
         m_Player_TestSwitchCycle = m_Player.FindAction("TestSwitchCycle", throwIfNotFound: true);
+        m_Player_ZoomScroll = m_Player.FindAction("ZoomScroll", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -204,17 +246,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_PointerPosition;
-    private readonly InputAction m_Player_MainPointer;
+    private readonly InputAction m_Player_MainPointerDown;
+    private readonly InputAction m_Player_MainPointerUp;
     private readonly InputAction m_Player_RightClick;
     private readonly InputAction m_Player_TestSwitchCycle;
+    private readonly InputAction m_Player_ZoomScroll;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
         public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
-        public InputAction @MainPointer => m_Wrapper.m_Player_MainPointer;
+        public InputAction @MainPointerDown => m_Wrapper.m_Player_MainPointerDown;
+        public InputAction @MainPointerUp => m_Wrapper.m_Player_MainPointerUp;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
         public InputAction @TestSwitchCycle => m_Wrapper.m_Player_TestSwitchCycle;
+        public InputAction @ZoomScroll => m_Wrapper.m_Player_ZoomScroll;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -227,15 +273,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @PointerPosition.started += instance.OnPointerPosition;
             @PointerPosition.performed += instance.OnPointerPosition;
             @PointerPosition.canceled += instance.OnPointerPosition;
-            @MainPointer.started += instance.OnMainPointer;
-            @MainPointer.performed += instance.OnMainPointer;
-            @MainPointer.canceled += instance.OnMainPointer;
+            @MainPointerDown.started += instance.OnMainPointerDown;
+            @MainPointerDown.performed += instance.OnMainPointerDown;
+            @MainPointerDown.canceled += instance.OnMainPointerDown;
+            @MainPointerUp.started += instance.OnMainPointerUp;
+            @MainPointerUp.performed += instance.OnMainPointerUp;
+            @MainPointerUp.canceled += instance.OnMainPointerUp;
             @RightClick.started += instance.OnRightClick;
             @RightClick.performed += instance.OnRightClick;
             @RightClick.canceled += instance.OnRightClick;
             @TestSwitchCycle.started += instance.OnTestSwitchCycle;
             @TestSwitchCycle.performed += instance.OnTestSwitchCycle;
             @TestSwitchCycle.canceled += instance.OnTestSwitchCycle;
+            @ZoomScroll.started += instance.OnZoomScroll;
+            @ZoomScroll.performed += instance.OnZoomScroll;
+            @ZoomScroll.canceled += instance.OnZoomScroll;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -243,15 +295,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @PointerPosition.started -= instance.OnPointerPosition;
             @PointerPosition.performed -= instance.OnPointerPosition;
             @PointerPosition.canceled -= instance.OnPointerPosition;
-            @MainPointer.started -= instance.OnMainPointer;
-            @MainPointer.performed -= instance.OnMainPointer;
-            @MainPointer.canceled -= instance.OnMainPointer;
+            @MainPointerDown.started -= instance.OnMainPointerDown;
+            @MainPointerDown.performed -= instance.OnMainPointerDown;
+            @MainPointerDown.canceled -= instance.OnMainPointerDown;
+            @MainPointerUp.started -= instance.OnMainPointerUp;
+            @MainPointerUp.performed -= instance.OnMainPointerUp;
+            @MainPointerUp.canceled -= instance.OnMainPointerUp;
             @RightClick.started -= instance.OnRightClick;
             @RightClick.performed -= instance.OnRightClick;
             @RightClick.canceled -= instance.OnRightClick;
             @TestSwitchCycle.started -= instance.OnTestSwitchCycle;
             @TestSwitchCycle.performed -= instance.OnTestSwitchCycle;
             @TestSwitchCycle.canceled -= instance.OnTestSwitchCycle;
+            @ZoomScroll.started -= instance.OnZoomScroll;
+            @ZoomScroll.performed -= instance.OnZoomScroll;
+            @ZoomScroll.canceled -= instance.OnZoomScroll;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -281,8 +339,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnPointerPosition(InputAction.CallbackContext context);
-        void OnMainPointer(InputAction.CallbackContext context);
+        void OnMainPointerDown(InputAction.CallbackContext context);
+        void OnMainPointerUp(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnTestSwitchCycle(InputAction.CallbackContext context);
+        void OnZoomScroll(InputAction.CallbackContext context);
     }
 }

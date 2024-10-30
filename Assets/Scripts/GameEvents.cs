@@ -1,6 +1,7 @@
 using HexSystem;
 using Unit;
 using Unity.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
 public static class GameEvents
@@ -19,6 +20,8 @@ public static class GameEvents
     public class InputEvents
     {
         public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
+        public UnityAction<float> OnZoomInput;
+        public UnityAction<Vector2> OnDragInput;
     }
 
     public class DayNightCycleEvents

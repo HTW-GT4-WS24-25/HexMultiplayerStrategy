@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85512222be9073148998c22fa93dca7c, type: 3}
   m_Name: InputReader
   m_EditorClassIdentifier: 
+  maxDragDistanceForClick: 90

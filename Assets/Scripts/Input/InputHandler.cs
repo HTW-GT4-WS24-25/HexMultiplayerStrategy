@@ -10,7 +10,7 @@ namespace Input
     
         private InputState _currentInputState;
         private InputState _dayInputState;
-        private InputState _nightInputState; 
+        private InputState _nightInputState;
 
         private void Awake()
         {
@@ -22,8 +22,7 @@ namespace Input
 
         private void OnEnable()
         {
-            inputReader.OnMainPointerDown += _currentInputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown += _currentInputState.HandleRightClick;
+            SubscribeInputStateToInputEvents(_currentInputState);
 
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay += () => SwitchToState(_dayInputState);
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => SwitchToState(_nightInputState);
@@ -31,8 +30,7 @@ namespace Input
     
         private void OnDisable()
         {
-            inputReader.OnMainPointerDown -= _currentInputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown -= _currentInputState.HandleRightClick;
+            UnsubscribeInputStateToInputEvents(_currentInputState);
             
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay -= () => SwitchToState(_dayInputState);
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => SwitchToState(_nightInputState);
@@ -40,13 +38,25 @@ namespace Input
 
         private void SwitchToState(InputState newState)
         {
-            inputReader.OnMainPointerDown -= _currentInputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown -= _currentInputState.HandleRightClick;
+            UnsubscribeInputStateToInputEvents(_currentInputState);
             
             _currentInputState = newState;
             
-            inputReader.OnMainPointerDown += _currentInputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown += _currentInputState.HandleRightClick;
+            SubscribeInputStateToInputEvents(_currentInputState);
+        }
+
+        private void SubscribeInputStateToInputEvents(InputState inputState)
+        {
+            inputReader.OnMainPointerClicked += inputState.HandleMainPointerDown;
+            inputReader.OnRightMouseButtonDown += inputState.HandleRightClick;
+            inputReader.OnMainPointerDragged += inputState.HandleMainPointerDrag;
+        }
+        
+        private void UnsubscribeInputStateToInputEvents(InputState inputState)
+        {
+            inputReader.OnMainPointerClicked -= inputState.HandleMainPointerDown;
+            inputReader.OnRightMouseButtonDown -= inputState.HandleRightClick;
+            inputReader.OnMainPointerDragged -= inputState.HandleMainPointerDrag;
         }
     }
 }

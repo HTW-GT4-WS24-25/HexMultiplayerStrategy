@@ -16,8 +16,6 @@ namespace Networking.Client
 {
     public class ClientGameManager : IDisposable
     {
-        public string UsedJoinCode { get; private set; }
-        
         private const string MenuSceneName = "Menu";
     
         private JoinAllocation _joinAllocation;
@@ -72,8 +70,6 @@ namespace Networking.Client
             NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         
             NetworkManager.Singleton.StartClient();
-
-            UsedJoinCode = joinCode;
         }
     
         public void Dispose()
