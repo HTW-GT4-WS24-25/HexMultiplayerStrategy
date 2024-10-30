@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Player;
 using Unit;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,7 +14,7 @@ namespace HexSystem
         
         public AxialCoordinate Coordinates { get; private set; }
         public UnitGroup StationaryUnitGroup { get; private set; }
-        public Color DominanceColor { get; private set; } = Color.black; //TODO replace with Player Reference
+        public PlayerColor DominanceColor { get; private set; }
 
         public void Initialize(AxialCoordinate coordinate)
         {
@@ -33,10 +34,10 @@ namespace HexSystem
             StationaryUnitGroup = null;
         }
 
-        public void UpdateDominance(Color dominanceColor)
+        public void UpdateDominance(PlayerColor playerColor)
         {
-            DominanceColor = dominanceColor;
-            hexBorderLine.HighlightBorderWithColor(dominanceColor);
+            DominanceColor = playerColor;
+            hexBorderLine.HighlightBorderWithColor(playerColor);
         }
     }
 }

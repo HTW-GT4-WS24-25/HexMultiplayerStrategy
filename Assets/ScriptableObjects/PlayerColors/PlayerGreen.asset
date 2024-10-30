@@ -14,4 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorType: 3
   baseColor: {r: 0.20024922, g: 0.5660378, b: 0.2490134, a: 1}
-  unitMaterial: {fileID: 0}
+  defaultMaterial: {fileID: 2100000, guid: e240135072f3d8b46aeff1456708666d, type: 2}
+  unitMaterial: {fileID: 2100000, guid: e240135072f3d8b46aeff1456708666d, type: 2}
+  highlightedUnitMaterial: {fileID: 2100000, guid: 78ed9a12bb39ad04eb6f5d11de8c6db2, type: 2}
+  hexBorderMaterial: {fileID: 2100000, guid: 9f3b0ee896f3f6244ae0f15e5e779098, type: 2}
+  travelLineMaterial: {fileID: 2100000, guid: 9f3b0ee896f3f6244ae0f15e5e779098, type: 2}
+  highlightedTravelLineMaterial: {fileID: 2100000, guid: 503cd1825b9322c4ea0df7f99fc9e973, type: 2}
+  travelEndPointMaterial: {fileID: 2100000, guid: 9f3b0ee896f3f6244ae0f15e5e779098, type: 2}
+  highlightedTravelEndPointMaterial: {fileID: 2100000, guid: 503cd1825b9322c4ea0df7f99fc9e973, type: 2}

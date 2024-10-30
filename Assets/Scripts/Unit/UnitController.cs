@@ -40,7 +40,7 @@ namespace Unit
             }
             else
             {
-                SetSelectedUnit(clickedHex);
+                SetSelectedUnitFromHex(clickedHex);
             }
         }
 
@@ -56,7 +56,7 @@ namespace Unit
                 var splitUnit = SplitSelectedUnit();
                 var splitUnitFollowsOldOne = !newUnitPath.Contains(_selectedUnitGroup.Movement.PreviousHexagon);
 
-                _selectedUnitGroup = splitUnit;
+                SetSelectedUnit(splitUnit);
                 
                 if(splitUnitFollowsOldOne)
                     newUnitPath.Insert(0, _selectedUnitGroup.Movement.NextHexagon);
@@ -72,10 +72,10 @@ namespace Unit
 
         private UnitGroup SplitSelectedUnit()
         {
-            _selectedUnitGroup.ChangeUnitCount(-_selectedUnitCount);
+            _selectedUnitGroup.SubtractUnits(_selectedUnitCount);
             
             var splitUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
-            splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount);
+            splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount, _selectedUnitGroup.PlayerColor);
 
             return splitUnitGroup;
         }
@@ -88,17 +88,26 @@ namespace Unit
             return mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
         }
         
-        private void SetSelectedUnit(Hexagon clickedHex)
+        private void SetSelectedUnitFromHex(Hexagon clickedHex)
         {
             clickedHex.unitGroups.RemoveAll(unitGroup => unitGroup == null); //Unfortunately necessary, because sometimes deleted Groups are still referenced from the hex
-            _selectedUnitGroup = clickedHex.unitGroups.FirstOrDefault();
+            var unitGroupToSelect = clickedHex.unitGroups.FirstOrDefault();
+            SetSelectedUnit(unitGroupToSelect);
+        }
+
+        private void SetSelectedUnit(UnitGroup unitGroupToSelect)
+        {
+            if (_selectedUnitGroup != null) _selectedUnitGroup.DisableHighlight();
+
+            _selectedUnitGroup = unitGroupToSelect;
             
-            if(_selectedUnitGroup != null)
-                GameEvents.UNIT.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
+            _selectedUnitGroup.EnableHighlight();
+            GameEvents.UNIT.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
 
         private void DeselectUnit()
         {
+            _selectedUnitGroup.DisableHighlight();
             _selectedUnitGroup = null;
         }
 
