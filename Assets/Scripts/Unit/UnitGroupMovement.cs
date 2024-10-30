@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
+using Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -48,9 +49,10 @@ namespace Unit
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => { _isResting = true; };
         }
 
-        public void Initialize(Hexagon startHexagon)
+        public void Initialize(Hexagon startHexagon, PlayerColor playerColor)
         {
             NextHexagon = startHexagon;
+            groupTravelLine.Initialize(playerColor);
         }
 
         private void Update()
@@ -71,7 +73,7 @@ namespace Unit
                     UnitGroup.PlaceOnHex(NextHexagon);
                     _assignedToNextHexagon = true;
                     
-                    NextHexagon.UpdateDominance(UnitGroup.DominanceColor);
+                    NextHexagon.UpdateDominance(UnitGroup.PlayerColor);
                 }
             
                 if (_travelProgress >= 1f)
@@ -152,7 +154,7 @@ namespace Unit
                     Debug.Log("Unit should be added to other stationary group");
                     
                     var stationaryGroup = NextHexagon.StationaryUnitGroup;
-                    stationaryGroup.ChangeUnitCount(UnitGroup.UnitCount);
+                    stationaryGroup.AddUnits(UnitGroup.UnitCount);
                     UnitGroup.Delete();
                     GameEvents.UNIT.OnUnitGroupDeleted.Invoke(UnitGroup);
                 }

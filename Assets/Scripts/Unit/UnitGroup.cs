@@ -1,6 +1,8 @@
 using HexSystem;
+using Player;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Unit
 {
@@ -9,21 +11,34 @@ namespace Unit
         [Header("References")]
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
         [SerializeField] private TextMeshProUGUI unitCountText;
+        [SerializeField] private MeshRenderer meshRenderer;
+
+        public UnityEvent OnUnitHighlightEnabled;
+        public UnityEvent OnUnitHighlightDisabled;
         
         public Hexagon Hexagon { get; set; }
         public int UnitCount { get; private set; }
         public Color DominanceColor { get; private set; } = Color.yellow;
+        public PlayerColor PlayerColor { get; private set; }
 
-        public void Initialize(Hexagon hexagon, int unitCount)
+        public void Initialize(Hexagon hexagon, int unitCount, PlayerColor playerColor)
         {
             PlaceOnHex(hexagon);
-            Movement.Initialize(Hexagon);
+            Movement.Initialize(Hexagon, playerColor);
             UpdateUnitCount(unitCount);
+            
+            PlayerColor = playerColor;
+            meshRenderer.material = playerColor.unitMaterial;
         }
 
-        public void ChangeUnitCount(int changeAmount)
+        public void AddUnits(int amount)
         {
-            UpdateUnitCount(UnitCount + changeAmount);
+            UpdateUnitCount(UnitCount + amount);
+        }
+
+        public void SubtractUnits(int amount)
+        {
+            UpdateUnitCount(UnitCount - amount);
         }
 
         public void Delete()
@@ -36,6 +51,18 @@ namespace Unit
         {
             Hexagon = hexagon;
             hexagon.unitGroups.Add(this);
+        }
+
+        public void EnableHighlight()
+        {
+            meshRenderer.material = PlayerColor.highlightedUnitMaterial;
+            OnUnitHighlightEnabled?.Invoke();
+        }
+
+        public void DisableHighlight()
+        {
+            meshRenderer.material = PlayerColor.unitMaterial;
+            OnUnitHighlightDisabled?.Invoke();
         }
         
         private void UpdateUnitCount(int unitCount)

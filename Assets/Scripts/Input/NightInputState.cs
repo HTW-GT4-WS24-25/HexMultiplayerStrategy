@@ -22,6 +22,7 @@ namespace Input
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
                 _unitPlacement.TryAddUnitsToHex(clickedHexagon);
+                GameEvents.INPUT.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }
 

@@ -214,3 +214,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a80257ac4e4b7246861a5cdb85c05e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 3192039604157038953}
+  cameraHandle: {fileID: 571385015680087656}
+  minZoom: -2
+  maxZoom: 2
+  zoomPerInput: 1
+  dragPerInputOnMaxZoom: 0.0015
+  dragPerInputOnMinZoom: 0.0035
+  zoomSpeed: 4
+  dragSpeed: 12

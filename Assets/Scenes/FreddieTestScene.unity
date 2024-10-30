@@ -182,6 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitGroupPrefab: {fileID: 7360500778174264170, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
+  playerColor: {fileID: 0}
 --- !u!1 &239592796
 GameObject:
   m_ObjectHideFlags: 0
@@ -944,11 +945,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960385438}
   m_CullTransparentMesh: 1
---- !u!4 &985799099 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 571385015680087656, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-  m_PrefabInstance: {fileID: 1977128412}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1161752260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,11 +1020,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161752260}
   m_CullTransparentMesh: 1
---- !u!20 &1483715686 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 3192039604157038953, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-  m_PrefabInstance: {fileID: 1977128412}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1588253352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1209,86 +1200,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 1483715686}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: maxZoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: minZoom
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragSpeed
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: zoomSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: inputReader
-      value: 
-      objectReference: {fileID: 11400000, guid: 9cd7b7d599d5a7e41ab9ca5fc2da1614, type: 2}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: scrollSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: cameraHandle
-      value: 
-      objectReference: {fileID: 985799099}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: maxZoomValue
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: minZoomValue
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: zoomPerInput
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: maxScrollValue
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: minScrollValue
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragValuePerInput
-      value: 0.0025
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: zoomValuePerInput
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragValueOnMaxZoom
-      value: 0.0015
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragValueOnMinZoom
-      value: 0.0035
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: scrollValuePerInput
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragPerInputOnMaxZoom
-      value: 0.0015
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
-      propertyPath: dragPerInputOnMinZoom
-      value: 0.0035
-      objectReference: {fileID: 0}
     - target: {fileID: 4986517417991566692, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

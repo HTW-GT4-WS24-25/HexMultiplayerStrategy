@@ -1,4 +1,5 @@
 using System.Linq;
+using Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -6,7 +7,6 @@ using UnityEngine.Serialization;
 public class HexBorderLine : MonoBehaviour
 {
     [SerializeField] private Transform[] lineNodes;
-    [SerializeField] private Material highlightMaterial;
     [SerializeField] private float highlightWidthMultiplier = 0.05f;
     
     private LineRenderer _lineRenderer;
@@ -19,10 +19,10 @@ public class HexBorderLine : MonoBehaviour
         _lineRenderer.SetPositions(lineNodes.Select(node => node.position).ToArray());
     }
 
-    public void HighlightBorderWithColor(Color color)
+    public void HighlightBorderWithColor(PlayerColor playerColor)
     {
-        highlightMaterial.color = color;
-        _lineRenderer.material = highlightMaterial;
+        _lineRenderer.colorGradient = new Gradient();
+        _lineRenderer.material = playerColor.hexBorderMaterial;
         _lineRenderer.widthMultiplier = highlightWidthMultiplier;
     }
 }

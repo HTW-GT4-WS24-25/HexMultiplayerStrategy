@@ -1,12 +1,15 @@
 ﻿using System;
 using HexSystem;
+using Player;
 using Unit;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class UnitPlacement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UnitGroup unitGroupPrefab;
+    [SerializeField] private PlayerColor playerColor;
 
     private HexagonGrid _hexGrid;
     private int _unitAmount;
@@ -37,13 +40,13 @@ public class UnitPlacement : MonoBehaviour
 
     private void AddUnitsToUnitGroup(UnitGroup unitGroup)
     {
-        unitGroup.ChangeUnitCount(_unitAmount);
+        unitGroup.AddUnits(_unitAmount);
     }
 
     private void PlaceUnitGroupOnHex(Hexagon hex)
     {
         var newUnitGroup = Instantiate(unitGroupPrefab, hex.transform.position, Quaternion.identity);
-        newUnitGroup.Initialize(hex, _unitAmount);
+        newUnitGroup.Initialize(hex, _unitAmount, playerColor);
         
         hex.ChangeUnitGroupOnHexToStationary(newUnitGroup);
     }

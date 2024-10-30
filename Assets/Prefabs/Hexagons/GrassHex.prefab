@@ -244,7 +244,6 @@ MonoBehaviour:
   - {fileID: 3323462815351184819}
   - {fileID: 2894212927354355084}
   - {fileID: 1259860502124646236}
-  highlightMaterial: {fileID: 2100000, guid: 7dbb02430bc1af3458e9f34173453772, type: 2}
   highlightWidthMultiplier: 0.05
 --- !u!120 &8749054821632605366
 LineRenderer:
@@ -318,8 +317,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0.84313726}
-      key1: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0.78431374}
+      key0: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0.78431374}
+      key1: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0.84313726}
       key2: {r: 0, g: 0, b: 0, a: 0.84313726}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -335,7 +334,7 @@ LineRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 964
+      atime1: 65535
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -345,7 +344,7 @@ LineRenderer:
       m_Mode: 1
       m_ColorSpace: 0
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 3
+      m_NumAlphaKeys: 2
     numCornerVertices: 5
     numCapVertices: 5
     alignment: 0

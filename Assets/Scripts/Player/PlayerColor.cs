@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
@@ -12,7 +13,19 @@ namespace Player
             
         public ColorType colorType;
         public Color baseColor;
+
+        //TODO Getter der anderen Materials ruft defaultMaterial auf falls NULL
+        public Material defaultMaterial;
+        
         public Material unitMaterial;
+        public Material highlightedUnitMaterial;
+        
+        public Material hexBorderMaterial;
+        
+        public Material travelLineMaterial;
+        public Material highlightedTravelLineMaterial;
+        public Material travelEndPointMaterial;
+        public Material highlightedTravelEndPointMaterial;
 
         public static void AddColorToStorage(PlayerColor playerColor) => _playerColorStorage.Add(playerColor.colorType, playerColor);
         public static PlayerColor GetFromColorType(ColorType colorType) => _playerColorStorage[colorType];
