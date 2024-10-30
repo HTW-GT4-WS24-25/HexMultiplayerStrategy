@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using HexSystem;
+using UI.NightShop;
 using Unit;
 using Unity.Collections;
 using UnityEngine.Events;
@@ -10,7 +12,8 @@ public static class GameEvents
     public static readonly DayNightCycleEvents DAY_NIGHT_CYCLE = new();
     public static readonly UnitEvents UNIT = new();
     public static readonly NetworkServerEvents NETWORK_SERVER = new();
-
+    public static readonly NightShopEvents NIGHT_SHOP = new();
+    
     public class DemoEvents
     {
         public UnityAction<float> DemoEvent;
@@ -19,6 +22,7 @@ public static class GameEvents
     public class InputEvents
     {
         public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
+        public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
     }
 
     public class DayNightCycleEvents
@@ -35,6 +39,14 @@ public static class GameEvents
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
     }
 
+    public class NightShopEvents
+    {
+        public UnityAction<Card> OnCardSelected;
+        public UnityAction OnCardDeselected;
+        public UnityAction<int> OnMoneySpent;
+        public UnityAction<int> OnMoneyAmountChanged;
+    }
+    
     // These events are only meant to be called and received from the server
     public class NetworkServerEvents
     {

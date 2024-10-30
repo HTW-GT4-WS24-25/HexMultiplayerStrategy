@@ -32,7 +32,8 @@ namespace UI
         private void HandleGroupDeselected()
         {
             unitSelectionUI.gameObject.SetActive(false);
-            cancelSelectionWindow.SetActive(false);
+            // causes an error preventing the night shop from being opened
+            // cancelSelectionWindow.SetActive(false);
         }
     }
 }
