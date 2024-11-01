@@ -39,12 +39,7 @@ public class MapCreator : MonoBehaviour
         Grid = new HexagonGrid();
     }
 
-    private void Start()
-    {
-        CreateRingMap(3);
-    }
-
-    private void CreateRingMap(int rings)
+    public void CreateRingMap(int rings)
     {
         var rotation180 = Quaternion.Euler(0, 180, 0);
         

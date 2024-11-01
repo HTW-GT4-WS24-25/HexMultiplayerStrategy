@@ -3,7 +3,6 @@ using HexSystem;
 using Player;
 using Unit;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class UnitPlacement : MonoBehaviour
 {

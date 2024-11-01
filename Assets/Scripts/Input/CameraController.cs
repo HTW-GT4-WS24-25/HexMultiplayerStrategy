@@ -52,6 +52,17 @@ namespace Input
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, _newCameraZoomPosition, Time.deltaTime * zoomSpeed);
         }
 
+        public void PositionCameraOnPlayerStartPosition(Vector3 startPosition, Vector3 mapCenterPosition)
+        {
+            cameraHandle.transform.position = startPosition;
+            _newCameraHandlePosition = cameraHandle.transform.position;
+
+            var defaultCameraDirection = Vector3.forward;
+            var cameraDiretionToCenter = mapCenterPosition - startPosition;
+            var cameraAngle = Vector3.SignedAngle(defaultCameraDirection, cameraDiretionToCenter, Vector3.up);
+            cameraHandle.Rotate(Vector3.up, cameraAngle);
+        }
+
         private void HandleZoom(float zoomInput)
         {
             _currentZoom += zoomInput;
