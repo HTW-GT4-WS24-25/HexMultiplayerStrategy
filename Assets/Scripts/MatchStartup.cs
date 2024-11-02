@@ -4,7 +4,7 @@ using Input;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class SessionStartup : MonoBehaviour
+public class MatchStartup : MonoBehaviour
 {
     [SerializeField] MapCreator mapCreator;
     [SerializeField] UnitPlacement unitPlacement;

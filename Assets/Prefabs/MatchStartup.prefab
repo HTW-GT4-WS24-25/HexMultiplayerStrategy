@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8192308590578712332}
   - component: {fileID: 243996737620647544}
   m_Layer: 0
-  m_Name: SessionStartup
+  m_Name: MatchStartup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

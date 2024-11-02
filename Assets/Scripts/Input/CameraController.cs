@@ -28,7 +28,7 @@ namespace Input
         {
             _defaultCameraZoomPosition = cam.transform.localPosition;
             _newCameraZoomPosition = _defaultCameraZoomPosition;
-            _newCameraHandlePosition = cameraHandle.position;
+            _newCameraHandlePosition = cameraHandle.localPosition;
             _zoomVector = cam.transform.forward * zoomPerInput;
             
             AdjustDragPerInputToCurrentZoom();
@@ -48,14 +48,14 @@ namespace Input
 
         private void Update()
         {
-            cameraHandle.transform.position = Vector3.Lerp(cameraHandle.transform.position, _newCameraHandlePosition, Time.deltaTime * dragSpeed);
+            cameraHandle.localPosition = Vector3.Lerp(cameraHandle.position, _newCameraHandlePosition, Time.deltaTime * dragSpeed);
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, _newCameraZoomPosition, Time.deltaTime * zoomSpeed);
         }
 
         public void PositionCameraOnPlayerStartPosition(Vector3 startPosition, Vector3 mapCenterPosition)
         {
-            cameraHandle.transform.position = startPosition;
-            _newCameraHandlePosition = cameraHandle.transform.position;
+            cameraHandle.position = startPosition;
+            _newCameraHandlePosition = cameraHandle.localPosition;
 
             var defaultCameraDirection = Vector3.forward;
             var cameraDiretionToCenter = mapCenterPosition - startPosition;
@@ -83,7 +83,9 @@ namespace Input
         
         private void HandleDrag(Vector2 dragVector)
         {
-            _newCameraHandlePosition += new Vector3(dragVector.x, 0, dragVector.y) * -_dragPerInput;
+            var alignedDragDirection = cameraHandle.rotation * new Vector3(dragVector.x, 0, dragVector.y);
+            
+            _newCameraHandlePosition += alignedDragDirection * -_dragPerInput;
         }
     }
 }

@@ -1357,7 +1357,7 @@ PrefabInstance:
       objectReference: {fileID: 384568204}
     - target: {fileID: 4624237201810261452, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
       propertyPath: m_Name
-      value: SessionStartup
+      value: MatchStartup
       objectReference: {fileID: 0}
     - target: {fileID: 8192308590578712332, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
       propertyPath: m_LocalPosition.x
