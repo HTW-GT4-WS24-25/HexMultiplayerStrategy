@@ -1,12 +1,14 @@
 using HexSystem;
+using Networking.Host;
 using Player;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Unit
 {
-    public class UnitGroup : MonoBehaviour
+    public class UnitGroup : NetworkBehaviour
     {
         [Header("References")]
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
@@ -16,29 +18,53 @@ namespace Unit
         public UnityEvent OnUnitHighlightEnabled;
         public UnityEvent OnUnitHighlightDisabled;
         
+        public ulong PlayerId { get; private set; }
         public Hexagon Hexagon { get; set; }
-        public int UnitCount { get; private set; }
+        public NetworkVariable<int> UnitCount { get; private set; } = new(0);
         public Color DominanceColor { get; private set; } = Color.yellow;
         public PlayerColor PlayerColor { get; private set; }
 
-        public void Initialize(Hexagon hexagon, int unitCount, PlayerColor playerColor)
+        public override void OnNetworkSpawn()
         {
-            PlaceOnHex(hexagon);
-            Movement.Initialize(Hexagon, playerColor);
-            UpdateUnitCount(unitCount);
+            UnitCount.OnValueChanged += HandleUnitCountChanged;
+        }
+
+        public void Initialize(Hexagon hexagon, int unitCount, ulong playerId)
+        {
+            PlayerId = playerId;
             
-            PlayerColor = playerColor;
-            meshRenderer.material = playerColor.unitMaterial;
+            PlaceOnHex(hexagon);
+            UnitCount.Value = unitCount;
+            
+            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
+            InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
+            Movement.NextHexagon = hexagon;
+        }
+
+        [ClientRpc]
+        private void InitializeClientRpc(ulong playerId, int encodedPlayerColorType)
+        {
+            PlayerId = playerId;
+            
+            PlayerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
+            meshRenderer.material = PlayerColor.unitMaterial;
+            
+            Movement.Initialize(PlayerColor);
+        }
+        
+        private void HandleUnitCountChanged(int previousvalue, int newvalue)
+        {
+            unitCountText.text = newvalue.ToString();
         }
 
         public void AddUnits(int amount)
         {
-            UpdateUnitCount(UnitCount + amount);
+            UnitCount.Value += amount;
         }
 
         public void SubtractUnits(int amount)
         {
-            UpdateUnitCount(UnitCount - amount);
+            UnitCount.Value -= amount;
         }
 
         public void Delete()
@@ -63,12 +89,6 @@ namespace Unit
         {
             meshRenderer.material = PlayerColor.unitMaterial;
             OnUnitHighlightDisabled?.Invoke();
-        }
-        
-        private void UpdateUnitCount(int unitCount)
-        {
-            UnitCount = unitCount;
-            unitCountText.text = unitCount.ToString();
         }
 
     }

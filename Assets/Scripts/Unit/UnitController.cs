@@ -51,7 +51,7 @@ namespace Unit
             
             var newUnitPath = GetPathForSelectedUnitGroup(clickedHex);
             
-            if(_selectedUnitCount < _selectedUnitGroup.UnitCount && _selectedUnitGroup.UnitCount > 1)
+            if(_selectedUnitCount < _selectedUnitGroup.UnitCount.Value && _selectedUnitGroup.UnitCount.Value > 1)
             {
                 var splitUnit = SplitSelectedUnit();
                 var splitUnitFollowsOldOne = !newUnitPath.Contains(_selectedUnitGroup.Movement.PreviousHexagon);
@@ -75,7 +75,7 @@ namespace Unit
             _selectedUnitGroup.SubtractUnits(_selectedUnitCount);
             
             var splitUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
-            splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount, _selectedUnitGroup.PlayerColor);
+            //splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount, _selectedUnitGroup.PlayerColor); TODO: handle after making UnitController a NetworkBehaviour
 
             return splitUnitGroup;
         }

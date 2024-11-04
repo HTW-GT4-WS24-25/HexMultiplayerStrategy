@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
 using Unit;
+using Unity.Netcode;
 using UnityEngine.Serialization;
 
-public class MapCreator : MonoBehaviour
+public class MapCreator : NetworkBehaviour
 {
     [Header("References")] 
     [SerializeField] private Hexagon grassTilePrefab;
@@ -39,11 +41,40 @@ public class MapCreator : MonoBehaviour
         Grid = new HexagonGrid();
     }
 
-    public void CreateRingMap(int rings)
+    public int[] GenerateRandomMapData(int ringAmount)
+    {
+        var hexValues = new List<int>();
+        for (var ring = 0; ring <= ringAmount; ring++)
+        {
+            for (var q = -ring; q <= ring; q++)
+            {
+                for (var r = -ring; r <= ring; r++)
+                {
+                    var s = -q - r;
+                    
+                    if (Math.Abs(q) > ring || Math.Abs(r) > ring || Math.Abs(s) > ring) continue;
+                    if (Math.Abs(q) != ring && Math.Abs(r) != ring && Math.Abs(s) != ring) continue;
+                    
+                    hexValues.Add(Random.Range(0, 1f) <= mountainChance ? (int)HexType.Mountain : (int)HexType.Grass);
+                }
+            }
+        }
+        
+        return hexValues.ToArray();
+    }
+
+    public void BuildMap(int[] mapData, int ringAmount)
+    {
+        BuildMapClientRpc(mapData, ringAmount);
+    }
+
+    [ClientRpc]
+    private void BuildMapClientRpc(int[] mapData, int ringAmount)
     {
         var rotation180 = Quaternion.Euler(0, 180, 0);
+        var dataIterator = 0;
         
-        for (var ring = 0; ring <= rings; ring++)
+        for (var ring = 0; ring <= ringAmount; ring++)
         {
             for (var q = -ring; q <= ring; q++)
             {
@@ -54,17 +85,23 @@ public class MapCreator : MonoBehaviour
                     if (Math.Abs(q) > ring || Math.Abs(r) > ring || Math.Abs(s) > ring) continue;
                     if (Math.Abs(q) != ring && Math.Abs(r) != ring && Math.Abs(s) != ring) continue;
 
-                    var coord = new AxialCoordinate(q, r);
+                    var coord = new AxialCoordinates(q, r);
                     var hexPosition = _qOffset * q + _rOffset * r;
                     
-                    var randomTilePrefab = Random.Range(0f, 1f) <= mountainChance ? mountainTilePrefab : grassTilePrefab;
-                    var randomTileRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
+                    var hexPrefab = mapData[dataIterator++] == (int)HexType.Mountain ? mountainTilePrefab : grassTilePrefab;
+                    var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
-                    var newHex = Instantiate(randomTilePrefab, hexPosition, randomTileRotation, transform);
+                    var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
                     newHex.Initialize(coord);
                     Grid.Add(newHex);
                 }
             }
         }
+    }
+
+    private enum HexType
+    {
+        Grass = 0,
+        Mountain = 1
     }
 }

@@ -5,7 +5,7 @@ namespace Input
 {
     public class NightInputState : InputState
     {
-        private UnitPlacement _unitPlacement;
+        private readonly UnitPlacement _unitPlacement;
 
         public NightInputState(InputReader inputReader, LayerMask selectionLayer, UnitPlacement unitPlacement) : base(
             inputReader, selectionLayer)
@@ -21,7 +21,7 @@ namespace Input
             
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
-                _unitPlacement.TryAddUnitsToHex(clickedHexagon);
+                //_unitPlacement.TryAddUnitsToHex(clickedHexagon); TODO: Replace with Client Request
                 GameEvents.INPUT.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }

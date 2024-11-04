@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Helper
@@ -9,6 +10,17 @@ namespace Helper
         
             textEditor.SelectAll();
             textEditor.Copy();
-        }   
+        }
+
+        public static ClientRpcParams GetClientRpcParamsToSingleTarget(ulong targetId)
+        {
+            return new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { targetId }
+                }
+            };
+        }
     }
 }

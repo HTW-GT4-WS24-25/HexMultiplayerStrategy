@@ -21,6 +21,11 @@ namespace Networking.Host
             return _playersByClientId.Select(keyValuePair => keyValuePair.Value).ToList();
         }
 
+        public PlayerData GetPlayerById(ulong playerId)
+        {
+            return _playersByClientId[playerId];
+        }
+
         public void SetPlayerColorType(ulong playerClientId, PlayerColor.ColorType newColorType)
         {
             _playersByClientId[playerClientId].PlayerColorType = newColorType;

@@ -1,14 +1,15 @@
 ﻿using System;
 using HexSystem;
+using Networking.Host;
 using Player;
 using Unit;
+using Unity.Netcode;
 using UnityEngine;
 
 public class UnitPlacement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UnitGroup unitGroupPrefab;
-    [SerializeField] private PlayerColor playerColor;
 
     private HexagonGrid _hexGrid;
     private int _unitAmount;
@@ -18,7 +19,7 @@ public class UnitPlacement : MonoBehaviour
         _unitAmount = amount;
     }
 
-    public bool TryAddUnitsToHex(Hexagon hex)
+    public bool TryAddUnitsToHex(Hexagon hex, PlayerDataStorage.PlayerData playerData)
     {
         if (hex == null)
             return false;
@@ -31,7 +32,7 @@ public class UnitPlacement : MonoBehaviour
         }
         else
         {
-            PlaceUnitGroupOnHex(hex);
+            PlaceUnitGroupOnHex(hex, playerData.ClientId);
         }
 
         return true;
@@ -42,10 +43,13 @@ public class UnitPlacement : MonoBehaviour
         unitGroup.AddUnits(_unitAmount);
     }
 
-    private void PlaceUnitGroupOnHex(Hexagon hex)
+    private void PlaceUnitGroupOnHex(Hexagon hex, ulong playerId)
     {
         var newUnitGroup = Instantiate(unitGroupPrefab, hex.transform.position, Quaternion.identity);
-        newUnitGroup.Initialize(hex, _unitAmount, playerColor);
+        var newUnitGroupNetworkObject = newUnitGroup.GetComponent<NetworkObject>();
+        newUnitGroupNetworkObject.Spawn();
+        
+        newUnitGroup.Initialize(hex, _unitAmount, playerId);
         
         hex.ChangeUnitGroupOnHexToStationary(newUnitGroup);
     }

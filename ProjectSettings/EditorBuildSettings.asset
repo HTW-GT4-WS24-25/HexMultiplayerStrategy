@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Setup/Lobby.unity
     guid: d41da55517ca2c840a18509bf70f6864
+  - enabled: 1
+    path: Assets/Scenes/FreddieTestScene.unity
+    guid: 017738f53f87fdf46b0ae4c5d3883705
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

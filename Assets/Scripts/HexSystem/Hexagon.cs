@@ -11,13 +11,13 @@ namespace HexSystem
         public bool isTraversable;
         public List<UnitGroup> unitGroups = new();
         
-        public AxialCoordinate Coordinates { get; private set; }
+        public AxialCoordinates Coordinates { get; private set; }
         public UnitGroup StationaryUnitGroup { get; private set; }
         public PlayerColor DominanceColor { get; private set; }
 
-        public void Initialize(AxialCoordinate coordinate)
+        public void Initialize(AxialCoordinates coordinates)
         {
-            Coordinates = coordinate;
+            Coordinates = coordinates;
         }
 
         public void ChangeUnitGroupOnHexToStationary(UnitGroup unitGroup)

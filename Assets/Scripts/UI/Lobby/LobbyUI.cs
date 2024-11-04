@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Helper;
 using Player;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI.Lobby
@@ -16,6 +18,8 @@ namespace UI.Lobby
         [SerializeField] private ColorSelectionUI colorSelectionUI;
         [SerializeField] private Button startGameButton;
 
+        private const string MatchSceneName = "FreddieTestScene";
+            
         private readonly List<LobbyUIPlayerEntry> _lobbyList = new();
         private List<PlayerColor.ColorType> _unavailableColors = new();
         
@@ -48,13 +52,18 @@ namespace UI.Lobby
             }
         }
 
+        public void StartMatch()
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene(MatchSceneName, LoadSceneMode.Single);
+        }
+
         #region Server
 
         [Rpc(SendTo.Server)]
         private void RequestJoinCodeServerRPC(ulong requestClientId)
         {
             FixedString32Bytes joinCode = HostSingleton.Instance.GameManager.JoinCode;
-            var clientRpcParams = CreateClientRpcParamsOneTarget(requestClientId);
+            var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
             
             SetJoinCodeTextClientRPC(joinCode, clientRpcParams);
         }
@@ -63,7 +72,7 @@ namespace UI.Lobby
         private void RequestAllPlayerDataServerRPC(ulong requestClientId)
         {
             var playerList = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
-            var clientRpcParams = CreateClientRpcParamsOneTarget(requestClientId);
+            var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
             
             foreach (var playerData in playerList)
             {
@@ -78,22 +87,11 @@ namespace UI.Lobby
 
             if (!_unavailableColors.Contains(colorType))
             {
-                var clientRpcParams = CreateClientRpcParamsOneTarget(requestClientId);
+                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
                 HostSingleton.Instance.GameManager.PlayerData.SetPlayerColorType(requestClientId, colorType);
                 
                 OnColorSelectionSuccessfulClientRPC(clientRpcParams);
             }
-        }
-
-        private static ClientRpcParams CreateClientRpcParamsOneTarget(ulong clientId)
-        {
-            return new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { clientId }
-                }
-            };
         }
 
         #endregion

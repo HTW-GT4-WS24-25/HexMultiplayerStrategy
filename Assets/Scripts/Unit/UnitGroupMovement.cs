@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Unit
 {
     [RequireComponent(typeof(UnitGroup))]
-    public class UnitGroupMovement : MonoBehaviour
+    public class UnitGroupMovement : NetworkBehaviour
     {
         [Header("References")]
         [SerializeField] private UnitGroupTravelLine groupTravelLine;
@@ -20,7 +21,7 @@ namespace Unit
         public UnitGroup UnitGroup { get; private set; }
         
         public Hexagon PreviousHexagon { get; private set; }
-        public Hexagon NextHexagon { get; private set; }
+        public Hexagon NextHexagon { get; set; }
         
         private Queue<Hexagon> _hexWaypoints = new ();
        
@@ -49,14 +50,16 @@ namespace Unit
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => { _isResting = true; };
         }
 
-        public void Initialize(Hexagon startHexagon, PlayerColor playerColor)
+        public void Initialize(PlayerColor playerColor)
         {
-            NextHexagon = startHexagon;
             groupTravelLine.Initialize(playerColor);
         }
 
         private void Update()
         {
+            if (!IsServer)
+                return;
+            
             if (_isResting)
                 return; 
             
@@ -154,7 +157,7 @@ namespace Unit
                     Debug.Log("Unit should be added to other stationary group");
                     
                     var stationaryGroup = NextHexagon.StationaryUnitGroup;
-                    stationaryGroup.AddUnits(UnitGroup.UnitCount);
+                    stationaryGroup.AddUnits(UnitGroup.UnitCount.Value);
                     UnitGroup.Delete();
                     GameEvents.UNIT.OnUnitGroupDeleted.Invoke(UnitGroup);
                 }

@@ -8,7 +8,7 @@ namespace HexSystem
 {
     public class HexagonGrid
     {
-        private readonly Dictionary<AxialCoordinate, Hexagon> _grid = new();
+        private readonly Dictionary<AxialCoordinates, Hexagon> _grid = new();
 
         public int HexCount => _grid.Count;
 
@@ -36,18 +36,18 @@ namespace HexSystem
 
         public void Add(Hexagon hex) => _grid.Add(hex.Coordinates, hex);
 
-        public Hexagon Get(int q, int r) => Get(new AxialCoordinate(q, r));
+        public Hexagon Get(int q, int r) => Get(new AxialCoordinates(q, r));
 
-        public Hexagon Get(AxialCoordinate coordinate) => _grid.GetValueOrDefault(coordinate);
+        public Hexagon Get(AxialCoordinates coordinates) => _grid.GetValueOrDefault(coordinates);
 
-        public Hexagon GetNeighborOf(AxialCoordinate coord, Direction dir)
+        public Hexagon GetNeighborOf(AxialCoordinates coord, Direction dir)
         {
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
 
-            return _grid[new AxialCoordinate(coord.Q + dir.GetQOffset(), coord.R + dir.GetROffset())];
+            return _grid[new AxialCoordinates(coord.Q + dir.GetQOffset(), coord.R + dir.GetROffset())];
         }
 
-        public HashSet<Hexagon> GetAllNeighborsOf(AxialCoordinate coord)
+        public HashSet<Hexagon> GetAllNeighborsOf(AxialCoordinates coord)
         {
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
 
@@ -61,7 +61,7 @@ namespace HexSystem
             return neighbors;
         }
 
-        public List<Hexagon> GetAllHexagonsInRange(int range, AxialCoordinate coord)
+        public List<Hexagon> GetAllHexagonsInRange(int range, AxialCoordinates coord)
         {
             Debug.Assert(range > 0, "Range cannot be negative or zero.");
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
@@ -84,7 +84,7 @@ namespace HexSystem
             return hexesInRange;
         }
 
-        public List<Hexagon> GetReachableHexagonsInRange(int range, AxialCoordinate srcCoord)
+        public List<Hexagon> GetReachableHexagonsInRange(int range, AxialCoordinates srcCoord)
         {
             Debug.Assert(range > 0, "Range cannot be negative or zero.");
             Debug.Assert(_grid.ContainsKey(srcCoord), "Grid doesn't contain given coordinate.");
@@ -113,7 +113,7 @@ namespace HexSystem
             return reachableHexes;
         }
 
-        public List<Hexagon> GetPathBetween(AxialCoordinate srcCoord, AxialCoordinate destCoord)
+        public List<Hexagon> GetPathBetween(AxialCoordinates srcCoord, AxialCoordinates destCoord)
         {
             Debug.Assert(_grid.ContainsKey(srcCoord), "Grid doesn't contain given source coordinate.");
             Debug.Assert(_grid.ContainsKey(destCoord), "Grid doesn't contain given destination coordinate.");
