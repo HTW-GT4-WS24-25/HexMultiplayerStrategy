@@ -2,14 +2,17 @@
 using Helper;
 using HexSystem;
 using Input;
+using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class MatchStartup : NetworkBehaviour
 {
-    [SerializeField] MapCreator mapCreator;
+    [SerializeField] MapBuilder mapBuilder;
+    [SerializeField] MapGenerationConfig mapGenerationConfig;
     [SerializeField] UnitPlacement unitPlacement;
     [SerializeField] CameraController cameraController;
     
@@ -48,10 +51,11 @@ public class MatchStartup : NetworkBehaviour
     
     private void CreateMap()
     {
-        var rings = 3;
-        
-        var mapData = mapCreator.GenerateRandomMapData(rings);
-        mapCreator.BuildMap(mapData, rings);
+        const int nRings = 3;
+
+        var mapGenerator = new MapDataGenerator(mapGenerationConfig);
+        var mapData = mapGenerator.Generate(nRings);
+        mapBuilder.BuildMapForAll(mapData, nRings);
     }
 
     private void SetPlayerStartPositions()
@@ -62,7 +66,7 @@ public class MatchStartup : NetworkBehaviour
             var playerStartCoordinate = _remainingStartCoordinates[Random.Range(0, _remainingStartCoordinates.Count)];
             _remainingStartCoordinates.Remove(playerStartCoordinate);
 
-            var playerStartHex = mapCreator.Grid.Get(playerStartCoordinate);
+            var playerStartHex = mapBuilder.Grid.Get(playerStartCoordinate);
             unitPlacement.TryAddUnitsToHex(playerStartHex, playerData);
             
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);

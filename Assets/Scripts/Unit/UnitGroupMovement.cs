@@ -40,14 +40,12 @@ namespace Unit
 
         private void OnEnable()
         {
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay += () => { _isResting = false; };
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => { _isResting = true; };
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleSwitchedDayNightCycle;
         }
-        
+
         private void OnDisable()
         {
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay -= () => { _isResting = false; };
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => { _isResting = true; };
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleSwitchedDayNightCycle;
         }
 
         public void Initialize(PlayerColor playerColor)
@@ -67,7 +65,7 @@ namespace Unit
             {
                 Move();
 
-                if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapCreator.TileWidth * 0.5f)
+                if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
                 {
                     Debug.Log("Unit reached next hex");
 
@@ -104,6 +102,11 @@ namespace Unit
                 FetchNextWaypoint();
         
             UpdateTravelLine();
+        }
+        
+        private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
+        {
+            _isResting = newDayNightCycle == DayNightCycle.CycleState.Night;
         }
 
         private void UpdateTravelLine()

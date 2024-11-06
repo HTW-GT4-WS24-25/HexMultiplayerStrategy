@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using HexSystem;
 using UI.NightShop;
 using Unit;
@@ -24,8 +23,7 @@ public static class GameEvents
 
     public class DayNightCycleEvents
     {
-        public UnityAction OnSwitchedToNight;
-        public UnityAction OnSwitchedToDay;
+        public UnityAction<DayNightCycle.CycleState> OnSwitchedCycleState;
     }
 
     public class UnitEvents

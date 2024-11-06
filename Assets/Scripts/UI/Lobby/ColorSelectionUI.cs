@@ -15,9 +15,8 @@ namespace UI.Lobby
         [SerializeField] private Transform colorSelectionFieldContainer;
         [SerializeField] private Button continueButton;
         
-        private Dictionary<PlayerColor.ColorType, ColorSelectionField> _colorSelectionFieldsByType = new();
+        private readonly Dictionary<PlayerColor.ColorType, ColorSelectionField> _colorSelectionFieldsByType = new();
         private PlayerColor.ColorType _selectedPlayerColor = PlayerColor.ColorType.None;
-        private bool _selectionRequestSent;
 
         private void OnEnable()
         {
@@ -73,9 +72,6 @@ namespace UI.Lobby
 
         public void SubmitColorSelection()
         {
-            if(_selectionRequestSent)
-                return;
-            
             lobbyUI.SubmitPlayerColorSelection(_selectedPlayerColor);
         }
         

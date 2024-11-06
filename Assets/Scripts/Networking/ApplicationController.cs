@@ -1,8 +1,6 @@
-using System;
-using System.Threading.Tasks;
 using Networking.Client;
+using Networking.Host;
 using Player;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Networking
@@ -13,12 +11,12 @@ namespace Networking
         [SerializeField] private ClientSingleton clientPrefab;
         [SerializeField] private PlayerColor[] playerColors;
 
-        private async void Start()
+        private void Start()
         {
             DontDestroyOnLoad(gameObject);
             SetupPlayerColorsForGame();
             
-            await LaunchClient();
+            LaunchClient();
         }
 
         private void SetupPlayerColorsForGame()
@@ -29,10 +27,10 @@ namespace Networking
             }
         }
 
-        private async Task LaunchClient()
+        private void LaunchClient()
         {
             var client = Instantiate(clientPrefab);
-            var authenticated = await client.CreateClient();
+            var authenticated = client.CreateClient().GetAwaiter().GetResult();
 
             var host = Instantiate(hostPrefab);
             host.CreateHost();

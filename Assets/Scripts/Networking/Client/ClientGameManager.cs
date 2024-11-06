@@ -37,7 +37,7 @@ namespace Networking.Client
             return false;
         }
 
-        public void GoToMenu()
+        public void GoToMenu() 
         {
             SceneManager.LoadScene(MenuSceneName);
         }

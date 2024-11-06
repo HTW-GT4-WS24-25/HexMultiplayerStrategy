@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Helper;
+using Networking.Host;
 using Player;
 using Unity.Collections;
 using Unity.Netcode;
@@ -21,7 +22,7 @@ namespace UI.Lobby
         private const string MatchSceneName = "FreddieTestScene";
             
         private readonly List<LobbyUIPlayerEntry> _lobbyList = new();
-        private List<PlayerColor.ColorType> _unavailableColors = new();
+        private readonly List<PlayerColor.ColorType> _unavailableColors = new();
         
         public override void OnNetworkSpawn()
         {
@@ -38,7 +39,7 @@ namespace UI.Lobby
 
             if (IsServer)
             {
-                GameEvents.NETWORK_SERVER.OnPlayerConnected += (pId, pName) => AddPlayerDataToLobbyListClientRPC(pId, pName, (int)PlayerColor.ColorType.None);
+                GameEvents.NETWORK_SERVER.OnPlayerConnected += HandlePlayerConnected;
                 GameEvents.NETWORK_SERVER.OnPlayerColorChanged += HandlePlayerColorChangedClientRPC;
             }
         }
@@ -47,12 +48,12 @@ namespace UI.Lobby
         {
             if (IsServer)
             {
-                GameEvents.NETWORK_SERVER.OnPlayerConnected -= (pId, pName) => AddPlayerDataToLobbyListClientRPC(pId, pName, (int)PlayerColor.ColorType.None);
+                GameEvents.NETWORK_SERVER.OnPlayerConnected -= HandlePlayerConnected;
                 GameEvents.NETWORK_SERVER.OnPlayerColorChanged -= HandlePlayerColorChangedClientRPC;
             }
         }
 
-        public void StartMatch()
+        public static void StartMatch()
         {
             NetworkManager.Singleton.SceneManager.LoadScene(MatchSceneName, LoadSceneMode.Single);
         }
@@ -94,6 +95,11 @@ namespace UI.Lobby
             }
         }
 
+        private void HandlePlayerConnected(ulong clientId, FixedString32Bytes playerName)
+        {
+            AddPlayerDataToLobbyListClientRPC(clientId, playerName, (int)PlayerColor.ColorType.None);
+        }
+
         #endregion
 
         #region Client
@@ -103,11 +109,11 @@ namespace UI.Lobby
         {
             joinCodeText.SetJoinCode(joinCode.Value);
         }
-        
+
         [ClientRpc]
         private void AddPlayerDataToLobbyListClientRPC(ulong playerClientId, FixedString32Bytes playerName, int encodedColorType, ClientRpcParams clientRpcParams = default)
         {
-            if (_lobbyList.Any(entry => entry.ClientId == playerClientId))
+            if (_lobbyList.Exists(entry => entry.ClientId == playerClientId))
                 return;
             
             var colorType = PlayerColor.IntToColorType(encodedColorType);
@@ -128,11 +134,11 @@ namespace UI.Lobby
             
             var playerColor = PlayerColor.GetFromColorType(colorType);
             
-            var playerEntryToChange = _lobbyList.FirstOrDefault(entry => entry.ClientId == playerClientId);
+            var playerEntryToChange = _lobbyList.Find(entry => entry.ClientId == playerClientId);
             playerEntryToChange?.UpdatePlayerColor(playerColor.baseColor);
 
             if (IsHost)
-                startGameButton.interactable = _lobbyList.Count > 1 && _lobbyList.All(player => player.ReadyToPlay);
+                startGameButton.interactable = _lobbyList.Count > 1 && _lobbyList.TrueForAll(player => player.ReadyToPlay);
         }
 
         [ClientRpc]

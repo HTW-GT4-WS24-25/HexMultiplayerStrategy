@@ -34,17 +34,17 @@ public class DayNightCycle : MonoBehaviour
     {
         Debug.Log("SwitchToDayTime");
         _cycleState = CycleState.Day;
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay?.Invoke();
+        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(_cycleState);
     }
 
     private void SwitchToNightTime()
     {
         Debug.Log("SwitchToNightTime");
         _cycleState = CycleState.Night;
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight?.Invoke();
+        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(_cycleState);
     }
 
-    private enum CycleState
+    public enum CycleState
     {
         Day,
         Night

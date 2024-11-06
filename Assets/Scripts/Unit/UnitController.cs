@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Unit
 {
     public class UnitController : MonoBehaviour
     {
-        [SerializeField] private MapCreator mapCreator;
+        [FormerlySerializedAs("mapCreator")] [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private UnitGroup unitGroupPrefab;
     
         private UnitGroup _selectedUnitGroup;
@@ -17,19 +18,25 @@ namespace Unit
         private void OnEnable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
             GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
             GameEvents.UNIT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
         }
-        
+
         private void OnDisable()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
             GameEvents.UNIT.OnUnitGroupDeselected -= DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
             GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
             GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
+        }
+        
+        private static void HandleDayNightSwitchState(DayNightCycle.CycleState newCycleState)
+        {
+            if (newCycleState == DayNightCycle.CycleState.Night)
+                GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
         }
 
         private void HandleHexClick(Hexagon clickedHex)
@@ -85,7 +92,7 @@ namespace Unit
             var currentUnitCoordinates = _selectedUnitGroup.Movement.NextHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
                 
-            return mapCreator.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+            return mapBuilder.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
         }
         
         private void SetSelectedUnitFromHex(Hexagon clickedHex)

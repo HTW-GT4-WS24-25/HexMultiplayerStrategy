@@ -1,36 +1,34 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Networking.Host;
 using UnityEngine;
 
-public class HostSingleton : MonoBehaviour
+namespace Networking.Host
 {
-    public static HostSingleton Instance;
-
-    public HostGameManager GameManager { get; private set; }
-
-    private void Awake()
+    public class HostSingleton : MonoBehaviour
     {
-        if(Instance == null)
+        public static HostSingleton Instance;
+
+        public HostGameManager GameManager { get; private set; }
+
+        private void Awake()
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if(Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        else
+
+        public void CreateHost()
         {
-            Destroy(gameObject);
+            GameManager = new HostGameManager();
         }
-    }
 
-    public void CreateHost()
-    {
-        GameManager = new HostGameManager();
-    }
-
-    private void OnDestroy()
-    {
-        GameManager?.Dispose();
+        private void OnDestroy()
+        {
+            GameManager?.Dispose();
+        }
     }
 }

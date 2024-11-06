@@ -37,6 +37,8 @@ namespace HexSystem
 
             Debug.Assert(Q + R + S == 0);
         }
+
+        public static AxialCoordinates Zero => new(0, 0);
         
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -48,9 +50,9 @@ namespace HexSystem
         public AxialCoordinates this[Direction dir] => GetNeighbors()[(int)dir];
 
         public override bool Equals(object obj) => obj is AxialCoordinates coordinate && Equals(coordinate);
+        public bool Equals(AxialCoordinates other) => Q == other.Q && R == other.R;
         public override int GetHashCode() => HashCode.Combine(Q, R);
         public override string ToString() => $"({Q}, {R})";
-        public bool Equals(AxialCoordinates other) => Q == other.Q && R == other.R;
 
         public Direction GetDirectionToNeighbor(AxialCoordinates coord)
         {

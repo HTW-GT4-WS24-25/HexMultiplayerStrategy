@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Input
@@ -24,24 +25,27 @@ namespace Input
         {
             SubscribeInputStateToInputEvents(_currentInputState);
 
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay += () => SwitchToState(_dayInputState);
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += () => SwitchToState(_nightInputState);
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += OnSwitchedDayNightState;
         }
-    
+
         private void OnDisable()
         {
             UnsubscribeInputStateToInputEvents(_currentInputState);
             
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay -= () => SwitchToState(_dayInputState);
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight -= () => SwitchToState(_nightInputState);
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= OnSwitchedDayNightState;
         }
-
-        private void SwitchToState(InputState newState)
+        
+        private void OnSwitchedDayNightState(DayNightCycle.CycleState newCycleState)
         {
             UnsubscribeInputStateToInputEvents(_currentInputState);
-            
-            _currentInputState = newState;
-            
+
+            _currentInputState = newCycleState switch
+            {
+                DayNightCycle.CycleState.Day => _dayInputState,
+                DayNightCycle.CycleState.Night => _nightInputState,
+                _ => throw new ArgumentException("Invalid DayNightCycle state")
+            };
+
             SubscribeInputStateToInputEvents(_currentInputState);
         }
 

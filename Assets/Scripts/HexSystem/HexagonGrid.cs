@@ -40,6 +40,11 @@ namespace HexSystem
 
         public Hexagon Get(AxialCoordinates coordinates) => _grid.GetValueOrDefault(coordinates);
 
+        public void Clear()
+        {
+            _grid.Clear();
+        }
+
         public Hexagon GetNeighborOf(AxialCoordinates coord, Direction dir)
         {
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
@@ -142,6 +147,22 @@ namespace HexSystem
             }
 
             return ExtractPathFromHexToPredecessorMatching(srcHex, destHex, hexToPredecessor);
+        }
+
+        public static IEnumerable<AxialCoordinates> GetHexRingsAroundCoordinates(AxialCoordinates coordinates,
+            int nRings)
+        {
+            for (var q = -nRings; q <= nRings; q++)
+            {
+                for (var r = -nRings; r <= nRings; r++)
+                {
+                    var s = -q - r;
+                
+                    if (Math.Abs(q) > nRings || Math.Abs(r) > nRings || Math.Abs(s) > nRings) continue;
+                    
+                    yield return new AxialCoordinates(coordinates.Q + q, coordinates.R + r);
+                }
+            }
         }
     }
 }

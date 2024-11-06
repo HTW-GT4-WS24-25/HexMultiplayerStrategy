@@ -14,8 +14,7 @@ public class NightShopManager : MonoBehaviour
     
     private void Start()
     {
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToDay += CloseNightShop;
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedToNight += OpenNightShop;
+        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitched;
         
         GameEvents.NIGHT_SHOP.OnCardSelected += HandleSelectedCard;
         GameEvents.NIGHT_SHOP.OnCardDeselected += HandleDeselectedCard;
@@ -25,15 +24,20 @@ public class NightShopManager : MonoBehaviour
         nightShopUI.Initialize(cards);
     }
 
-    void OpenNightShop()
+    private void HandleDayNightSwitched(DayNightCycle.CycleState newDayNightCycle)
     {
-        nightShopUI.transform.gameObject.SetActive(true);
-    }
-
-    void CloseNightShop()
-    {
-        nightShopUI.transform.gameObject.SetActive(false);
-        GameEvents.NIGHT_SHOP.OnCardDeselected();
+        switch (newDayNightCycle)
+        {
+            case DayNightCycle.CycleState.Day:
+                nightShopUI.transform.gameObject.SetActive(false);
+                GameEvents.NIGHT_SHOP.OnCardDeselected();
+                break;
+            case DayNightCycle.CycleState.Night:
+                nightShopUI.transform.gameObject.SetActive(true);
+                break;
+            default:
+                throw new ArgumentException("Invalid DayNightCycle state");
+        }
     }
 
     void HandleSelectedCard(Card card)
