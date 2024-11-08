@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HexSystem;
 using Networking.Host;
 using Player;
@@ -17,29 +18,70 @@ namespace Unit
 
         public UnityEvent OnUnitHighlightEnabled;
         public UnityEvent OnUnitHighlightDisabled;
+
+        public static Dictionary<ulong, UnitGroup> UnitGroupsInGame = new();
         
         public ulong PlayerId { get; private set; }
-        public Hexagon Hexagon { get; set; }
+        public ServerHexagon ServerHexagon { get; set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
-        public Color DominanceColor { get; private set; } = Color.yellow;
         public PlayerColor PlayerColor { get; private set; }
 
         public override void OnNetworkSpawn()
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
+            
+            UnitGroupsInGame.Add(NetworkObjectId, this);
         }
 
-        public void Initialize(Hexagon hexagon, int unitCount, ulong playerId)
+        public override void OnNetworkDespawn()
+        {
+            UnitGroupsInGame.Remove(NetworkObjectId);
+        }
+
+        #region Server
+
+        public void Initialize(ServerHexagon serverHexagon, int unitCount, ulong playerId)
         {
             PlayerId = playerId;
             
-            PlaceOnHex(hexagon);
+            PlaceOnHex(serverHexagon);
             UnitCount.Value = unitCount;
             
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
             InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
-            Movement.NextHexagon = hexagon;
+            Movement.NextHexagon = serverHexagon;
         }
+        
+        public void AddUnits(int amount)
+        {
+            UnitCount.Value += amount;
+        }
+
+        public void SubtractUnits(int amount)
+        {
+            UnitCount.Value -= amount;
+        }
+        
+        public void Delete()
+        {
+            ServerHexagon.UnitGroups.Remove(this);
+            Destroy(gameObject);
+        }
+        
+        public void PlaceOnHex(ServerHexagon serverHexagon)
+        {
+            ServerHexagon = serverHexagon;
+            serverHexagon.UnitGroups.Add(this);
+        }
+
+        public void SetAsSelectedForControllingPlayer()
+        {
+            SetAsSelectedClientRpc();
+        }
+
+        #endregion
+
+        #region Client
 
         [ClientRpc]
         private void InitializeClientRpc(ulong playerId, int encodedPlayerColorType)
@@ -52,33 +94,20 @@ namespace Unit
             Movement.Initialize(PlayerColor);
         }
         
+        [ClientRpc]
+        private void SetAsSelectedClientRpc()
+        {
+            if(NetworkManager.Singleton.LocalClientId != PlayerId)
+                return;
+            
+            GameEvents.UNIT.OnUnitGroupSelected?.Invoke(this);
+        }
+        
         private void HandleUnitCountChanged(int previousvalue, int newvalue)
         {
             unitCountText.text = newvalue.ToString();
         }
-
-        public void AddUnits(int amount)
-        {
-            UnitCount.Value += amount;
-        }
-
-        public void SubtractUnits(int amount)
-        {
-            UnitCount.Value -= amount;
-        }
-
-        public void Delete()
-        {
-            Hexagon.unitGroups.Remove(this);
-            Destroy(gameObject);
-        }
         
-        public void PlaceOnHex(Hexagon hexagon)
-        {
-            Hexagon = hexagon;
-            hexagon.unitGroups.Add(this);
-        }
-
         public void EnableHighlight()
         {
             meshRenderer.material = PlayerColor.highlightedUnitMaterial;
@@ -90,6 +119,7 @@ namespace Unit
             meshRenderer.material = PlayerColor.unitMaterial;
             OnUnitHighlightDisabled?.Invoke();
         }
-
+        
+        #endregion
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using Player;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Unit
 {
@@ -20,10 +18,10 @@ namespace Unit
     
         public UnitGroup UnitGroup { get; private set; }
         
-        public Hexagon PreviousHexagon { get; private set; }
-        public Hexagon NextHexagon { get; set; }
+        public ServerHexagon PreviousHexagon { get; private set; }
+        public ServerHexagon NextHexagon { get; set; }
         
-        private Queue<Hexagon> _hexWaypoints = new ();
+        private Queue<ServerHexagon> _hexWaypoints = new ();
        
         private float _distanceToNextHexagon;
         private float _travelProgress;
@@ -69,12 +67,13 @@ namespace Unit
                 {
                     Debug.Log("Unit reached next hex");
 
-                    PreviousHexagon.unitGroups.Remove(UnitGroup);
+                    PreviousHexagon.UnitGroups.Remove(UnitGroup);
                     
                     UnitGroup.PlaceOnHex(NextHexagon);
                     _assignedToNextHexagon = true;
-                    
-                    NextHexagon.UpdateDominance(UnitGroup.PlayerColor);
+
+                    GameEvents.NETWORK_SERVER.OnHexChangedController(NextHexagon.ClientHexagon.Coordinates,
+                        UnitGroup.PlayerId);
                 }
             
                 if (_travelProgress >= 1f)
@@ -90,13 +89,13 @@ namespace Unit
             }
         }
 
-        public void SetAllWaypoints(List<Hexagon> newWaypoints)
+        public void SetAllWaypoints(List<ServerHexagon> newWaypoints)
         {
-            if(_hexWaypoints.Count == 0 && newWaypoints.Count > 0 && UnitGroup.Hexagon.StationaryUnitGroup == UnitGroup)
-                UnitGroup.Hexagon.RemoveStationaryUnitGroup();
+            if(_hexWaypoints.Count == 0 && newWaypoints.Count > 0 && UnitGroup.ServerHexagon.StationaryUnitGroup == UnitGroup)
+                UnitGroup.ServerHexagon.RemoveStationaryUnitGroup();
                 
             _hexWaypoints.Clear();
-            _hexWaypoints = new Queue<Hexagon>(newWaypoints);
+            _hexWaypoints = new Queue<ServerHexagon>(newWaypoints);
         
             if(PreviousHexagon != null && _hexWaypoints.Count > 0 && _hexWaypoints.Peek().Equals(PreviousHexagon))
                 FetchNextWaypoint();

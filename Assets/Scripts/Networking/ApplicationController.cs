@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Networking.Client;
 using Networking.Host;
 using Player;
@@ -27,10 +28,10 @@ namespace Networking
             }
         }
 
-        private void LaunchClient()
+        private async Task LaunchClient()
         {
             var client = Instantiate(clientPrefab);
-            var authenticated = client.CreateClient().GetAwaiter().GetResult();
+            var authenticated = await client.CreateClient();
 
             var host = Instantiate(hostPrefab);
             host.CreateHost();

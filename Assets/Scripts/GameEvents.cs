@@ -15,8 +15,8 @@ public static class GameEvents
 
     public class InputEvents
     {
-        public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
-        public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
+        public UnityAction<ClientHexagon> OnHexSelectedForUnitSelectionOrMovement;
+        public UnityAction<ClientHexagon> OnHexSelectedDuringNightShop;
         public UnityAction<float> OnZoomInput;
         public UnityAction<Vector2> OnDragInput;
     }
@@ -47,5 +47,6 @@ public static class GameEvents
     {
         public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
         public UnityAction<ulong, int> OnPlayerColorChanged;
+        public UnityAction<AxialCoordinates, ulong> OnHexChangedController;
     }
 }

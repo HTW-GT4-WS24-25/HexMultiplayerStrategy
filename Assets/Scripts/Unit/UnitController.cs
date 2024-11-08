@@ -1,93 +1,79 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Helper;
 using HexSystem;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Unit
 {
-    public class UnitController : MonoBehaviour
+    public class UnitController : NetworkBehaviour
     {
-        [FormerlySerializedAs("mapCreator")] [SerializeField] private MapBuilder mapBuilder;
+        [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private UnitGroup unitGroupPrefab;
     
         private UnitGroup _selectedUnitGroup;
         private int _selectedUnitCount = 1;
 
-        private void OnEnable()
+        public override void OnNetworkSpawn()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
             GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
+            GameEvents.UNIT.OnUnitGroupSelected += SetSelectedUnit;
             GameEvents.UNIT.OnUnitGroupDeselected += DeselectUnit;
             GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
         }
 
-        private void OnDisable()
+        public override void OnNetworkDespawn()
         {
             GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
             GameEvents.UNIT.OnUnitGroupDeselected -= DeselectUnit;
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
             GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
             GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
+            GameEvents.UNIT.OnUnitGroupSelected -= SetSelectedUnit;
+        }
+
+        #region Server
+        
+        [Rpc(SendTo.Server)]
+        private void RequestUnitSelectionFromHexRpc(AxialCoordinates coordinates)
+        {
+            var requestedClickHex = mapBuilder.Grid.Get(coordinates);
+            var clickedHex = requestedClickHex.GetComponent<ServerHexagon>();
+            
+            clickedHex.UnitGroups.RemoveAll(unitGroup => unitGroup == null); //Unfortunately necessary, because sometimes deleted Groups are still referenced from the hex
+            var unitGroupToSelect = clickedHex.UnitGroups.FirstOrDefault(); // Make it only select controlled units
+            
+            if(unitGroupToSelect != null)
+                unitGroupToSelect.SetAsSelectedForControllingPlayer();
         }
         
-        private static void HandleDayNightSwitchState(DayNightCycle.CycleState newCycleState)
+        [Rpc(SendTo.Server)]
+        private void RequestMoveCommandRpc(AxialCoordinates coordinates)
         {
-            if (newCycleState == DayNightCycle.CycleState.Night)
-                GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
-        }
-
-        private void HandleHexClick(Hexagon clickedHex)
-        {
-            if (_selectedUnitGroup != null)
-            {
-                ProcessMoveCommand(clickedHex);
-            }
-            else
-            {
-                SetSelectedUnitFromHex(clickedHex);
-            }
-        }
-
-        private void ProcessMoveCommand(Hexagon clickedHex)
-        {
-            if (!CanMoveOnHex(clickedHex))
-                return;
-            
-            var newUnitPath = GetPathForSelectedUnitGroup(clickedHex);
+            var requestedDestination = mapBuilder.Grid.Get(coordinates);
+            var hexagons = GetPathForSelectedUnitGroup(requestedDestination);
             
             if(_selectedUnitCount < _selectedUnitGroup.UnitCount.Value && _selectedUnitGroup.UnitCount.Value > 1)
             {
                 var splitUnit = SplitSelectedUnit();
-                var splitUnitFollowsOldOne = !newUnitPath.Contains(_selectedUnitGroup.Movement.PreviousHexagon);
-
-                SetSelectedUnit(splitUnit);
+                var splitUnitFollowsOldOne = !hexagons.Contains(_selectedUnitGroup.Movement.PreviousHexagon.ClientHexagon);
+                
+                splitUnit.SetAsSelectedForControllingPlayer();
                 
                 if(splitUnitFollowsOldOne)
-                    newUnitPath.Insert(0, _selectedUnitGroup.Movement.NextHexagon);
+                    hexagons.Insert(0, _selectedUnitGroup.Movement.NextHexagon.ClientHexagon);
             }
-            
+
+            var newUnitPath = hexagons.Select(hex => hex.GetComponent<ServerHexagon>()).ToList();
             _selectedUnitGroup.Movement.SetAllWaypoints(newUnitPath);
         }
-        
-        private bool CanMoveOnHex(Hexagon hexagon)
-        {
-            return hexagon.isTraversable;
-        }
 
-        private UnitGroup SplitSelectedUnit()
-        {
-            _selectedUnitGroup.SubtractUnits(_selectedUnitCount);
-            
-            var splitUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
-            //splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount, _selectedUnitGroup.PlayerColor); TODO: handle after making UnitController a NetworkBehaviour
-
-            return splitUnitGroup;
-        }
-        
-        private List<Hexagon> GetPathForSelectedUnitGroup(Hexagon clickedHex)
+        private List<ClientHexagon> GetPathForSelectedUnitGroup(ClientHexagon clickedHex)
         {
             var currentUnitCoordinates = _selectedUnitGroup.Movement.NextHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
@@ -95,13 +81,38 @@ namespace Unit
             return mapBuilder.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
         }
         
-        private void SetSelectedUnitFromHex(Hexagon clickedHex)
+        private UnitGroup SplitSelectedUnit()
         {
-            clickedHex.unitGroups.RemoveAll(unitGroup => unitGroup == null); //Unfortunately necessary, because sometimes deleted Groups are still referenced from the hex
-            var unitGroupToSelect = clickedHex.unitGroups.FirstOrDefault();
-            SetSelectedUnit(unitGroupToSelect);
+            _selectedUnitGroup.SubtractUnits(_selectedUnitCount);
+            
+            var splitUnitGroup = Instantiate(unitGroupPrefab, _selectedUnitGroup.transform.position, Quaternion.identity);
+            splitUnitGroup.Initialize(_selectedUnitGroup.Movement.NextHexagon, _selectedUnitCount, _selectedUnitGroup.PlayerId);
+
+            return splitUnitGroup;
+        }
+        
+        #endregion
+
+        #region Client
+
+        private static void HandleDayNightSwitchState(DayNightCycle.CycleState newCycleState)
+        {
+            if (newCycleState == DayNightCycle.CycleState.Night)
+                GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
         }
 
+        private void HandleHexClick(ClientHexagon clickedHex)
+        {
+            if (_selectedUnitGroup != null && clickedHex.isTraversable)
+            {
+                RequestMoveCommandRpc(clickedHex.Coordinates);
+            }
+            else
+            {
+                RequestUnitSelectionFromHexRpc(clickedHex.Coordinates);
+            }
+        }
+        
         private void SetSelectedUnit(UnitGroup unitGroupToSelect)
         {
             if (_selectedUnitGroup != null) _selectedUnitGroup.DisableHighlight();
@@ -109,7 +120,6 @@ namespace Unit
             _selectedUnitGroup = unitGroupToSelect;
             
             _selectedUnitGroup.EnableHighlight();
-            GameEvents.UNIT.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
 
         private void DeselectUnit()
@@ -122,12 +132,15 @@ namespace Unit
         {
             _selectedUnitCount = count;
         }
-
+        
         private void DeselectDeletedUnit(UnitGroup unitGroup)
         {
-            if (_selectedUnitGroup != unitGroup) return;
+            if (_selectedUnitGroup != unitGroup) 
+                return;
             
             GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
         }
+
+        #endregion
     }
 }

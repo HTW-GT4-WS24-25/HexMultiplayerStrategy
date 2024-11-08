@@ -47,7 +47,6 @@ namespace Input
             {
                 var dragChangeToLastInput = inputPosition - MainPointerPosition;
                 OnMainPointerDragged?.Invoke(dragChangeToLastInput);
-                Debug.Log($"Is Dragging: {dragChangeToLastInput}");
             }
             else if (_mainPointerIsDown)
             {
@@ -55,7 +54,6 @@ namespace Input
                 if (dragVector.magnitude > maxDragDistanceForClick)
                 {
                     OnMainPointerDragged?.Invoke(dragVector);
-                    Debug.Log($"Started Dragging!");
                     _isDragging = true;
                 }
             }

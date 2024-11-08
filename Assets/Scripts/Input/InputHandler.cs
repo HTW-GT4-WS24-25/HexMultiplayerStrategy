@@ -18,7 +18,7 @@ namespace Input
             _dayInputState = new DayInputState(inputReader, selectionLayer);
             _nightInputState = new NightInputState(inputReader, selectionLayer, unitPlacement);
             
-            _currentInputState = _nightInputState;
+            _currentInputState = _dayInputState;
         }
 
         private void OnEnable()

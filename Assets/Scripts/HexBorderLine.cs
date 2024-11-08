@@ -1,7 +1,6 @@
 using System.Linq;
 using Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(LineRenderer))]
 public class HexBorderLine : MonoBehaviour
@@ -10,9 +9,8 @@ public class HexBorderLine : MonoBehaviour
     [SerializeField] private float highlightWidthMultiplier = 0.05f;
     
     private LineRenderer _lineRenderer;
-
-
-    private void Start()
+    
+    public void Initialize()
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = 6;

@@ -9,15 +9,13 @@ using static MapDataGenerator;
 public class MapBuilder : NetworkBehaviour
 {
     [Header("References")] 
-    [SerializeField] private Hexagon grassTilePrefab;
-    [SerializeField] private Hexagon mountainTilePrefab;
+    [SerializeField] private ClientHexagon grassTilePrefab;
+    [SerializeField] private ClientHexagon mountainTilePrefab;
     
     public HexagonGrid Grid;
 
     [Header("Settings")]
     [SerializeField] private float spacing;
-    [Range(0f, 1f)]
-    [SerializeField] private float mountainChance;
 
     public const float TileWidth = 1;
     
@@ -59,7 +57,7 @@ public class MapBuilder : NetworkBehaviour
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
             var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
-            newHex.Initialize(coordinates);
+            newHex.Initialize(coordinates, IsServer);
             Grid.Add(newHex);
         }
     }

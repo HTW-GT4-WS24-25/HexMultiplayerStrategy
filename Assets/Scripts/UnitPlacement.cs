@@ -19,7 +19,7 @@ public class UnitPlacement : MonoBehaviour
         _unitAmount = amount;
     }
 
-    public bool TryAddUnitsToHex(Hexagon hex, PlayerDataStorage.PlayerData playerData)
+    public bool TryAddUnitsToHex(ServerHexagon hex, PlayerDataStorage.PlayerData playerData)
     {
         if (hex == null)
             return false;
@@ -43,7 +43,7 @@ public class UnitPlacement : MonoBehaviour
         unitGroup.AddUnits(_unitAmount);
     }
 
-    private void PlaceUnitGroupOnHex(Hexagon hex, ulong playerId)
+    private void PlaceUnitGroupOnHex(ServerHexagon hex, ulong playerId)
     {
         var newUnitGroup = Instantiate(unitGroupPrefab, hex.transform.position, Quaternion.identity);
         var newUnitGroupNetworkObject = newUnitGroup.GetComponent<NetworkObject>();

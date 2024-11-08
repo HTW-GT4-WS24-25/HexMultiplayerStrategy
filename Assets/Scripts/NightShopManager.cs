@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HexSystem;
 using UI.NightShop;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class NightShopManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class NightShopManager : MonoBehaviour
     [SerializeField] private List<Card> cards;
     
     [SerializeField] private Card selectedCard;
-    [SerializeField] private Hexagon selectedHexagon;
+    [FormerlySerializedAs("selectedHexagon")] [SerializeField] private ClientHexagon selectedClientHexagon;
     
     private void Start()
     {
@@ -19,7 +20,7 @@ public class NightShopManager : MonoBehaviour
         GameEvents.NIGHT_SHOP.OnCardSelected += HandleSelectedCard;
         GameEvents.NIGHT_SHOP.OnCardDeselected += HandleDeselectedCard;
 
-        GameEvents.INPUT.OnHexSelectedDuringNightShop += hexagon => { selectedHexagon = hexagon; };
+        GameEvents.INPUT.OnHexSelectedDuringNightShop += hexagon => { selectedClientHexagon = hexagon; };
         
         nightShopUI.Initialize(cards);
     }
