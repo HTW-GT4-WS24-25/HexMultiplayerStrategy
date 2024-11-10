@@ -11,7 +11,7 @@ public class NightShopManager : MonoBehaviour
     [SerializeField] private List<Card> cards;
     
     [SerializeField] private Card selectedCard;
-    [FormerlySerializedAs("selectedHexagon")] [SerializeField] private ClientHexagon selectedClientHexagon;
+    [SerializeField] private Hexagon selectedHexagon;
     
     private void Start()
     {
@@ -20,7 +20,7 @@ public class NightShopManager : MonoBehaviour
         GameEvents.NIGHT_SHOP.OnCardSelected += HandleSelectedCard;
         GameEvents.NIGHT_SHOP.OnCardDeselected += HandleDeselectedCard;
 
-        GameEvents.INPUT.OnHexSelectedDuringNightShop += hexagon => { selectedClientHexagon = hexagon; };
+        GameEvents.INPUT.OnHexSelectedDuringNightShop += hexagon => { selectedHexagon = hexagon; };
         
         nightShopUI.Initialize(cards);
     }

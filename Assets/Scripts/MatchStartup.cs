@@ -6,7 +6,6 @@ using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class MatchStartup : NetworkBehaviour
@@ -14,25 +13,30 @@ public class MatchStartup : NetworkBehaviour
     [Header("References")]
     [SerializeField] private MapBuilder mapBuilder;
     [SerializeField] private MapGenerationConfig mapGenerationConfig;
-    [SerializeField] private HexControlSystem hexControlSystem;
     [SerializeField] private UnitPlacement unitPlacement;
     [SerializeField] private CameraController cameraController;
+    [SerializeField] private GridData hexGridData;
+    [SerializeField] private HexControlAndCombatObserver hexControlAndCombatObserver;
     
     [Header("Settings")]
     [Tooltip("X will be set to Q, Y will be set to R")]
     [SerializeField] private Vector2Int[] startCoordinates;
-    [FormerlySerializedAs("mapRings")] [SerializeField] private int mapRingAmount;
+    [SerializeField] private int numberOfMapRings;
 
     private List<AxialCoordinates> _remainingStartCoordinates;
     private int _playersInMatch;
-    private int _connectedPlayersAmount;
-    
+    private int _numberOfConnectedPlayers;
+
+    #region Server
+
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
             return;
         
-        _connectedPlayersAmount = NetworkManager.Singleton.ConnectedClients.Count;
+        hexControlAndCombatObserver.InitializeOnServer();
+        
+        _numberOfConnectedPlayers = NetworkManager.Singleton.ConnectedClients.Count;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += HandleClientFinishedLoadingScene;
         
         _remainingStartCoordinates = new List<AxialCoordinates>();
@@ -44,9 +48,9 @@ public class MatchStartup : NetworkBehaviour
 
     private void HandleClientFinishedLoadingScene(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
-        Debug.Log($"Scene Loaded for Player{_playersInMatch}/{_connectedPlayersAmount} {clientId} at time: {Time.time}");
+        Debug.Log($"Scene Loaded for Player{_playersInMatch}/{_numberOfConnectedPlayers} {clientId} at time: {Time.time}");
 
-        if (++_playersInMatch == HostSingleton.Instance.GameManager.PlayerData.GetPlayerList().Count)
+        if (++_playersInMatch == _numberOfConnectedPlayers)
         {
             CreateMap();
             SetPlayerStartPositions();
@@ -56,33 +60,46 @@ public class MatchStartup : NetworkBehaviour
     private void CreateMap()
     {
         var mapGenerator = new MapDataGenerator(mapGenerationConfig);
-        var mapData = mapGenerator.Generate(mapRingAmount);
-        mapBuilder.BuildMapForAll(mapData, mapRingAmount);
+        var mapData = mapGenerator.Generate(numberOfMapRings);
+        mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
+        
+        SetupHexGridDataClientRpc();
     }
 
     private void SetPlayerStartPositions()
     {
+        unitPlacement.Initialize(mapBuilder.Grid, hexGridData);
+        
         var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
-        hexControlSystem.Initialize();
         foreach (var playerData in players)
         {
             var playerStartCoordinate = _remainingStartCoordinates[Random.Range(0, _remainingStartCoordinates.Count)];
             _remainingStartCoordinates.Remove(playerStartCoordinate);
-
-            var playerStartClientHex = mapBuilder.Grid.Get(playerStartCoordinate);
-            var playerStartServerHex = playerStartClientHex.GetComponent<ServerHexagon>();
+            var playerStartHex = mapBuilder.Grid.Get(playerStartCoordinate);
             
-            GameEvents.NETWORK_SERVER.OnHexChangedController!.Invoke(playerStartServerHex.Coordinates, playerData.ClientId);
-            unitPlacement.TryAddUnitsToHex(playerStartServerHex, playerData);
+            GameEvents.NETWORK_SERVER.OnHexControllerChanged!.Invoke(playerStartHex, playerData);
+            unitPlacement.TryAddUnitsToHex(playerStartCoordinate, playerData, 10);
             
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);
-            AlignCameraToStartClientRpc(playerStartClientHex.transform.position, clientRpcParams);
+            AlignCameraToStartClientRpc(playerStartHex.transform.position, clientRpcParams);
         }
     }
+
+    #endregion
+
+    #region Client
 
     [ClientRpc]
     private void AlignCameraToStartClientRpc(Vector3 startPosition, ClientRpcParams clientRpcParams)
     {
         cameraController.PositionCameraOnPlayerStartPosition(startPosition, Vector3.zero);
     }
+
+    [ClientRpc]
+    private void SetupHexGridDataClientRpc()
+    {
+        hexGridData.SetupNewData(numberOfMapRings);
+    }
+
+    #endregion
 }

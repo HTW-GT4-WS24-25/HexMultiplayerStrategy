@@ -8,20 +8,20 @@ namespace HexSystem
 {
     public class HexagonGrid
     {
-        private readonly Dictionary<AxialCoordinates, ClientHexagon> _grid = new();
+        private readonly Dictionary<AxialCoordinates, Hexagon> _grid = new();
 
         public int HexCount => _grid.Count;
 
-        private static List<ClientHexagon> ExtractPathFromHexToPredecessorMatching(
-            ClientHexagon srcHex,
-            ClientHexagon destHex,
-            Dictionary<ClientHexagon, ClientHexagon> hexToPredecessor)
+        private static List<Hexagon> ExtractPathFromHexToPredecessorMatching(
+            Hexagon srcHex,
+            Hexagon destHex,
+            Dictionary<Hexagon, Hexagon> hexToPredecessor)
         {
             Debug.Assert(hexToPredecessor != null);
             Debug.Assert(hexToPredecessor.ContainsValue(srcHex));
             Debug.Assert(hexToPredecessor.ContainsKey(destHex));
 
-            var path = new List<ClientHexagon>();
+            var path = new List<Hexagon>();
             var hex = destHex;
 
             while (hex != srcHex)
@@ -34,29 +34,29 @@ namespace HexSystem
             return path;
         }
 
-        public void Add(ClientHexagon hex) => _grid.Add(hex.Coordinates, hex);
+        public void Add(Hexagon hex) => _grid.Add(hex.Coordinates, hex);
 
-        public ClientHexagon Get(int q, int r) => Get(new AxialCoordinates(q, r));
+        public Hexagon Get(int q, int r) => Get(new AxialCoordinates(q, r));
 
-        public ClientHexagon Get(AxialCoordinates coordinates) => _grid.GetValueOrDefault(coordinates);
+        public Hexagon Get(AxialCoordinates coordinates) => _grid.GetValueOrDefault(coordinates);
 
         public void Clear()
         {
             _grid.Clear();
         }
 
-        public ClientHexagon GetNeighborOf(AxialCoordinates coord, Direction dir)
+        public Hexagon GetNeighborOf(AxialCoordinates coord, Direction dir)
         {
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
 
             return _grid[new AxialCoordinates(coord.Q + dir.GetQOffset(), coord.R + dir.GetROffset())];
         }
 
-        public HashSet<ClientHexagon> GetAllNeighborsOf(AxialCoordinates coord)
+        public HashSet<Hexagon> GetAllNeighborsOf(AxialCoordinates coord)
         {
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
 
-            var neighbors = new HashSet<ClientHexagon>();
+            var neighbors = new HashSet<Hexagon>();
 
             foreach (var neighborCoords in coord.GetNeighbors())
             {
@@ -66,12 +66,12 @@ namespace HexSystem
             return neighbors;
         }
 
-        public List<ClientHexagon> GetAllHexagonsInRange(int range, AxialCoordinates coord)
+        public List<Hexagon> GetAllHexagonsInRange(int range, AxialCoordinates coord)
         {
             Debug.Assert(range > 0, "Range cannot be negative or zero.");
             Debug.Assert(_grid.ContainsKey(coord), "Grid doesn't contain given coordinate.");
 
-            var hexesInRange = new List<ClientHexagon>();
+            var hexesInRange = new List<Hexagon>();
 
             for (var q = coord.Q - range; q <= coord.Q + range; q++)
             {
@@ -89,12 +89,12 @@ namespace HexSystem
             return hexesInRange;
         }
 
-        public List<ClientHexagon> GetReachableHexagonsInRange(int range, AxialCoordinates srcCoord)
+        public List<Hexagon> GetReachableHexagonsInRange(int range, AxialCoordinates srcCoord)
         {
             Debug.Assert(range > 0, "Range cannot be negative or zero.");
             Debug.Assert(_grid.ContainsKey(srcCoord), "Grid doesn't contain given coordinate.");
 
-            var reachableHexes = new List<ClientHexagon> { _grid[srcCoord] };
+            var reachableHexes = new List<Hexagon> { _grid[srcCoord] };
             var numExploredHexes = 0;
 
             for (var ring = 1; ring <= range; ring++)
@@ -118,15 +118,15 @@ namespace HexSystem
             return reachableHexes;
         }
 
-        public List<ClientHexagon> GetPathBetween(AxialCoordinates srcCoord, AxialCoordinates destCoord)
+        public List<Hexagon> GetPathBetween(AxialCoordinates srcCoord, AxialCoordinates destCoord)
         {
             Debug.Assert(_grid.ContainsKey(srcCoord), "Grid doesn't contain given source coordinate.");
             Debug.Assert(_grid.ContainsKey(destCoord), "Grid doesn't contain given destination coordinate.");
 
             var srcHex = _grid[srcCoord];
             var destHex = _grid[destCoord];
-            var hexQueue = new Queue<ClientHexagon>();
-            var hexToPredecessor = new Dictionary<ClientHexagon, ClientHexagon>();
+            var hexQueue = new Queue<Hexagon>();
+            var hexToPredecessor = new Dictionary<Hexagon, Hexagon>();
 
             hexQueue.Enqueue(srcHex);
             hexToPredecessor[srcHex] = null;

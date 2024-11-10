@@ -26,7 +26,7 @@ namespace UI
             cancelSelectionWindow.SetActive(true);
             if (selectedGroup.UnitCount.Value > 1) unitSelectionUI.gameObject.SetActive(true);
          
-            unitSelectionUI.SetSliderMaximum(selectedGroup.UnitCount.Value);
+            unitSelectionUI.SetSliderMaximumAndValue(selectedGroup.UnitCount.Value);
         }
         
         private void HandleGroupDeselected()

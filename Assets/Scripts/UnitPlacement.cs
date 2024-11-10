@@ -1,56 +1,78 @@
-﻿using System;
-using HexSystem;
+﻿using HexSystem;
 using Networking.Host;
-using Player;
 using Unit;
 using Unity.Netcode;
 using UnityEngine;
 
-public class UnitPlacement : MonoBehaviour
+public class UnitPlacement : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private UnitGroup unitGroupPrefab;
 
-    private HexagonGrid _hexGrid;
-    private int _unitAmount;
+    private HexagonGrid _hexagonGrid;
+    private GridData _gridData;
 
-    public void SetPlacementAmount(int amount)
+    public void Initialize(HexagonGrid hexagonGrid, GridData hexGridData)
     {
-        _unitAmount = amount;
+        _hexagonGrid = hexagonGrid;
+        _gridData = hexGridData;
     }
 
-    public bool TryAddUnitsToHex(ServerHexagon hex, PlayerDataStorage.PlayerData playerData)
+    #region Server
+
+    [Rpc(SendTo.Server)]
+    private void RequestUnitPlacementRpc(AxialCoordinates coordinate, int unitAmount, ulong playerId)
     {
-        if (hex == null)
+        var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
+        TryAddUnitsToHex(coordinate, playerData, unitAmount);
+    }
+
+    public bool TryAddUnitsToHex(AxialCoordinates coordinate, PlayerDataStorage.PlayerData playerData, int addAmount)
+    {
+        // TODO: Check if hex is owned by player and not at war
+        var hexagonData = _gridData.GetHexagonDataOnCoordinate(coordinate);
+
+        if (hexagonData.ControllerPlayerId != playerData.ClientId)
+            return false;
+
+        if (hexagonData.IsWarGround)
             return false;
         
-        // TODO: Check if hex is owned by player and not at war
-
-        if (hex.StationaryUnitGroup != null)
+        if (hexagonData.StationaryUnitGroup != null)
         {
-            AddUnitsToUnitGroup(hex.StationaryUnitGroup);
+            var stationaryUnitGroup = UnitGroup.UnitGroupsInGame[hexagonData.StationaryUnitGroup.Value];
+            
+            stationaryUnitGroup.AddUnits(addAmount);
         }
         else
         {
-            PlaceUnitGroupOnHex(hex, playerData.ClientId);
+            PlaceUnitGroupOnHex(coordinate, playerData.ClientId, addAmount);
         }
 
         return true;
     }
 
-    private void AddUnitsToUnitGroup(UnitGroup unitGroup)
+    private void PlaceUnitGroupOnHex(AxialCoordinates coordinate, ulong playerId, int unitAmount)
     {
-        unitGroup.AddUnits(_unitAmount);
-    }
-
-    private void PlaceUnitGroupOnHex(ServerHexagon hex, ulong playerId)
-    {
-        var newUnitGroup = Instantiate(unitGroupPrefab, hex.transform.position, Quaternion.identity);
+        var hexagon = _hexagonGrid.Get(coordinate);
+        
+        var newUnitGroup = Instantiate(unitGroupPrefab, hexagon.transform.position, Quaternion.identity);
         var newUnitGroupNetworkObject = newUnitGroup.GetComponent<NetworkObject>();
         newUnitGroupNetworkObject.Spawn();
         
-        newUnitGroup.Initialize(hex, _unitAmount, playerId);
+        newUnitGroup.Initialize(unitAmount, playerId, hexagon, _gridData);
         
-        hex.ChangeUnitGroupOnHexToStationary(newUnitGroup);
+        _gridData.PlaceUnitGroupOnHex(coordinate, newUnitGroup);
     }
+
+    #endregion
+
+    #region Client
+
+    public void HandlePlacementCommand(AxialCoordinates coordinate, int unitAmount)
+    {
+        RequestUnitPlacementRpc(coordinate, unitAmount, NetworkManager.Singleton.LocalClientId);
+    }
+
+    #endregion
 }

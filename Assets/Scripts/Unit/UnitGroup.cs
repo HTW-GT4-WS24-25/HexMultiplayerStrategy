@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexSystem;
 using Networking.Host;
@@ -19,10 +20,11 @@ namespace Unit
         public UnityEvent OnUnitHighlightEnabled;
         public UnityEvent OnUnitHighlightDisabled;
 
+        public Action<int> OnUnitCountUpdated;
+
         public static Dictionary<ulong, UnitGroup> UnitGroupsInGame = new();
         
         public ulong PlayerId { get; private set; }
-        public ServerHexagon ServerHexagon { get; set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
         public PlayerColor PlayerColor { get; private set; }
 
@@ -40,16 +42,16 @@ namespace Unit
 
         #region Server
 
-        public void Initialize(ServerHexagon serverHexagon, int unitCount, ulong playerId)
+        public void Initialize(int unitCount, ulong playerId, Hexagon startHexagon, GridData gridData)
         {
             PlayerId = playerId;
             
-            PlaceOnHex(serverHexagon);
             UnitCount.Value = unitCount;
             
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
             InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
-            Movement.NextHexagon = serverHexagon;
+            Movement.NextHexagon = startHexagon;
+            Movement.GridData = gridData;
         }
         
         public void AddUnits(int amount)
@@ -64,14 +66,7 @@ namespace Unit
         
         public void Delete()
         {
-            ServerHexagon.UnitGroups.Remove(this);
             Destroy(gameObject);
-        }
-        
-        public void PlaceOnHex(ServerHexagon serverHexagon)
-        {
-            ServerHexagon = serverHexagon;
-            serverHexagon.UnitGroups.Add(this);
         }
 
         public void SetAsSelectedForControllingPlayer()
@@ -97,15 +92,16 @@ namespace Unit
         [ClientRpc]
         private void SetAsSelectedClientRpc()
         {
-            if(NetworkManager.Singleton.LocalClientId != PlayerId)
-                return;
-            
-            GameEvents.UNIT.OnUnitGroupSelected?.Invoke(this);
+            if(NetworkManager.Singleton.LocalClientId == PlayerId)
+                GameEvents.UNIT.OnUnitGroupSelected?.Invoke(this);
         }
         
         private void HandleUnitCountChanged(int previousvalue, int newvalue)
         {
             unitCountText.text = newvalue.ToString();
+            
+            if(IsServer)
+                OnUnitCountUpdated?.Invoke(newvalue);
         }
         
         public void EnableHighlight()

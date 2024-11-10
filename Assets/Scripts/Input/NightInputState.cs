@@ -11,7 +11,6 @@ namespace Input
             inputReader, selectionLayer)
         {
             _unitPlacement = unitPlacement;
-            _unitPlacement.SetPlacementAmount(1); // This is only for testing
         }
 
         public override void HandleMainPointerDown()
@@ -21,7 +20,7 @@ namespace Input
             
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
-                //_unitPlacement.TryAddUnitsToHex(clickedHexagon); TODO: Replace with Client Request
+                _unitPlacement.HandlePlacementCommand(clickedHexagon.Coordinates, 1);
                 GameEvents.INPUT.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }

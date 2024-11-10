@@ -24,18 +24,18 @@ namespace Input
             GameEvents.INPUT.OnDragInput(dragValue);
         }
 
-        protected bool TryGetHexOnScreenPosition(Vector2 screenPosition, out ClientHexagon clientHexagon)
+        protected bool TryGetHexOnScreenPosition(Vector2 screenPosition, out Hexagon hexagon)
         {
-            clientHexagon = null;
+            hexagon = null;
             var ray = Camera.main!.ScreenPointToRay(screenPosition);
             var hitCount = Physics.RaycastNonAlloc(ray, _raycastHits, 100f, _selectionLayer);
 
             for (var i = 0; i < hitCount; i++)
             {
-                var clickedHexagon = _raycastHits[i].collider.gameObject.GetComponentInParent<ClientHexagon>();
+                var clickedHexagon = _raycastHits[i].collider.gameObject.GetComponentInParent<Hexagon>();
                 if (clickedHexagon != null)
                 {
-                    clientHexagon = clickedHexagon;       
+                    hexagon = clickedHexagon;       
                     return true;
                 }
             }

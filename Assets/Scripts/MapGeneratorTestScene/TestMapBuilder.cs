@@ -1,5 +1,6 @@
 ﻿using System;
 using HexSystem;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,8 +9,8 @@ namespace MapGeneratorTestScene
     public class TestMapBuilder : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ClientHexagon grassHexPrefab; 
-        [SerializeField] private ClientHexagon mountainHexPrefab;
+        [SerializeField] private Hexagon grassHexPrefab; 
+        [SerializeField] private Hexagon mountainHexPrefab;
         
         [SerializeField] private MapGenerationConfig mapGenerationConfig;
         [SerializeField] private int nRings = 3;
@@ -77,7 +78,7 @@ namespace MapGeneratorTestScene
                 var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                 
                 var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
-                newHex.Initialize(coordinates);
+                newHex.Initialize(coordinates, false);
                 _grid.Add(newHex);
             }
         }

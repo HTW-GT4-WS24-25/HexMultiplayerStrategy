@@ -1,4 +1,5 @@
 using HexSystem;
+using Networking.Host;
 using UI.NightShop;
 using Unit;
 using Unity.Collections;
@@ -15,8 +16,8 @@ public static class GameEvents
 
     public class InputEvents
     {
-        public UnityAction<ClientHexagon> OnHexSelectedForUnitSelectionOrMovement;
-        public UnityAction<ClientHexagon> OnHexSelectedDuringNightShop;
+        public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
+        public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
         public UnityAction<float> OnZoomInput;
         public UnityAction<Vector2> OnDragInput;
     }
@@ -31,7 +32,10 @@ public static class GameEvents
         public UnityAction<UnitGroup> OnUnitGroupSelected;
         public UnityAction OnUnitGroupDeselected;
         public UnityAction<int> OnUnitSelectionSliderUpdate;
+        public UnityAction<int> OnUnitCountOfSelectedChanged;
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
+        public UnityAction<Hexagon, UnitGroup> OnUnitEnteredHexCenterArea;
+        public UnityAction<Hexagon, UnitGroup> OnUnitLeftHexCenterArea;
     }
 
     public class NightShopEvents
@@ -47,6 +51,6 @@ public static class GameEvents
     {
         public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
         public UnityAction<ulong, int> OnPlayerColorChanged;
-        public UnityAction<AxialCoordinates, ulong> OnHexChangedController;
+        public UnityAction<Hexagon, PlayerDataStorage.PlayerData> OnHexControllerChanged;
     }
 }
