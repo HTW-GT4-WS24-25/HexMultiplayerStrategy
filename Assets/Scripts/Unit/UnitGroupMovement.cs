@@ -62,7 +62,10 @@ namespace Unit
         public void CopyValuesFrom(UnitGroupMovement movementToCopy)
         {
             PreviousHexagon = movementToCopy.PreviousHexagon;
-            SetAllWaypoints(movementToCopy.GetAllWaypoints());
+            List<Hexagon> pathToCopy = movementToCopy.GetAllWaypoints();
+            if (pathToCopy.Count > 0)
+                pathToCopy.Insert(0, movementToCopy.NextHexagon);
+            SetAllWaypoints(pathToCopy);
         }
         
         public void SetAllWaypoints(List<Hexagon> newWaypoints)
@@ -126,32 +129,35 @@ namespace Unit
         
         private void OnWaypointReached()
         {
-            if (_hexWaypoints.Count == 0)
-            {
-                DisableTravelLineClientRpc();
-                
-                var nextHexagonData = GridData.GetHexagonDataOnCoordinate(NextHexagon.Coordinates);
+            PreviousHexagon = null;
+            _isMoving = false;
 
-                if (nextHexagonData.StationaryUnitGroup == null)
-                {
-                    Debug.Log("Unit should become stationary");
-                    GridData.UpdateStationaryUnitGroupOfHex(NextHexagon.Coordinates, _unitGroup);
-                }
-                else
+            if (_hexWaypoints.Count != 0) return;
+            
+            DisableTravelLineClientRpc();
+
+            var nextHexagonData = GridData.GetHexagonDataOnCoordinate(NextHexagon.Coordinates);
+            var stationaryUnitGroupId = nextHexagonData.StationaryUnitGroup;
+            if (stationaryUnitGroupId == null)
+            {
+                Debug.Log("Unit should become stationary");
+                GridData.UpdateStationaryUnitGroupOfHex(NextHexagon.Coordinates, _unitGroup);
+            }
+            else
+            {
+                var stationaryUnitGroup = UnitGroup.UnitGroupsInGame[stationaryUnitGroupId.Value];
+
+                if (stationaryUnitGroup.PlayerColor == _unitGroup.PlayerColor)
                 {
                     Debug.Log("Unit should be added to other stationary group");
 
-                    var stationaryGroup = UnitGroup.UnitGroupsInGame[nextHexagonData.StationaryUnitGroup.Value];
-                    stationaryGroup.AddUnits(_unitGroup.UnitCount.Value);
-                    
+                    stationaryUnitGroup.AddUnits(_unitGroup.UnitCount.Value);
+
                     GridData.DeleteUnitGroupFromHex(NextHexagon.Coordinates, _unitGroup);
                     _unitGroup.Delete();
                     GameEvents.UNIT.OnUnitGroupDeleted.Invoke(_unitGroup);
                 }
             }
-            
-            PreviousHexagon = null;
-            _isMoving = false;
         }
 
         private void FetchNextWaypoint()

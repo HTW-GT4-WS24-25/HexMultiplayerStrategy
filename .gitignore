@@ -155,3 +155,4 @@ sysinfo.txt
 # End of https://www.toptal.com/developers/gitignore/api/unity,rider
 Assets/Scenes/DayNightCycleTest.unity
 Assets/Scenes/DayNightCycleTest.unity.meta
+/.idea
