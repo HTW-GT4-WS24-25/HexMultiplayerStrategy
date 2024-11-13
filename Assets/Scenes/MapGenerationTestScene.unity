@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd32acf3f6441258835cc9099affc11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forestHexPrefab: {fileID: 536300325094858728, guid: 7b332742bf0dbd343b08ded021ce1d43, type: 3}
   grassHexPrefab: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
   mountainHexPrefab: {fileID: 536300325094858728, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
   mapGenerationConfig: {fileID: 11400000, guid: ef79f69037440324bafe53ce43e99066, type: 2}

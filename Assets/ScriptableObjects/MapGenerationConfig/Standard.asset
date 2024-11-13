@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e3cb25e443b4b0aab762b4ee62d35c5, type: 3}
   m_Name: Standard
   m_EditorClassIdentifier: 
-  mountainChance: 0.1
+  mountainProbability: 0.2
+  mountainProbabilityEnforcement: 0.2
+  mountainAreaCheckingSize: 2
+  forestProbability: 0.05
+  forestProbabilityEnforcement: 0.4
+  forestAreaCheckingSize: 4
+  diminishingProbabilityPerDistance: 0.5

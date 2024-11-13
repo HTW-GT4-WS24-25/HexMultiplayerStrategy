@@ -8,7 +8,8 @@ namespace MapGeneratorTestScene
 {
     public class TestMapBuilder : MonoBehaviour
     {
-        [Header("References")]
+        [Header("References")] 
+        [SerializeField] private Hexagon forestHexPrefab;
         [SerializeField] private Hexagon grassHexPrefab; 
         [SerializeField] private Hexagon mountainHexPrefab;
         
