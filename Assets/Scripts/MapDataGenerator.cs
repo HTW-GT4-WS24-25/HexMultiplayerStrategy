@@ -17,7 +17,7 @@ public class MapDataGenerator
 
         foreach (var _ in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
-            var shouldBeMountain = Random.Range(0, 1f) <= _config.mountainChance;
+            var shouldBeMountain = Random.Range(0, 1f) <= _config.mountainProbability;
             hexValues.Add(shouldBeMountain ? (int)HexType.Mountain : (int)HexType.Grass);
         }
         
