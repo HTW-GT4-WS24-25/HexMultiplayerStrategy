@@ -8,7 +8,7 @@ public class MapGenerationConfig : ScriptableObject
     [Range(0f, 1f)]
     public float mountainProbability;
 
-    [Range(0f, 1f)]
+    [Range(0f, 10f)]
     public float mountainProbabilityEnforcement;
 
     public int mountainAreaCheckingSize;
@@ -18,7 +18,7 @@ public class MapGenerationConfig : ScriptableObject
     [Range(0f, 1f)]
     public float forestProbability;
 
-    [Range(0f, 1f)]
+    [Range(0f, 10f)]
     public float forestProbabilityEnforcement;
 
     public int forestAreaCheckingSize;

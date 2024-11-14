@@ -48,8 +48,7 @@ namespace MapGeneratorTestScene
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-                BuildNewMap();
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) BuildNewMap();
         }
 
         private void BuildNewMap()
@@ -74,11 +73,16 @@ namespace MapGeneratorTestScene
             foreach (var coordinates in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
                 var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
+                var hexPrefab = mapData[dataIndex++] switch
+                {
+                    (int)HexType.Mountain => mountainHexPrefab,
+                    (int)HexType.Forest => forestHexPrefab,
+                    _ => grassHexPrefab
+                };                
                 
-                var hexPrefab = mapData[dataIndex++] == (int)MapDataGenerator.HexType.Mountain ? mountainHexPrefab : grassHexPrefab;
                 var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
-                
                 var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
+               
                 newHex.Initialize(coordinates, false);
                 _grid.Add(newHex);
             }
