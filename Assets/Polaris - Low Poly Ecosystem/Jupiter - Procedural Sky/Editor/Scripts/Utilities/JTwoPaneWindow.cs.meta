@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 34a2ea782a08e8c4ab155ddec745b699
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195642
+  packageName: Low Poly Tools Bundle
+  packageVersion: 1.4
+  assetPath: Assets/Polaris - Low Poly Ecosystem/Jupiter - Procedural Sky/Editor/Scripts/Utilities/JTwoPaneWindow.cs
+  uploadId: 651480

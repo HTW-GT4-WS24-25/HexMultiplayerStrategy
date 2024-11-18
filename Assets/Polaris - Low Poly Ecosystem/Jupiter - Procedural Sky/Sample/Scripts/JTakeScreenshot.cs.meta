@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e0c71d2da68800e47ab7d19b195a12fe
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195642
+  packageName: Low Poly Tools Bundle
+  packageVersion: 1.4
+  assetPath: Assets/Polaris - Low Poly Ecosystem/Jupiter - Procedural Sky/Sample/Scripts/JTakeScreenshot.cs
+  uploadId: 651480

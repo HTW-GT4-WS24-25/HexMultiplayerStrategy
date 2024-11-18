@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 996904e2726a51e41b8099fac3469ad1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195642
+  packageName: Low Poly Tools Bundle
+  packageVersion: 1.4
+  assetPath: Assets/Polaris - Low Poly Ecosystem/Jupiter - Procedural Sky/Editor/Scripts/Core/JPackageInitializer.cs
+  uploadId: 651480
