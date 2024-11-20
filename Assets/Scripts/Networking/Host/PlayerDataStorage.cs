@@ -59,7 +59,7 @@ namespace Networking.Host
             GameEvents.NETWORK_SERVER.OnPlayerConnected?.Invoke(playerClientId, newPlayerData.PlayerName);
         }
         
-        public class PlayerData
+        public class PlayerData // Todo: make network serializable
         {
             private int _playerScore;
             private PlayerColor.ColorType _playerColorType;

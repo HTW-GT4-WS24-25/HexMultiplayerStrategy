@@ -3,6 +3,7 @@ using Helper;
 using HexSystem;
 using Input;
 using Networking.Host;
+using Score;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,7 +27,7 @@ public class MatchStartup : NetworkBehaviour
     private List<AxialCoordinates> _remainingStartCoordinates;
     private int _playersInMatch;
     private int _numberOfConnectedPlayers;
-    private ScoreDistributor _scoreDistributor;
+    private ScoreCalculator _scoreCalculator;
 
     #region Server
 
@@ -65,7 +66,7 @@ public class MatchStartup : NetworkBehaviour
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
         SetupHexGridDataClientRpc();
-        _scoreDistributor = new ScoreDistributor(hexGridData);
+        _scoreCalculator = new ScoreCalculator(hexGridData);
     }
 
     private void SetPlayerStartPositions()
