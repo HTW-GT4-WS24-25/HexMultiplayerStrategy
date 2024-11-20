@@ -4,6 +4,7 @@ using HexSystem;
 using Player;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Unit
 {
@@ -19,6 +20,9 @@ namespace Unit
         public GridData GridData { get; set; }
         public Hexagon PreviousHexagon { get; private set; }
         public Hexagon NextHexagon { get; set; }
+        public bool IsMoving { get; private set; }
+        private bool IsResting { get; set; }
+        public bool IsFighting { get; set; }
         
         private Queue<Hexagon> _hexWaypoints = new ();
 
@@ -27,9 +31,7 @@ namespace Unit
         private float _travelProgress;
         private float _currentTravelStartTime;
         private Vector3 _currentStartPosition;
-        private bool _isMoving;
         private bool _assignedToNextHexagon;
-        private bool _isResting;
 
         private void Awake()
         {
@@ -53,10 +55,15 @@ namespace Unit
             if (!IsServer)
                 return;
             
-            if (_isResting)
-                return; 
+            if (!CanMove() || !IsMoving)
+                return;
             
             FollowWaypoints();
+        }
+
+        public bool CanMove()
+        {
+            return !IsResting && !IsFighting;
         }
 
         public void CopyValuesFrom(UnitGroupMovement movementToCopy)
@@ -70,18 +77,22 @@ namespace Unit
         
         public void SetAllWaypoints(List<Hexagon> newWaypoints)
         {
-            var shouldStartMovingFromIdle = _hexWaypoints.Count == 0 && newWaypoints.Count > 0;
-            var nextHexagonStationaryUnitGroupId = GridData.GetHexagonDataOnCoordinate(NextHexagon.Coordinates).StationaryUnitGroup;
-            if(shouldStartMovingFromIdle && nextHexagonStationaryUnitGroupId == NetworkObjectId)
-                GridData.RemoveStationaryUnitGroupFromHex(NextHexagon.Coordinates, _unitGroup);
-                
             _hexWaypoints.Clear();
             _hexWaypoints = new Queue<Hexagon>(newWaypoints);
-        
-            if(PreviousHexagon != null && _hexWaypoints.Count > 0 && _hexWaypoints.Peek().Equals(PreviousHexagon))
+            if (_hexWaypoints.Count == 0)
+                return;
+
+            if (!IsMoving || _hexWaypoints.Peek().Equals(PreviousHexagon))
+            {
+                IsMoving = true;
                 FetchNextWaypoint();
-        
-            UpdateTravelLine();
+            }
+            else
+            {
+                UpdateTravelLine();
+            }
+
+            
         }
         
         public List<Hexagon> GetAllWaypoints()
@@ -91,28 +102,19 @@ namespace Unit
 
         private void FollowWaypoints()
         {
-            if (_isMoving)
+            Move();
+
+            if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
             {
-                Move();
+                Debug.Log("Unit reached next hex");
 
-                if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
-                {
-                    Debug.Log("Unit reached next hex");
-
-                    GridData.MoveUnitGroupToHex(PreviousHexagon.Coordinates, NextHexagon.Coordinates, _unitGroup);
-                    _assignedToNextHexagon = true;
-                }
-            
-                if (_travelProgress >= 1f)
-                {
-                    OnWaypointReached();
-                }
+                GridData.MoveUnitGroupToHex(PreviousHexagon.Coordinates, NextHexagon.Coordinates, _unitGroup);
+                _assignedToNextHexagon = true;
             }
-            else if (_hexWaypoints.Count > 0)
+            
+            if (_travelProgress >= 1f)
             {
-                FetchNextWaypoint();
-                _isMoving = true;
-                UpdateTravelLine();
+                OnWaypointReached();
             }
         }
         
@@ -129,34 +131,17 @@ namespace Unit
         
         private void OnWaypointReached()
         {
-            PreviousHexagon = null;
-            _isMoving = false;
-
-            if (_hexWaypoints.Count != 0) return;
-            
-            DisableTravelLineClientRpc();
-
-            var nextHexagonData = GridData.GetHexagonDataOnCoordinate(NextHexagon.Coordinates);
-            var stationaryUnitGroupId = nextHexagonData.StationaryUnitGroup;
-            if (stationaryUnitGroupId == null)
+            if (_hexWaypoints.Count == 0)
             {
-                Debug.Log("Unit should become stationary");
-                GridData.UpdateStationaryUnitGroupOfHex(NextHexagon.Coordinates, _unitGroup);
+                IsMoving = false;
+                PreviousHexagon = null;
+                DisableTravelLineClientRpc();
+                GameEvents.UNIT.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
             }
             else
             {
-                var stationaryUnitGroup = UnitGroup.UnitGroupsInGame[stationaryUnitGroupId.Value];
-
-                if (stationaryUnitGroup.PlayerColor == _unitGroup.PlayerColor)
-                {
-                    Debug.Log("Unit should be added to other stationary group");
-
-                    stationaryUnitGroup.AddUnits(_unitGroup.UnitCount.Value);
-
-                    GridData.DeleteUnitGroupFromHex(NextHexagon.Coordinates, _unitGroup);
-                    _unitGroup.Delete();
-                    GameEvents.UNIT.OnUnitGroupDeleted.Invoke(_unitGroup);
-                }
+                GameEvents.UNIT.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
+                FetchNextWaypoint();
             }
         }
 
@@ -164,19 +149,24 @@ namespace Unit
         {
             PreviousHexagon = NextHexagon;
             NextHexagon = _hexWaypoints.Dequeue();
+            
+            GridData.RemoveStationaryUnitGroupFromHex(PreviousHexagon.Coordinates, _unitGroup);
         
             _currentTravelStartTime = Time.time;
             _currentStartPosition = transform.position;
             _distanceToNextHexagon = Vector3.Distance(NextHexagon.transform.position, transform.position);
             _travelProgress = 0f;
 
+            transform.rotation = Quaternion.LookRotation(NextHexagon.transform.position - transform.position);
+
             _assignedToNextHexagon = false;
+            UpdateTravelLine();
         }
 
         private void UpdateTravelLine()
         { 
             var linePoints = new List<Vector3> { transform.position };
-            if(_isMoving)
+            if(IsMoving)
                 linePoints.Add(NextHexagon.transform.position);
         
             linePoints.AddRange(_hexWaypoints.Select(hex => hex.transform.position));
@@ -188,7 +178,7 @@ namespace Unit
         
         private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
         {
-            _isResting = newDayNightCycle == DayNightCycle.CycleState.Night;
+            IsResting = newDayNightCycle == DayNightCycle.CycleState.Night;
         }
 
         #endregion

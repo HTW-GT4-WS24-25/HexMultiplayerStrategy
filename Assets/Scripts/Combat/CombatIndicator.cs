@@ -19,9 +19,9 @@ namespace Combat
 
         #region Server
 
-        public void ShowForAll()
+        public void ShowForAll(float combatRadius)
         {
-            ShowClientRpc();
+            ShowClientRpc(combatRadius);
         }
 
         public void HideForAll()
@@ -34,12 +34,13 @@ namespace Combat
         #region Client
 
         [ClientRpc]
-        private void ShowClientRpc()
+        private void ShowClientRpc(float combatRadius)
         {
+            radius = combatRadius;
             _animationTween?.Kill();
             combatCircle.localScale = new Vector3(0, combatCircle.localScale.y, 0);
             _animationTween = combatCircle
-                .DOScale(new Vector3(radius * 0.5f, combatCircle.localScale.y, radius * 0.5f), showTime)
+                .DOScale(new Vector3(radius, combatCircle.localScale.y, radius), showTime)
                 .SetEase(Ease.OutBack);
         }
 

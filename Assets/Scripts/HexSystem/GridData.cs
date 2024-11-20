@@ -35,6 +35,11 @@ namespace HexSystem
 
         #region Server
 
+        public override void OnNetworkSpawn()
+        {
+            GameEvents.UNIT.OnUnitGroupDeleted += DeleteUnitGroup;
+        }
+
         public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
         {
             var hexagonData = _hexDataByCoordinates[coordinate];
@@ -67,9 +72,10 @@ namespace HexSystem
                 UpdateStationaryUnitGroupOfHexClientRpc(originalUnitCoordinates, true, copiedUnitGroupId);
         }
 
-        public void DeleteUnitGroupFromHex(AxialCoordinates coordinate, UnitGroup unitGroupToRemove)
+        public void DeleteUnitGroup(UnitGroup unitGroupToRemove)
         {
-            DeleteUnitGroupFromHexClientRpc(coordinate, unitGroupToRemove.NetworkObjectId);
+            var coordinates = _coordinatesByUnitGroups[unitGroupToRemove.NetworkObjectId];
+            DeleteUnitGroupFromHexClientRpc(coordinates, unitGroupToRemove.NetworkObjectId);
         }
 
         public void MoveUnitGroupToHex(AxialCoordinates oldCoordinate, AxialCoordinates newCoordinate, UnitGroup unitGroupToMove)

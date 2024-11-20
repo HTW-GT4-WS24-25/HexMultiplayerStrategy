@@ -19,7 +19,8 @@ namespace UI.Lobby
         [SerializeField] private ColorSelectionUI colorSelectionUI;
         [SerializeField] private Button startGameButton;
 
-        private const string MatchSceneName = "FreddieTestScene";
+        private const string MatchSceneName = "ToniTestScene";
+        private const int MinimumPlayerCount = 1;
             
         private readonly List<LobbyUIPlayerEntry> _lobbyList = new();
         private readonly List<PlayerColor.ColorType> _unavailableColors = new();
@@ -138,7 +139,7 @@ namespace UI.Lobby
             playerEntryToChange?.UpdatePlayerColor(playerColor.baseColor);
 
             if (IsHost)
-                startGameButton.interactable = _lobbyList.Count > 1 && _lobbyList.TrueForAll(player => player.ReadyToPlay);
+                startGameButton.interactable = _lobbyList.Count >= MinimumPlayerCount && _lobbyList.TrueForAll(player => player.ReadyToPlay);
         }
 
         [ClientRpc]

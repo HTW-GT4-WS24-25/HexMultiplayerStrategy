@@ -42,6 +42,9 @@ namespace Unit
             var requestedDestination = mapBuilder.Grid.Get(coordinates);
             var newUnitPath = GetPathForUnitGroup(requestUnitGroup, requestedDestination);
 
+            if (!requestUnitGroup.Movement.CanMove())
+                return;
+            
             if (selectionUnitCount < requestUnitGroup.UnitCount.Value && requestUnitGroup.UnitCount.Value > 1)
                 SplitUnitGroup(requestUnitGroup, selectionUnitCount);
             

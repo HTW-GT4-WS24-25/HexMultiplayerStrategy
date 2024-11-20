@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mountainProbability: 0.2
   mountainProbabilityEnforcement: 1
-  mountainAreaCheckingSize: 1
+  mountainAreaCheckingSize: 21
   forestProbability: 0.05
   forestProbabilityEnforcement: 8
   forestAreaCheckingSize: 4
