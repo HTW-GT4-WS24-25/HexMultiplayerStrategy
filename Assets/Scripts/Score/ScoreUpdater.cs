@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Networking.Host;
-using NUnit.Framework;
 using UI;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,7 +8,8 @@ namespace Score
 {
         public class ScoreUpdater: NetworkBehaviour
         {
-                [SerializeField] ScoreWindow scoreWindow;
+                [SerializeField] ScoreWindow nightScoreWindow;
+                [SerializeField] EndOfGameScoreWindow endOfGameScoreWindow;
         
                 private ScoreCalculator _scoreCalculator;
 
@@ -21,11 +21,13 @@ namespace Score
                 public override void OnNetworkSpawn()
                 {
                         GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightCycleSwitched;
+                        GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd += HandleEndOfGame;
                 }
 
                 public override void OnNetworkDespawn()
                 {
                         GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleDayNightCycleSwitched;
+                        GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd += HandleEndOfGame;
                 }
 
                 #region Server
@@ -33,20 +35,42 @@ namespace Score
                 private void HandleDayNightCycleSwitched(DayNightCycle.CycleState newState)
                 {
                         if (newState == DayNightCycle.CycleState.Night)
-                                DistributePlayerScoresToAll();
+                                DistributeScoresAtNight();
                 }
 
-                private void DistributePlayerScoresToAll()
+                private void DistributeScoresAtNight()
+                {
+                        IncrementScoresAtNight();
+                        
+                        DistributeScoresAtNightClientRpc(GetPlayerDataSortedByScore());
+                }
+                
+                private void HandleEndOfGame()
+                {
+                        DistributeScoresAtEndOfGame();
+                }
+
+                private void DistributeScoresAtEndOfGame()
+                {
+                        IncrementScoresAtNight();
+                        
+                        DistributeScoresAtEndOfGameClientRpc(GetPlayerDataSortedByScore());
+                }
+
+                private void IncrementScoresAtNight()
                 {
                         var scoresByPlayerId = _scoreCalculator.CalculatePlayerScores();
 
                         foreach (var (id, score) in scoresByPlayerId)
                         {
                                 HostSingleton.Instance.GameManager.PlayerData.IncrementPlayerScore(id, score);
-                        }
+                        }    
+                }
 
+                private PlayerDataStorage.PlayerData[] GetPlayerDataSortedByScore()
+                {
                         var playerScoreList = HostSingleton.Instance.GameManager.PlayerData.GetAllPlayerData();
-                        DistributePlayerScoresClientRpc(playerScoreList.OrderByDescending(data => data.PlayerScore).ToArray());
+                        return playerScoreList.OrderByDescending(data => data.PlayerScore).ToArray();
                 }
 
                 #endregion
@@ -54,12 +78,19 @@ namespace Score
                 #region Client
 
                 [ClientRpc]
-                private void DistributePlayerScoresClientRpc(PlayerDataStorage.PlayerData[] playerData)
+                private void DistributeScoresAtNightClientRpc(PlayerDataStorage.PlayerData[] playerData)
                 {
-                        scoreWindow.UpdateScores(playerData);
-                        scoreWindow.gameObject.SetActive(true);
+                        nightScoreWindow.UpdateScores(playerData);
+                        nightScoreWindow.gameObject.SetActive(true);
                 }
 
+                [ClientRpc]
+                private void DistributeScoresAtEndOfGameClientRpc(PlayerDataStorage.PlayerData[] playerData)
+                {
+                        endOfGameScoreWindow.UpdateScores(playerData);
+                        endOfGameScoreWindow.gameObject.SetActive(true);
+                }
+                
                 #endregion
         }
 }

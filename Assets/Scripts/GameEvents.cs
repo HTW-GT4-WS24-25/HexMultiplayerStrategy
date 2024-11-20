@@ -25,6 +25,7 @@ public static class GameEvents
     public class DayNightCycleEvents
     {
         public UnityAction<DayNightCycle.CycleState> OnSwitchedCycleState;
+        public UnityAction OnGameReachedEnd;
     }
 
     public class UnitEvents

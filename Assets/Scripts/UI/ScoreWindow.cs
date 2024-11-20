@@ -1,19 +1,16 @@
-using System.Collections.Generic;
 using Networking.Host;
 using Player;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI
 {
     public class ScoreWindow : MonoBehaviour
     {
-        [SerializeField] private VerticalLayoutGroup scoreListHolder;
-        [SerializeField] private PlayerScoreUIEntry scoreEntryUiPrefab;
+        [SerializeField] protected VerticalLayoutGroup scoreListHolder;
+        [SerializeField] protected PlayerScoreUIEntry scoreEntryUiPrefab;
 
-        public void UpdateScores(PlayerDataStorage.PlayerData[] sortedDescendingPlayerData)
+        public virtual void UpdateScores(PlayerDataStorage.PlayerData[] sortedDescendingPlayerData)
         {
             DestroyScoreEntries();
             

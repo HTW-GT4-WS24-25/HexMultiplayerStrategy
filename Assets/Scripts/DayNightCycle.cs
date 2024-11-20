@@ -8,7 +8,6 @@ using UnityEngine;
 public class DayNightCycle : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private InputReader inputReader;
     [SerializeField] private TurnTimeUI turnTimeUI;
     [SerializeField] private JDayNightCycle dayNightCycleSky;
     
@@ -17,10 +16,12 @@ public class DayNightCycle : NetworkBehaviour
     [SerializeField] private float nightDuration = 20f;
     [SerializeField] private float cycleSwitchAnimationDuration = 1.5f;
     [SerializeField] private float skyTimeForDay = 13f;
+    [SerializeField] private int nightsPerMatch;
 
-    private NetworkVariable<float> _turnTime = new();
+    private readonly NetworkVariable<float> _turnTime = new();
     private CycleState _cycleState = CycleState.Night;
     private Tween _cycleSwitchTween;
+    private int _nightsThisGame;
 
     public override void OnNetworkSpawn()
     {
@@ -30,7 +31,6 @@ public class DayNightCycle : NetworkBehaviour
         if (IsServer)
         {
             StartCoroutine(TimerRoutine());
-            inputReader.OnSwitchDayNightCycle += SwitchCycleState;
             
             SwitchToNightTimeClientRpc();
         }
@@ -40,26 +40,9 @@ public class DayNightCycle : NetworkBehaviour
     {
         if (IsClient)
             _turnTime.OnValueChanged -= HandleTurnTimeChanged;
-        
-        if (IsServer)
-        {
-            inputReader.OnSwitchDayNightCycle -= SwitchCycleState;
-        }
     }
     
     #region Server
-
-    private void SwitchCycleState()
-    {
-        if (_cycleState == CycleState.Day)
-        {
-            SwitchToNightTimeClientRpc();
-        }
-        else if(_cycleState == CycleState.Night)
-        {
-            SwitchToDayTimeClientRpc();
-        }
-    }
 
     private IEnumerator TimerRoutine()
     {
@@ -69,8 +52,15 @@ public class DayNightCycle : NetworkBehaviour
 
             if (_cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
             {
-                SwitchToNightTimeClientRpc();
                 _turnTime.Value = 0;
+
+                if (++_nightsThisGame == nightsPerMatch)
+                {
+                    GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd?.Invoke();
+                    break;
+                }
+                
+                SwitchToNightTimeClientRpc();
             }
 
             if (_cycleState == CycleState.Night && _turnTime.Value >= nightDuration)
