@@ -2,6 +2,7 @@
 using System.Linq;
 using Networking.Server;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Networking.Host
@@ -24,6 +25,11 @@ namespace Networking.Host
         public PlayerData GetPlayerById(ulong playerId)
         {
             return _playersByClientId[playerId];
+        }
+
+        public List<PlayerData> GetAllPlayerData()
+        {
+            return _playersByClientId.Select(keyValuePair => keyValuePair.Value).ToList();
         }
 
         public void SetPlayerColorType(ulong playerClientId, PlayerColor.ColorType newColorType)
@@ -51,7 +57,6 @@ namespace Networking.Host
                 ClientId = playerClientId,
                 PlayerName = _networkServer.GetPlayerDataByClientId(playerClientId).playerName,
                 PlayerColorType = PlayerColor.ColorType.None,
-                PlayerGameObject = newPlayer
             };
             Debug.Log($"Player {newPlayerData.PlayerName} registered!");
             
@@ -59,14 +64,13 @@ namespace Networking.Host
             GameEvents.NETWORK_SERVER.OnPlayerConnected?.Invoke(playerClientId, newPlayerData.PlayerName);
         }
         
-        public class PlayerData // Todo: make network serializable
+        public class PlayerData : INetworkSerializable
         {
             private int _playerScore;
             private PlayerColor.ColorType _playerColorType;
             
             public ulong ClientId;
             public string PlayerName;
-            public Player.Player PlayerGameObject;
 
             public PlayerColor.ColorType PlayerColorType
             {
@@ -87,6 +91,14 @@ namespace Networking.Host
                     _playerScore = value;
                     GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
                 }
+            }
+
+            public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+            {
+                serializer.SerializeValue(ref _playerScore);
+                serializer.SerializeValue(ref _playerColorType);
+                serializer.SerializeValue(ref ClientId);
+                serializer.SerializeValue(ref PlayerName);
             }
         }
     }

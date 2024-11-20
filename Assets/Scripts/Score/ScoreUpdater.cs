@@ -1,4 +1,6 @@
-﻿using Networking.Host;
+﻿using System.Linq;
+using Networking.Host;
+using NUnit.Framework;
 using UI;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,13 +20,21 @@ namespace Score
 
                 public override void OnNetworkSpawn()
                 {
-                        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += cycleState =>
-                        {
-                                if (cycleState == DayNightCycle.CycleState.Night) DistributePlayerScoresToAll();
-                        };
+                        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightCycleSwitched;
+                }
+
+                public override void OnNetworkDespawn()
+                {
+                        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleDayNightCycleSwitched;
                 }
 
                 #region Server
+
+                private void HandleDayNightCycleSwitched(DayNightCycle.CycleState newState)
+                {
+                        if (newState == DayNightCycle.CycleState.Night)
+                                DistributePlayerScoresToAll();
+                }
 
                 private void DistributePlayerScoresToAll()
                 {
@@ -33,9 +43,10 @@ namespace Score
                         foreach (var (id, score) in scoresByPlayerId)
                         {
                                 HostSingleton.Instance.GameManager.PlayerData.IncrementPlayerScore(id, score);
-                        } 
-                
-                        DistributePlayerScoresClientRpc();
+                        }
+
+                        var playerScoreList = HostSingleton.Instance.GameManager.PlayerData.GetAllPlayerData();
+                        DistributePlayerScoresClientRpc(playerScoreList.OrderByDescending(data => data.PlayerScore).ToArray());
                 }
 
                 #endregion
@@ -43,9 +54,10 @@ namespace Score
                 #region Client
 
                 [ClientRpc]
-                private void DistributePlayerScoresClientRpc()
+                private void DistributePlayerScoresClientRpc(PlayerDataStorage.PlayerData[] playerData)
                 {
-                        //scoreWindow.UpdateScores();
+                        scoreWindow.UpdateScores(playerData);
+                        scoreWindow.gameObject.SetActive(true);
                 }
 
                 #endregion

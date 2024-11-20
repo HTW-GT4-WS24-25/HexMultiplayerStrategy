@@ -18,6 +18,7 @@ public class MatchStartup : NetworkBehaviour
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GridData hexGridData;
     [SerializeField] private HexControlAndCombatObserver hexControlAndCombatObserver;
+    [SerializeField] private ScoreUpdater scoreUpdater;
     
     [Header("Settings")]
     [Tooltip("X will be set to Q, Y will be set to R")]
@@ -27,7 +28,6 @@ public class MatchStartup : NetworkBehaviour
     private List<AxialCoordinates> _remainingStartCoordinates;
     private int _playersInMatch;
     private int _numberOfConnectedPlayers;
-    private ScoreCalculator _scoreCalculator;
 
     #region Server
 
@@ -66,7 +66,8 @@ public class MatchStartup : NetworkBehaviour
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
         SetupHexGridDataClientRpc();
-        _scoreCalculator = new ScoreCalculator(hexGridData);
+        var scoreCalculator = new ScoreCalculator(hexGridData);
+        scoreUpdater.Initialize(scoreCalculator);
     }
 
     private void SetPlayerStartPositions()
