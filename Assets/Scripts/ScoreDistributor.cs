@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using HexSystem;
 using Networking.Host;
 
@@ -36,14 +37,9 @@ public class ScoreDistributor
                 
             if (controllerId == null) continue;
 
-            if (scoresByPlayerId.ContainsKey((ulong)controllerId))
-            {
-                scoresByPlayerId[(ulong)controllerId]++;
-            }
-            else
-            {
-                scoresByPlayerId.Add((ulong)controllerId, 1);
-            }
+            scoresByPlayerId[controllerId.Value] = scoresByPlayerId.TryGetValue(controllerId.Value, out var score) 
+                ? score + 1 
+                : 1;
         }
             
         return scoresByPlayerId;

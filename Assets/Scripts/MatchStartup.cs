@@ -26,6 +26,7 @@ public class MatchStartup : NetworkBehaviour
     private List<AxialCoordinates> _remainingStartCoordinates;
     private int _playersInMatch;
     private int _numberOfConnectedPlayers;
+    private ScoreDistributor _scoreDistributor;
 
     #region Server
 
@@ -64,6 +65,7 @@ public class MatchStartup : NetworkBehaviour
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
         SetupHexGridDataClientRpc();
+        _scoreDistributor = new ScoreDistributor(hexGridData);
     }
 
     private void SetPlayerStartPositions()

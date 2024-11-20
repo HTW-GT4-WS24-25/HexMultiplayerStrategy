@@ -15,7 +15,7 @@ namespace HexSystem
         {
             _hexDataByCoordinates.Clear();
             
-            foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(new AxialCoordinates(0, 0), nRings))
+            foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
                 _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate));       
             }

@@ -77,11 +77,13 @@ namespace Networking.Host
                     GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(ClientId, (int)_playerColorType);
                 }
             }
+            
             public int PlayerScore
             {
                 get => _playerScore;
                 set
                 {
+                    Debug.Log($"Player {PlayerName}, new score: {value}, old score: {_playerScore}");
                     _playerScore = value;
                     GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
                 }
