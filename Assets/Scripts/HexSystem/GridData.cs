@@ -27,6 +27,11 @@ namespace HexSystem
             
             return _hexDataByCoordinates[coordinate]; // Todo: maybe we should find a way to make this immutable
         }
+        
+        public IEnumerable<HexagonData> GetAllHexData()
+        {
+            return _hexDataByCoordinates.Values;
+        }
 
         #region Server
 

@@ -29,7 +29,18 @@ namespace Networking.Host
         public void SetPlayerColorType(ulong playerClientId, PlayerColor.ColorType newColorType)
         {
             _playersByClientId[playerClientId].PlayerColorType = newColorType;
-            GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(playerClientId, (int)newColorType);
+        }
+
+        public void SetPlayerScore(ulong playerClientId, int newScore)
+        {
+            Debug.Assert(_playersByClientId.ContainsKey(playerClientId));
+            _playersByClientId[playerClientId].PlayerScore = newScore;
+        }
+
+        public void IncrementPlayerScore(ulong playerClientId, int points)
+        {
+            Debug.Assert(_playersByClientId.ContainsKey(playerClientId));
+            _playersByClientId[playerClientId].PlayerScore += points;
         }
 
         public void RegisterNewPlayer(Player.Player newPlayer)
@@ -50,10 +61,31 @@ namespace Networking.Host
         
         public class PlayerData
         {
+            private int _playerScore;
+            private PlayerColor.ColorType _playerColorType;
+            
             public ulong ClientId;
             public string PlayerName;
-            public PlayerColor.ColorType PlayerColorType;
             public Player.Player PlayerGameObject;
+
+            public PlayerColor.ColorType PlayerColorType
+            {
+                get => _playerColorType;
+                set
+                {
+                    _playerColorType = value;
+                    GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(ClientId, (int)_playerColorType);
+                }
+            }
+            public int PlayerScore
+            {
+                get => _playerScore;
+                set
+                {
+                    _playerScore = value;
+                    GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
+                }
+            }
         }
     }
 }

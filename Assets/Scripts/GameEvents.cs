@@ -51,6 +51,7 @@ public static class GameEvents
     {
         public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
         public UnityAction<ulong, int> OnPlayerColorChanged;
+        public UnityAction<ulong, int> OnPlayerScoreChanged;
         public UnityAction<Hexagon, PlayerDataStorage.PlayerData> OnHexControllerChanged;
     }
 }
