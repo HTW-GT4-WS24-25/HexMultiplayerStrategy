@@ -36,8 +36,6 @@ public static class GameEvents
         public UnityAction<int> OnUnitSelectionSliderUpdate;
         public UnityAction<int> OnUnitCountOfSelectedChanged;
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
-        public UnityAction<Hexagon, UnitGroup> OnUnitEnteredHexCenterArea;
-        public UnityAction<Hexagon, UnitGroup> OnUnitLeftHexCenterArea;
     }
 
     public class NightShopEvents

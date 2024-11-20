@@ -6,7 +6,6 @@ namespace HexSystem
     {
         public AxialCoordinates Coordinates { get; set; }
         public List<ulong> UnitsOnHex { get; } = new();
-        public List<ulong> UnitsInHexCenter { get; set; } = new();
         public ulong? StationaryUnitGroup { get; set; }
         public bool IsWarGround { get; set; }
         public ulong? ControllerPlayerId { get; set; }

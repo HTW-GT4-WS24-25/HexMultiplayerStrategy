@@ -83,7 +83,7 @@ namespace MapGeneratorTestScene
                 var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                 var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
                
-                newHex.Initialize(coordinates, false);
+                newHex.Initialize(coordinates);
                 _grid.Add(newHex);
             }
         }

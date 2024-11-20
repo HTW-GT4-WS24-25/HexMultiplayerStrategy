@@ -54,7 +54,7 @@ public class MapBuilder : NetworkBehaviour
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
             var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
-            newHex.Initialize(coordinates, IsServer);
+            newHex.Initialize(coordinates);
             Grid.Add(newHex);
         }
     }

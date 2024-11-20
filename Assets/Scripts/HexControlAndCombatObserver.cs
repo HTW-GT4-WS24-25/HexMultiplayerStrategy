@@ -13,8 +13,6 @@ public class HexControlAndCombatObserver : NetworkBehaviour
 
     public void InitializeOnServer()
     {
-        GameEvents.UNIT.OnUnitEnteredHexCenterArea += HandleUnitEnteredHexCenterArea;
-        GameEvents.UNIT.OnUnitLeftHexCenterArea += HandleUnitLeftHexCenterArea;
         GameEvents.NETWORK_SERVER.OnHexControllerChanged += HandleHexControllerChanged;
     }
 
@@ -22,27 +20,22 @@ public class HexControlAndCombatObserver : NetworkBehaviour
 
     private void HandleUnitEnteredHexCenterArea(Hexagon hexagon, UnitGroup unitGroup)
     {
-        gridData.MoveUnitGroupToHexCenter(hexagon.Coordinates, unitGroup);
-        
-        var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
-        if (hexagonData.IsWarGround)
-        {
-            // TODO: Implement combat
-        }
-        else if (gridData.DoesHexCenterContainUnitsFromOtherPlayers(hexagonData.Coordinates, unitGroup.PlayerId))
-        {
-            // TODO: Start combat
-        }
-        else if (hexagonData.ControllerPlayerId != unitGroup.PlayerId)
-        {
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(unitGroup.PlayerId);
-            HandleHexControllerChanged(hexagon, playerData);
-        }
-    }
-    
-    private void HandleUnitLeftHexCenterArea(Hexagon hexagon, UnitGroup unitGroup)
-    {
-        gridData.RemoveUnitGroupFromHexCenter(hexagon.Coordinates, unitGroup);
+        // gridData.MoveUnitGroupToHexCenter(hexagon.Coordinates, unitGroup);
+        //
+        // var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
+        // if (hexagonData.IsWarGround)
+        // {
+        //     // TODO: Implement combat
+        // }
+        // else if (gridData.DoesHexCenterContainUnitsFromOtherPlayers(hexagonData.Coordinates, unitGroup.PlayerId))
+        // {
+        //     // TODO: Start combat
+        // }
+        // else if (hexagonData.ControllerPlayerId != unitGroup.PlayerId)
+        // {
+        //     var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(unitGroup.PlayerId);
+        //     HandleHexControllerChanged(hexagon, playerData);
+        // }
     }
 
     private void HandleHexControllerChanged(Hexagon hexagon, PlayerDataStorage.PlayerData newControllerData)

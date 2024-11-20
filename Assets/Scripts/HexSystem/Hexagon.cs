@@ -6,21 +6,17 @@ namespace HexSystem
     public class Hexagon : MonoBehaviour
     {
         [SerializeField] private HexBorderLine hexBorderLine;
-        [SerializeField] private HexagonCenterTriggerArea centerTriggerArea;
         
         public bool isTraversable;
         
         public AxialCoordinates Coordinates { get; private set; }
 
-        public void Initialize(AxialCoordinates coordinate, bool asServer)
+        public void Initialize(AxialCoordinates coordinate)
         {
             Coordinates = coordinate;
             
             if(hexBorderLine != null)
                 hexBorderLine.Initialize();
-
-            if (!asServer && centerTriggerArea != null)
-                Destroy(centerTriggerArea.gameObject);
         }
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)
