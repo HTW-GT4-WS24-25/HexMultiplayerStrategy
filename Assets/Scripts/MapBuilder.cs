@@ -7,6 +7,7 @@ using static MapDataGenerator;
 public class MapBuilder : NetworkBehaviour
 {
     [Header("Hexagon Prefabs")] 
+    [SerializeField] private Hexagon forestTilePrefab;
     [SerializeField] private Hexagon grassTilePrefab;
     [SerializeField] private Hexagon mountainTilePrefab;
     
