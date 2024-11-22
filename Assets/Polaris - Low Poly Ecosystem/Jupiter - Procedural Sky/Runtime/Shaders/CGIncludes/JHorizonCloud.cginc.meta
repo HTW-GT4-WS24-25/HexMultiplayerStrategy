@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bbd8ba78921750d40b3e4e70613b06a2
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195642
+  packageName: Low Poly Tools Bundle
+  packageVersion: 1.4
+  assetPath: Assets/Polaris - Low Poly Ecosystem/Jupiter - Procedural Sky/Runtime/Shaders/CGIncludes/JHorizonCloud.cginc
+  uploadId: 651480
