@@ -52,15 +52,16 @@ public class DayNightCycle : NetworkBehaviour
 
             if (_cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
             {
+                SwitchToNightTimeClientRpc();
                 _turnTime.Value = 0;
 
                 if (++_nightsThisGame == nightsPerMatch)
                 {
-                    GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd?.Invoke();
+                    GameEvents.DAY_NIGHT_CYCLE.OnGameEnded?.Invoke();
                     break;
                 }
                 
-                SwitchToNightTimeClientRpc();
+                GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded?.Invoke();
             }
 
             if (_cycleState == CycleState.Night && _turnTime.Value >= nightDuration)

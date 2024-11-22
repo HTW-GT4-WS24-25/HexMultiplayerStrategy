@@ -20,23 +20,17 @@ namespace Score
 
                 public override void OnNetworkSpawn()
                 {
-                        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightCycleSwitched;
-                        GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd += HandleEndOfGame;
+                        GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded += DistributeScoresAtNight;
+                        GameEvents.DAY_NIGHT_CYCLE.OnGameEnded += HandleEndOfGame;
                 }
 
                 public override void OnNetworkDespawn()
                 {
-                        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleDayNightCycleSwitched;
-                        GameEvents.DAY_NIGHT_CYCLE.OnGameReachedEnd += HandleEndOfGame;
+                        GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded -= DistributeScoresAtNight;
+                        GameEvents.DAY_NIGHT_CYCLE.OnGameEnded -= HandleEndOfGame;
                 }
 
                 #region Server
-
-                private void HandleDayNightCycleSwitched(DayNightCycle.CycleState newState)
-                {
-                        if (newState == DayNightCycle.CycleState.Night)
-                                DistributeScoresAtNight();
-                }
 
                 private void DistributeScoresAtNight()
                 {

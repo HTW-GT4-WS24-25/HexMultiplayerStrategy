@@ -240,17 +240,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &264891152 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4441511342870390542, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
-  m_PrefabInstance: {fileID: 1031734880}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40f601c1b5f24672acb399aab77f934d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &384568204 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4627986374935541898, guid: 2eb044b18414ce545ae0019f06ee873e, type: 3}
@@ -561,6 +550,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+--- !u!114 &1031734881 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4441511342870390542, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+  m_PrefabInstance: {fileID: 1031734880}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f601c1b5f24672acb399aab77f934d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1031734882 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8492052665547274729, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
@@ -747,6 +747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  forestTilePrefab: {fileID: 0}
   grassTilePrefab: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
   mountainTilePrefab: {fileID: 536300325094858728, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
   spacing: 0
@@ -956,13 +957,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  turnTimeUI: {fileID: 264891152}
+  turnTimeUI: {fileID: 1031734881}
   dayNightCycleSky: {fileID: 1752909281}
   dayDuration: 10
   nightDuration: 10
   cycleSwitchAnimationDuration: 1.5
   skyTimeForDay: 13
-  nightsPerMatch: 8
+  nightsPerMatch: 3
 --- !u!114 &1819706681
 MonoBehaviour:
   m_ObjectHideFlags: 0
