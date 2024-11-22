@@ -19,7 +19,7 @@ namespace UI.Lobby
         [SerializeField] private ColorSelectionUI colorSelectionUI;
         [SerializeField] private Button startGameButton;
 
-        private const string MatchSceneName = "ToniTestScene";
+        private const string MatchSceneName = "FreddieTestScene";
         private const int MinimumPlayerCount = 1;
             
         private readonly List<LobbyUIPlayerEntry> _lobbyList = new();

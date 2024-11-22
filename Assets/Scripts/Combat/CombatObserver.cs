@@ -20,10 +20,11 @@ namespace Combat
 
         private const float AttackSpeed = 1.5f;
         private float _deltaTime;
+        private bool _isPaused;
 
         private void Update()
         {
-            if (_ongoingCombats.IsNullOrEmpty())
+            if (_ongoingCombats.IsNullOrEmpty() || _isPaused)
                 return;
             
             _deltaTime += Time.deltaTime;
@@ -36,6 +37,18 @@ namespace Combat
         public void InitializeOnServer()
         {
             GameEvents.UNIT.OnCombatTriggered += InitiateCombat; 
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += SwitchCombatPhase;
+            _isPaused = true;
+        }
+
+        private void SwitchCombatPhase(DayNightCycle.CycleState newDayNightCycle)
+        {
+            _isPaused = newDayNightCycle switch
+            {
+                DayNightCycle.CycleState.Day => false,
+                DayNightCycle.CycleState.Night => true,
+                _ => throw new ArgumentException("Invalid DayNightCycle state")
+            };
         }
 
         private void TriggerAllCombatSteps()
