@@ -8,6 +8,10 @@ using UnityEngine;
 public class DayNightCycle : NetworkBehaviour
 {
     [Header("References")]
+<<<<<<< ScoringPerRoundAndMatch
+=======
+    [SerializeField] private InputReader inputReader;
+>>>>>>> main
     [SerializeField] private TurnTimeUI turnTimeUI;
     [SerializeField] private JDayNightCycle dayNightCycleSky;
     
@@ -16,12 +20,19 @@ public class DayNightCycle : NetworkBehaviour
     [SerializeField] private float nightDuration = 20f;
     [SerializeField] private float cycleSwitchAnimationDuration = 1.5f;
     [SerializeField] private float skyTimeForDay = 13f;
+<<<<<<< ScoringPerRoundAndMatch
     [SerializeField] private int nightsPerMatch;
 
     private readonly NetworkVariable<float> _turnTime = new();
     private CycleState _cycleState = CycleState.Night;
     private Tween _cycleSwitchTween;
     private int _nightsThisGame;
+=======
+
+    private NetworkVariable<float> _turnTime = new();
+    private CycleState _cycleState = CycleState.Night;
+    private Tween _cycleSwitchTween;
+>>>>>>> main
 
     public override void OnNetworkSpawn()
     {
@@ -31,6 +42,10 @@ public class DayNightCycle : NetworkBehaviour
         if (IsServer)
         {
             StartCoroutine(TimerRoutine());
+<<<<<<< ScoringPerRoundAndMatch
+=======
+            inputReader.OnSwitchDayNightCycle += SwitchCycleState;
+>>>>>>> main
             
             SwitchToNightTimeClientRpc();
         }
@@ -40,12 +55,21 @@ public class DayNightCycle : NetworkBehaviour
     {
         if (IsClient)
             _turnTime.OnValueChanged -= HandleTurnTimeChanged;
+<<<<<<< ScoringPerRoundAndMatch
+=======
+        
+        if (IsServer)
+        {
+            inputReader.OnSwitchDayNightCycle -= SwitchCycleState;
+        }
+>>>>>>> main
     }
     
     #region Server
 
     private IEnumerator TimerRoutine()
     {
+<<<<<<< ScoringPerRoundAndMatch
         while (true)
         {
             _turnTime.Value += Time.deltaTime;
@@ -74,6 +98,40 @@ public class DayNightCycle : NetworkBehaviour
         }
     }
 
+=======
+        if (_cycleState == CycleState.Day)
+        {
+            SwitchToNightTimeClientRpc();
+        }
+        else if(_cycleState == CycleState.Night)
+        {
+            SwitchToDayTimeClientRpc();
+        }
+    }
+
+    private IEnumerator TimerRoutine()
+    {
+        while (true)
+        {
+            _turnTime.Value += Time.deltaTime;
+
+            if (_cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
+            {
+                SwitchToNightTimeClientRpc();
+                _turnTime.Value = 0;
+            }
+
+            if (_cycleState == CycleState.Night && _turnTime.Value >= nightDuration)
+            {
+                SwitchToDayTimeClientRpc();
+                _turnTime.Value = 0;
+            }
+            
+            yield return null;
+        }
+    }
+
+>>>>>>> main
     #endregion
 
     #region Client
