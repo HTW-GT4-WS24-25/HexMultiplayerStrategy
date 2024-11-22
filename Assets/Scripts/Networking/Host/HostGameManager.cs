@@ -31,7 +31,7 @@ namespace Networking.Host
             NetworkServer?.Dispose();   
         }
 
-        public async Task StartHostAsync()
+        public async Task StartHostAsync(string hostSceneName = LobbySceneName)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Networking.Host
         
             NetworkManager.Singleton.StartHost();
 
-            NetworkManager.Singleton.SceneManager.LoadScene(LobbySceneName, LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene(hostSceneName, LoadSceneMode.Single);
         }
     }
 }

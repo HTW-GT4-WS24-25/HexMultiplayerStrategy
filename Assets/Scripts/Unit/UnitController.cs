@@ -122,6 +122,9 @@ namespace Unit
 
         private void DeselectUnit()
         {
+            if (_selectedUnitGroup == null)
+                return;
+            
             _selectedUnitGroup.DisableHighlight();
             _selectedUnitGroup = null;
         }

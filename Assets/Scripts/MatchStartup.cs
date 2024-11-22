@@ -3,6 +3,7 @@ using Helper;
 using HexSystem;
 using Input;
 using Networking.Host;
+using Score;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,7 @@ public class MatchStartup : NetworkBehaviour
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GridData hexGridData;
     [SerializeField] private HexControlAndCombatObserver hexControlAndCombatObserver;
+    [SerializeField] private ScoreUpdater scoreUpdater;
     
     [Header("Settings")]
     [Tooltip("X will be set to Q, Y will be set to R")]
@@ -64,6 +66,8 @@ public class MatchStartup : NetworkBehaviour
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
         SetupHexGridDataClientRpc();
+        var scoreCalculator = new ScoreCalculator(hexGridData);
+        scoreUpdater.Initialize(scoreCalculator);
     }
 
     private void SetPlayerStartPositions()

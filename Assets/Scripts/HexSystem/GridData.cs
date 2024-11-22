@@ -15,7 +15,7 @@ namespace HexSystem
         {
             _hexDataByCoordinates.Clear();
             
-            foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(new AxialCoordinates(0, 0), nRings))
+            foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
                 _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate));       
             }
@@ -26,6 +26,11 @@ namespace HexSystem
             Debug.Assert(_hexDataByCoordinates.ContainsKey(coordinate), "Tried to get HexagonDataOnCoordinate, but there is no hex on coordinate!");
             
             return _hexDataByCoordinates[coordinate]; // Todo: maybe we should find a way to make this immutable
+        }
+        
+        public IEnumerable<HexagonData> GetAllHexData()
+        {
+            return _hexDataByCoordinates.Values;
         }
 
         #region Server

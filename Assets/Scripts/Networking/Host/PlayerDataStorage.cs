@@ -2,6 +2,7 @@
 using System.Linq;
 using Networking.Server;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Networking.Host
@@ -26,10 +27,26 @@ namespace Networking.Host
             return _playersByClientId[playerId];
         }
 
+        public List<PlayerData> GetAllPlayerData()
+        {
+            return _playersByClientId.Select(keyValuePair => keyValuePair.Value).ToList();
+        }
+
         public void SetPlayerColorType(ulong playerClientId, PlayerColor.ColorType newColorType)
         {
             _playersByClientId[playerClientId].PlayerColorType = newColorType;
-            GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(playerClientId, (int)newColorType);
+        }
+
+        public void SetPlayerScore(ulong playerClientId, int newScore)
+        {
+            Debug.Assert(_playersByClientId.ContainsKey(playerClientId));
+            _playersByClientId[playerClientId].PlayerScore = newScore;
+        }
+
+        public void IncrementPlayerScore(ulong playerClientId, int points)
+        {
+            Debug.Assert(_playersByClientId.ContainsKey(playerClientId));
+            _playersByClientId[playerClientId].PlayerScore += points;
         }
 
         public void RegisterNewPlayer(Player.Player newPlayer)
@@ -40,7 +57,6 @@ namespace Networking.Host
                 ClientId = playerClientId,
                 PlayerName = _networkServer.GetPlayerDataByClientId(playerClientId).playerName,
                 PlayerColorType = PlayerColor.ColorType.None,
-                PlayerGameObject = newPlayer
             };
             Debug.Log($"Player {newPlayerData.PlayerName} registered!");
             
@@ -48,12 +64,42 @@ namespace Networking.Host
             GameEvents.NETWORK_SERVER.OnPlayerConnected?.Invoke(playerClientId, newPlayerData.PlayerName);
         }
         
-        public class PlayerData
+        public class PlayerData : INetworkSerializable
         {
+            private int _playerScore;
+            private PlayerColor.ColorType _playerColorType;
+            
             public ulong ClientId;
             public string PlayerName;
-            public PlayerColor.ColorType PlayerColorType;
-            public Player.Player PlayerGameObject;
+
+            public PlayerColor.ColorType PlayerColorType
+            {
+                get => _playerColorType;
+                set
+                {
+                    _playerColorType = value;
+                    GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(ClientId, (int)_playerColorType);
+                }
+            }
+            
+            public int PlayerScore
+            {
+                get => _playerScore;
+                set
+                {
+                    Debug.Log($"Player {PlayerName}, new score: {value}, old score: {_playerScore}");
+                    _playerScore = value;
+                    GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
+                }
+            }
+
+            public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+            {
+                serializer.SerializeValue(ref _playerScore);
+                serializer.SerializeValue(ref _playerColorType);
+                serializer.SerializeValue(ref ClientId);
+                serializer.SerializeValue(ref PlayerName);
+            }
         }
     }
 }

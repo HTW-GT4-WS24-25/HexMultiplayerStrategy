@@ -16,10 +16,10 @@ namespace Networking.Client
 {
     public class ClientGameManager : IDisposable
     {
-        private const string MenuSceneName = "Menu";
-    
         private JoinAllocation _joinAllocation;
         private NetworkClient _networkClient;
+        
+        private const string MenuSceneName = "Menu";
     
         public async Task<bool> InitAsync()
         {
@@ -37,7 +37,7 @@ namespace Networking.Client
             return false;
         }
 
-        public void GoToMenu() 
+        public void GoToMenu()
         {
             SceneManager.LoadScene(MenuSceneName);
         }

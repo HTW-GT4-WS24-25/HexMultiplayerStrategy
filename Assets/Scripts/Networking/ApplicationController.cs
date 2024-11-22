@@ -3,6 +3,7 @@ using Networking.Client;
 using Networking.Host;
 using Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Networking
 {
@@ -11,6 +12,7 @@ namespace Networking
         [SerializeField] private HostSingleton hostPrefab;
         [SerializeField] private ClientSingleton clientPrefab;
         [SerializeField] private PlayerColor[] playerColors;
+        [SerializeField] private string sceneNameAfterInitialization = "Menu";
 
         private void Start()
         {
@@ -38,7 +40,7 @@ namespace Networking
 
             if(authenticated)
             {
-                client.GameManager.GoToMenu();
+                SceneManager.LoadScene(sceneNameAfterInitialization);
             }
         }
     }
