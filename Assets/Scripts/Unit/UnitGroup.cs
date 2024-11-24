@@ -16,9 +16,11 @@ namespace Unit
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private UnitGroupCombatInitiator combatInitiator;
 
         public UnityEvent OnUnitHighlightEnabled;
         public UnityEvent OnUnitHighlightDisabled;
+        public UnityEvent OnDamageTaken;
 
         public Action<int> OnUnitCountUpdated;
 
@@ -31,8 +33,9 @@ namespace Unit
         public override void OnNetworkSpawn()
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
-            
             UnitGroupsInGame.Add(NetworkObjectId, this);
+            if (!IsServer)
+                Destroy(combatInitiator.gameObject);
         }
 
         public override void OnNetworkDespawn()
@@ -59,19 +62,21 @@ namespace Unit
             UnitCount.Value += amount;
         }
 
-        public void SubtractUnits(int amount)
+        public void TakeDamage(int damageAmount)
         {
-            UnitCount.Value -= amount;
+            SubtractUnits(damageAmount);
+            TriggerOnDamageTakenClientRpc();
         }
         
         public void Delete()
         {
+            GameEvents.UNIT.OnUnitGroupDeleted.Invoke(this);
             Destroy(gameObject);
         }
-
-        public void SetAsSelectedForControllingPlayer()
+        
+        private void SubtractUnits(int amount)
         {
-            SetAsSelectedClientRpc();
+            UnitCount.Value -= amount;
         }
 
         #endregion
@@ -94,6 +99,12 @@ namespace Unit
         {
             if(NetworkManager.Singleton.LocalClientId == PlayerId)
                 GameEvents.UNIT.OnUnitGroupSelected?.Invoke(this);
+        }
+
+        [ClientRpc]
+        private void TriggerOnDamageTakenClientRpc()
+        {
+            OnDamageTaken?.Invoke();
         }
         
         private void HandleUnitCountChanged(int previousvalue, int newvalue)

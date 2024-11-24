@@ -36,8 +36,8 @@ public static class GameEvents
         public UnityAction<int> OnUnitSelectionSliderUpdate;
         public UnityAction<int> OnUnitCountOfSelectedChanged;
         public UnityAction<UnitGroup> OnUnitGroupDeleted;
-        public UnityAction<Hexagon, UnitGroup> OnUnitEnteredHexCenterArea;
-        public UnityAction<Hexagon, UnitGroup> OnUnitLeftHexCenterArea;
+        public UnityAction<UnitGroup, AxialCoordinates> OnUnitGroupReachedHexCenter;
+        public UnityAction<UnitGroup, UnitGroup> OnCombatTriggered;
     }
 
     public class NightShopEvents
@@ -54,6 +54,6 @@ public static class GameEvents
         public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
         public UnityAction<ulong, int> OnPlayerColorChanged;
         public UnityAction<ulong, int> OnPlayerScoreChanged;
-        public UnityAction<Hexagon, PlayerDataStorage.PlayerData> OnHexControllerChanged;
+        public UnityAction<AxialCoordinates, ulong> OnHexControllerChanged;
     }
 }

@@ -35,7 +35,12 @@ namespace HexSystem
 
         #region Server
 
-        public ulong? FirsPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
+        public override void OnNetworkSpawn()
+        {
+            GameEvents.UNIT.OnUnitGroupDeleted += DeleteUnitGroup;
+        }
+
+        public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
         {
             var hexagonData = _hexDataByCoordinates[coordinate];
             if (hexagonData.UnitsOnHex.All(unitId => UnitGroup.UnitGroupsInGame[unitId].PlayerId != playerId))
@@ -44,24 +49,11 @@ namespace HexSystem
             return hexagonData.UnitsOnHex.First(unitId => UnitGroup.UnitGroupsInGame[unitId].PlayerId == playerId);
         }
 
-        public bool DoesHexCenterContainUnitsFromOtherPlayers(AxialCoordinates coordinates, ulong playerId)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinates];
-            foreach (var unitId in hexagonData.UnitsInHexCenter)
-            {
-                if (UnitGroup.UnitGroupsInGame[unitId].PlayerId != playerId)
-                    return true;
-            }
-
-            return false;
-        }
-
         public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd) 
         {
             var unitGroupToAddId = unitGroupToAdd.NetworkObjectId;
             
             AddUnitToUnitsOnHexClientRpc(coordinate, unitGroupToAddId);
-            AddUnitGroupToHexCenterClientRpc(coordinate, unitGroupToAddId);
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, true, unitGroupToAddId);
         }
 
@@ -75,32 +67,20 @@ namespace HexSystem
             var hexagonData = _hexDataByCoordinates[originalUnitCoordinates];
             
             AddUnitToUnitsOnHexClientRpc(originalUnitCoordinates, copiedUnitGroupId);
-    
-            if (hexagonData.UnitsInHexCenter.Contains(originalUnitGroupId))
-                AddUnitGroupToHexCenterClientRpc(originalUnitCoordinates, copiedUnitGroupId);
             
             if (hexagonData.StationaryUnitGroup == originalUnitGroupId)
                 UpdateStationaryUnitGroupOfHexClientRpc(originalUnitCoordinates, true, copiedUnitGroupId);
         }
 
-        public void DeleteUnitGroupFromHex(AxialCoordinates coordinate, UnitGroup unitGroupToRemove)
+        public void DeleteUnitGroup(UnitGroup unitGroupToRemove)
         {
-            DeleteUnitGroupFromHexClientRpc(coordinate, unitGroupToRemove.NetworkObjectId);
-        }
-
-        public void RemoveUnitGroupFromHexCenter(AxialCoordinates coordinate, UnitGroup unitGroupToRemove)
-        {
-            RemoveUnitGroupFromHexCenterClientRpc(coordinate, unitGroupToRemove.NetworkObjectId);
+            var coordinates = _coordinatesByUnitGroups[unitGroupToRemove.NetworkObjectId];
+            DeleteUnitGroupFromHexClientRpc(coordinates, unitGroupToRemove.NetworkObjectId);
         }
 
         public void MoveUnitGroupToHex(AxialCoordinates oldCoordinate, AxialCoordinates newCoordinate, UnitGroup unitGroupToMove)
         {
             MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupToMove.NetworkObjectId);
-        }
-
-        public void MoveUnitGroupToHexCenter(AxialCoordinates coordinate, UnitGroup unitGroupToMove)
-        {
-            AddUnitGroupToHexCenterClientRpc(coordinate, unitGroupToMove.NetworkObjectId);
         }
 
         public void UpdateControllingPlayerOfHex(AxialCoordinates coordinate, ulong playerId)
@@ -155,22 +135,10 @@ namespace HexSystem
                 "Tried to delete unit group from hex that does not exist in hex!");
             
             hexagonData.UnitsOnHex.Remove(unitGroupToRemove);
-            hexagonData.UnitsInHexCenter.Remove(unitGroupToRemove);
             if(hexagonData.StationaryUnitGroup != null && hexagonData.StationaryUnitGroup == unitGroupToRemove)
                 hexagonData.StationaryUnitGroup = null;
             
             _coordinatesByUnitGroups.Remove(unitGroupToRemove);
-        }
-        
-        [ClientRpc]
-        private void RemoveUnitGroupFromHexCenterClientRpc(AxialCoordinates coordinate, ulong unitGroupToRemove)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinate];
-            
-            Debug.Assert(hexagonData.UnitsInHexCenter.Contains(unitGroupToRemove),
-                "Tried to remove unit group from hex center that does not exist in hex center!");
-            
-            hexagonData.UnitsInHexCenter.Remove(unitGroupToRemove);
         }
         
         [ClientRpc]
@@ -181,26 +149,11 @@ namespace HexSystem
             
             Debug.Assert(dataOfOldHexagon.UnitsOnHex.Contains(unitGroupToMove),
                 "Tried to move unit from hex that didn't contain it!");
-            Debug.Assert(!dataOfNewHexagon.UnitsInHexCenter.Contains(unitGroupToMove),
-                "Tried to move unit to hex that already did contain it!");
 
             dataOfOldHexagon.UnitsOnHex.Remove(unitGroupToMove);
             dataOfNewHexagon.UnitsOnHex.Add(unitGroupToMove);
             
             _coordinatesByUnitGroups[unitGroupToMove] = newCoordinate;
-        }
-
-        [ClientRpc]
-        private void AddUnitGroupToHexCenterClientRpc(AxialCoordinates coordinate, ulong unitGroupToAdd)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinate];
-            
-            Debug.Assert(!hexagonData.UnitsInHexCenter.Contains(unitGroupToAdd),
-                "Tried to add unit group to hex center that already contained it!");
-            
-            hexagonData.UnitsInHexCenter.Add(unitGroupToAdd);
-            
-            Debug.Assert(hexagonData.UnitsOnHex.Contains(unitGroupToAdd), "Tried to add unitGroup to center of hex which does not contain said unitGroup!");
         }
 
         [ClientRpc]
@@ -222,8 +175,6 @@ namespace HexSystem
             {
                 Debug.Assert(hexagonData.UnitsOnHex.Contains(newStationaryUnitGroup),
                     "Tried to add stationary unit group that does not exist on hexagon!");
-                Debug.Assert(hexagonData.UnitsInHexCenter.Contains(newStationaryUnitGroup),
-                    "Tried to add stationary unit group that does not exist in hexagon center!");
             }
         }
 
