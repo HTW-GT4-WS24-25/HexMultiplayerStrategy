@@ -4,6 +4,7 @@ using Input;
 using Pinwheel.Jupiter;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DayNightCycle : NetworkBehaviour
 {
@@ -18,8 +19,9 @@ public class DayNightCycle : NetworkBehaviour
     [SerializeField] private float skyTimeForDay = 13f;
     [SerializeField] private int nightsPerMatch;
 
+    public CycleState cycleState = CycleState.Night;
+    
     private readonly NetworkVariable<float> _turnTime = new();
-    private CycleState _cycleState = CycleState.Night;
     private Tween _cycleSwitchTween;
     private int _nightsThisGame;
 
@@ -50,7 +52,7 @@ public class DayNightCycle : NetworkBehaviour
         {
             _turnTime.Value += Time.deltaTime;
 
-            if (_cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
+            if (cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
             {
                 SwitchToNightTimeClientRpc();
                 _turnTime.Value = 0;
@@ -64,7 +66,7 @@ public class DayNightCycle : NetworkBehaviour
                 GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded?.Invoke();
             }
 
-            if (_cycleState == CycleState.Night && _turnTime.Value >= nightDuration)
+            if (cycleState == CycleState.Night && _turnTime.Value >= nightDuration)
             {
                 SwitchToDayTimeClientRpc();
                 _turnTime.Value = 0;
@@ -81,30 +83,30 @@ public class DayNightCycle : NetworkBehaviour
     private void SwitchToDayTimeClientRpc()
     {
         Debug.Log("SwitchToDayTime");
-        _cycleState = CycleState.Day;
+        cycleState = CycleState.Day;
         
         _cycleSwitchTween?.Kill();
         var skyTimeForNight = dayNightCycleSky.Time;
         _cycleSwitchTween = DOVirtual.Float(0, 12f, cycleSwitchAnimationDuration, time => dayNightCycleSky.Time = (skyTimeForNight + time) % 24f).SetEase(Ease.OutCirc);
         
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(_cycleState);
+        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(cycleState);
     }
 
     [ClientRpc]
     private void SwitchToNightTimeClientRpc()
     {
         Debug.Log("SwitchToNightTime");
-        _cycleState = CycleState.Night;
+        cycleState = CycleState.Night;
         
         _cycleSwitchTween?.Kill();
         _cycleSwitchTween = DOVirtual.Float(0, 12f, cycleSwitchAnimationDuration, time => dayNightCycleSky.Time = (skyTimeForDay + time) % 24f).SetEase(Ease.OutCirc);
         
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(_cycleState);
+        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(cycleState);
     }
     
     private void HandleTurnTimeChanged(float previousValue, float newValue)
     {
-        turnTimeUI.UpdateTurnTime(newValue, _cycleState == CycleState.Day ? dayDuration : nightDuration);
+        turnTimeUI.UpdateTurnTime(newValue, cycleState == CycleState.Day ? dayDuration : nightDuration);
     }
 
     #endregion

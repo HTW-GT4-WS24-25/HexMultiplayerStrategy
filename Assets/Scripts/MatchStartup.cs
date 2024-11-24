@@ -23,7 +23,7 @@ public class MatchStartup : NetworkBehaviour
     [SerializeField] private ScoreUpdater scoreUpdater;
     
     [SerializeField] private HexControlObserver hexControlObserver;
-    [SerializeField] private CombatObserver combatObserver;
+    [FormerlySerializedAs("combatObserver")] [SerializeField] private CombatController combatController;
 
     [Header("Settings")]
     [Tooltip("X will be set to Q, Y will be set to R")]
@@ -42,7 +42,7 @@ public class MatchStartup : NetworkBehaviour
             return;
         
         hexControlObserver.InitializeOnServer();
-        combatObserver.InitializeOnServer();
+        combatController.InitializeOnServer();
         
         _numberOfConnectedPlayers = NetworkManager.Singleton.ConnectedClients.Count;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += HandleClientFinishedLoadingScene;
