@@ -45,10 +45,10 @@ namespace Combat
             Debug.Assert(_unitGroups.Contains(unitGroup), "Tried to join a combat group but it was already joined.");
             
             var existingUnitGroupOfPlayer = _unitGroups.Find(u => u.PlayerId.Equals(unitGroup.PlayerId));
+            
             if (existingUnitGroupOfPlayer != null)
             {
-                existingUnitGroupOfPlayer.AddUnits(unitGroup.UnitCount.Value);
-                unitGroup.Delete();
+                existingUnitGroupOfPlayer.IntegrateUnitsOf(unitGroup);
             }
             else
             {

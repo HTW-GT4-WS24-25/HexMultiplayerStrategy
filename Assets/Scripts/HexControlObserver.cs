@@ -21,18 +21,17 @@ public class HexControlObserver : NetworkBehaviour
     private void HandleUnitGroupReachedHexCenter(UnitGroup unitGroup, AxialCoordinates hexCoordinates)
     {
         var hexagonData = gridData.GetHexagonDataOnCoordinate(hexCoordinates);
-        var stationaryUnitGroupId = hexagonData.StationaryUnitGroup;
         
-        if (stationaryUnitGroupId == null)
+        if (hexagonData.StationaryUnitGroup == null)
         {
             Debug.Log("Unit should become stationary");
             gridData.UpdateStationaryUnitGroupOfHex(hexCoordinates, unitGroup);
             HandleHexControllerChanged(hexagonData.Coordinates, unitGroup.PlayerId);
             return;
         }
-        
-        var stationaryUnitGroup = UnitGroup.UnitGroupsInGame[stationaryUnitGroupId.Value];
 
+        var stationaryUnitGroup = UnitGroup.UnitGroupsInGame[hexagonData.StationaryUnitGroup.Value];
+        
         if (stationaryUnitGroup.PlayerId != unitGroup.PlayerId)
         {
             Debug.Log("Initiating Combat in HexCenter");
@@ -42,8 +41,7 @@ public class HexControlObserver : NetworkBehaviour
         {
             Debug.Log("Unit should be added to other stationary group");
 
-            stationaryUnitGroup.AddUnits(unitGroup.UnitCount.Value);
-            unitGroup.Delete();
+            stationaryUnitGroup.IntegrateUnitsOf(unitGroup);
         }
     }
 
