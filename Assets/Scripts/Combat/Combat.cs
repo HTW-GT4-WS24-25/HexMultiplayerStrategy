@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unit;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Combat
         public readonly CombatIndicator CombatIndicator;
         public readonly CombatArea CombatArea;
         
-        private readonly List<UnitGroup> _unitGroups;
+        private readonly HashSet<UnitGroup> _unitGroups;
         private readonly HashSet<UnitGroup> _killedUnitGroups;
 
         public Combat(CombatIndicator combatIndicator, CombatArea combatArea, UnitGroup unitGroup1, UnitGroup unitGroup2)
@@ -19,7 +20,7 @@ namespace Combat
             
             unitGroup1.Movement.IsFighting = true;
             unitGroup2.Movement.IsFighting = true;
-            _unitGroups = new List<UnitGroup> { unitGroup1, unitGroup2 };
+            _unitGroups = new HashSet<UnitGroup> { unitGroup1, unitGroup2 };
             _killedUnitGroups = new HashSet<UnitGroup>();
         }
 
@@ -42,10 +43,9 @@ namespace Combat
 
         public void JoinCombat(UnitGroup unitGroup)
         {
-            Debug.Assert(_unitGroups.Contains(unitGroup), "Tried to join a combat group but it was already joined.");
+            Debug.Assert(!_unitGroups.Contains(unitGroup), "Tried to join a combat group but it was already joined.");
             
-            var existingUnitGroupOfPlayer = _unitGroups.Find(u => u.PlayerId.Equals(unitGroup.PlayerId));
-            
+            var existingUnitGroupOfPlayer = _unitGroups.FirstOrDefault(u => u.PlayerId.Equals(unitGroup.PlayerId));
             if (existingUnitGroupOfPlayer != null)
             {
                 existingUnitGroupOfPlayer.IntegrateUnitsOf(unitGroup);
@@ -59,7 +59,7 @@ namespace Combat
         
         private void DamageOtherUnits(UnitGroup unitGroup)
         {
-            var otherUnitGroups = _unitGroups.FindAll(u => u != unitGroup);
+            var otherUnitGroups = _unitGroups.Where(u => u != unitGroup);
             foreach (var otherUnitGroup in otherUnitGroups)
             {
                 otherUnitGroup.TakeDamage(1);
