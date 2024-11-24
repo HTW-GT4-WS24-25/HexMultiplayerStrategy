@@ -38,7 +38,7 @@ public class HexControlObserver : NetworkBehaviour
             Debug.Log("Initiating Combat in HexCenter");
             GameEvents.UNIT.OnCombatTriggered?.Invoke(stationaryUnitGroup, unitGroup);
         } 
-        else if (!unitGroup.Movement.IsMoving)
+        else if (!unitGroup.Movement.HasPath)
         {
             Debug.Log("Unit should be added to other stationary group");
 
