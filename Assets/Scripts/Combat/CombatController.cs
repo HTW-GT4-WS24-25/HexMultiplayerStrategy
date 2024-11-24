@@ -10,8 +10,9 @@ using UnityEngine;
 
 namespace Combat
 {
-    public class CombatObserver : NetworkBehaviour
+    public class CombatController : NetworkBehaviour
     {
+        [SerializeField] private DayNightCycle dayNightCycle;
         [SerializeField] private CombatIndicator combatIndicatorPrefab;
         [SerializeField] private CombatArea combatAreaPrefab;
         [SerializeField] private GridData gridData;
@@ -28,7 +29,8 @@ namespace Combat
                 return;
             
             _deltaTime += Time.deltaTime;
-            if (_deltaTime < AttackSpeed) return;
+            if (_deltaTime < AttackSpeed) 
+                return;
             
             _deltaTime = 0f;
             TriggerAllCombatSteps();
@@ -37,11 +39,12 @@ namespace Combat
         public void InitializeOnServer()
         {
             GameEvents.UNIT.OnCombatTriggered += InitiateCombat; 
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += SwitchCombatPhase;
-            _isPaused = true;
+            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += UpdateIsPaused;
+            
+            UpdateIsPaused(dayNightCycle.cycleState);
         }
 
-        private void SwitchCombatPhase(DayNightCycle.CycleState newDayNightCycle)
+        private void UpdateIsPaused(DayNightCycle.CycleState newDayNightCycle)
         {
             _isPaused = newDayNightCycle switch
             {

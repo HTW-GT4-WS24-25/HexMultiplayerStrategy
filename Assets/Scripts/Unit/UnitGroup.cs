@@ -56,6 +56,12 @@ namespace Unit
             Movement.NextHexagon = startHexagon;
             Movement.GridData = gridData;
         }
+
+        public void IntegrateUnitsOf(UnitGroup otherUnitGroup)
+        {
+            AddUnits(otherUnitGroup.UnitCount.Value);
+            otherUnitGroup.Delete();
+        }
         
         public void AddUnits(int amount)
         {

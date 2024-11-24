@@ -928,6 +928,7 @@ MonoBehaviour:
   cycleSwitchAnimationDuration: 1.5
   skyTimeForDay: 13
   nightsPerMatch: 3
+  cycleState: 1
 --- !u!114 &1819706681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1044,7 +1045,7 @@ GameObject:
   - component: {fileID: 1922756000}
   - component: {fileID: 1922756001}
   m_Layer: 0
-  m_Name: CombatObserver
+  m_Name: CombatController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1103,6 +1104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  dayNightCycle: {fileID: 1819706680}
   combatIndicatorPrefab: {fileID: 9163288217558705451, guid: 6c69749628d31f64cb5560a3a8b42243, type: 3}
   combatAreaPrefab: {fileID: 7634974111960138292, guid: 45e42b38ca95f6f419cd2574bd1bcb22, type: 3}
   gridData: {fileID: 1533390224}
