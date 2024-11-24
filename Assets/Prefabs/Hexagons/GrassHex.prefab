@@ -245,6 +245,8 @@ MonoBehaviour:
   - {fileID: 2894212927354355084}
   - {fileID: 1259860502124646236}
   highlightWidthMultiplier: 0.05
+  validForPlacementMaterial: {fileID: 2100000, guid: 7403ef5da9ff4e44ba2d31950520ca8d, type: 2}
+  defaultMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!120 &8749054821632605366
 LineRenderer:
   serializedVersion: 2

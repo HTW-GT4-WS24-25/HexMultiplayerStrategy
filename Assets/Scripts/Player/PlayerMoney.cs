@@ -1,38 +1,33 @@
-
-using System;
-using UnityEngine;
-
 namespace Player
 {
-    public class PlayerMoney : MonoBehaviour
+    public class PlayerMoney
     {
-        [SerializeField] private int moneyPerRound;
         private int _currentMoney;
 
-        private void OnEnable()
+        public bool CanSpendMoney(int amount)
         {
-            GameEvents.NIGHT_SHOP.OnMoneySpent += SpendMoney;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightCycleSwitched;
+            return _currentMoney >= amount;
+        }
+        
+        public bool AttemptToPurchase(int amount)
+        {
+            if (CanSpendMoney(amount))
+            {
+                SetMoney(_currentMoney -= amount);
+                return true;
+            };
+
+            return false;
         }
 
-        private void HandleDayNightCycleSwitched(DayNightCycle.CycleState newDayNightCycle)
+        public int GetMoney()
         {
-            if(newDayNightCycle == DayNightCycle.CycleState.Night)
-                ResetMoney();
+            return _currentMoney;
         }
 
-        private void SpendMoney(int amount)
+        public void SetMoney(int amount)
         {
-            if (_currentMoney - amount < 0) return;
-            
-            _currentMoney -= amount;
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged(_currentMoney);
-        }
-
-        private void ResetMoney()
-        {
-            _currentMoney = moneyPerRound;
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged(_currentMoney);
+            _currentMoney = amount;
         }
     }
 }

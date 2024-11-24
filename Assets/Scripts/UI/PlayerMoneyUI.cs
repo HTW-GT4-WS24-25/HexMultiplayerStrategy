@@ -1,17 +1,20 @@
 using TMPro;
 using UnityEngine;
 
-public class PlayerMoneyUI : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private TextMeshProUGUI playerMoneyText;
-
-    private void OnEnable()
+    public class PlayerMoneyUI : MonoBehaviour
     {
-        GameEvents.NIGHT_SHOP.OnMoneyAmountChanged += DisplayMoneyAmount;
-    }
+        [SerializeField] private TextMeshProUGUI playerMoneyText;
+    
+        private void OnEnable()
+        {
+            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged += DisplayMoneyAmount;
+        }
 
-    void DisplayMoneyAmount(int amount)
-    {
-        playerMoneyText.text = "Gold: " + amount;
+        void DisplayMoneyAmount(int amount)
+        {
+            playerMoneyText.text = "Gold: " + amount;
+        }
     }
 }
