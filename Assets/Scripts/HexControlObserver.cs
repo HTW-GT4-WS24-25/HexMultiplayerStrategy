@@ -12,7 +12,7 @@ public class HexControlObserver : NetworkBehaviour
 
     public void InitializeOnServer()
     {
-        GameEvents.NETWORK_SERVER.OnHexControllerChanged += HandleHexControllerChanged;
+        GameEvents.NETWORK_SERVER.OnInitialPlayerUnitsPlaced += HandleHexControllerChanged;
         GameEvents.UNIT.OnUnitGroupReachedHexCenter += HandleUnitGroupReachedHexCenter;
     }
 
@@ -26,7 +26,9 @@ public class HexControlObserver : NetworkBehaviour
         {
             Debug.Log("Unit should become stationary");
             gridData.UpdateStationaryUnitGroupOfHex(hexCoordinates, unitGroup);
-            HandleHexControllerChanged(hexagonData.Coordinates, unitGroup.PlayerId);
+            if(gridData.GetHexagonDataOnCoordinate(hexCoordinates).ControllerPlayerId != unitGroup.PlayerId)
+                HandleHexControllerChanged(hexagonData.Coordinates, unitGroup.PlayerId);
+            
             return;
         }
 
