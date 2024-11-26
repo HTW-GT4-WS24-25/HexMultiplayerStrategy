@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexSystem;
 using NightShop.NightShopStates;
@@ -15,12 +16,12 @@ namespace NightShop
         [SerializeField] private MoneyController moneyController;
         [SerializeField] private GridData gridData;
         [SerializeField] private List<Card> cards;
-    
-        public Card selectedCard;
-        public Hexagon selectedHexagon;
+        
+        private Card _selectedCard;
+        private Hexagon _selectedHexagon;
     
         private readonly NightShopStateManager _stateManager = new();
-    
+
         private void Start()
         {
             GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += ToggleNightShop;
@@ -44,13 +45,13 @@ namespace NightShop
     
         public void HandleSelectedCard(Card card)
         {
-            selectedCard = card;
+            _selectedCard = card;
             _stateManager.ChangeState(new ChoosingHexagonState(this));
         }
 
         public void HandleDeselectedCard()
         {
-            selectedCard = null;
+            _selectedCard = null;
             _stateManager.ChangeState(new ChoosingCardState(this));
         }
 
@@ -58,15 +59,15 @@ namespace NightShop
         {
             if (!CheckIfHexagonValidForPlacement(hexagon)) return;
 
-            selectedHexagon = hexagon;
-            moneyController.HandlePurchaseCommand(selectedCard.cost);
+            _selectedHexagon = hexagon;
+            moneyController.HandlePurchaseCommand(_selectedCard.cost);
         }
 
         bool CheckIfHexagonValidForPlacement(Hexagon hexagon)
         {
             var playerId = NetworkManager.Singleton.LocalClientId;
             var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
-
+    
             if (hexagonData.ControllerPlayerId != playerId)
                 return false;
 
@@ -78,9 +79,9 @@ namespace NightShop
     
         public void OnSuccessfulPurchase()
         {
-            unitPlacement.HandlePlacementCommand(selectedHexagon.Coordinates, 1);
+            unitPlacement.HandlePlacementCommand(_selectedHexagon.Coordinates, 1);
 
-            if (!selectedCard)
+            if (!_selectedCard)
             {
                 _stateManager.ChangeState(new ChoosingCardState(this));
                 return;
