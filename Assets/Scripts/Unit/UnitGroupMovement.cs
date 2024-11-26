@@ -20,11 +20,9 @@ namespace Unit
         public GridData GridData { get; set; }
         public Hexagon PreviousHexagon { get; private set; }
         public Hexagon NextHexagon { get; set; }
+        public bool IsMoving { get; private set; }
         private bool IsResting { get; set; }
         public bool IsFighting { get; set; }
-        
-        public bool HasPath => _hexWaypoints.Count > 0;
-        public bool CanMove => !IsResting && !IsFighting;
         
         private Queue<Hexagon> _hexWaypoints = new ();
 
@@ -57,10 +55,15 @@ namespace Unit
             if (!IsServer)
                 return;
             
-            if (!CanMove || !HasPath)
+            if (!CanMove() || !IsMoving)
                 return;
             
             FollowWaypoints();
+        }
+
+        public bool CanMove()
+        {
+            return !IsResting && !IsFighting;
         }
 
         public void CopyValuesFrom(UnitGroupMovement movementToCopy)
@@ -76,15 +79,15 @@ namespace Unit
         
         public void SetAllWaypoints(List<Hexagon> newWaypoints)
         {
-            var hadPath = HasPath;
-            
             _hexWaypoints.Clear();
             _hexWaypoints = new Queue<Hexagon>(newWaypoints);
             
-            if (!HasPath) return;
+            if (_hexWaypoints.Count == 0) 
+                return;
 
-            if (!hadPath || _hexWaypoints.Peek().Equals(PreviousHexagon))
+            if (!IsMoving || _hexWaypoints.Peek().Equals(PreviousHexagon))
             {
+                IsMoving = true;
                 FetchNextWaypoint();
             }
             else
@@ -129,8 +132,9 @@ namespace Unit
         
         private void OnWaypointReached()
         {
-            if (!HasPath)
+            if (_hexWaypoints.Count == 0)
             {
+                IsMoving = false;
                 PreviousHexagon = null;
                 DisableTravelLineClientRpc();
                 GameEvents.UNIT.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
@@ -163,7 +167,7 @@ namespace Unit
         private void UpdateTravelLine()
         { 
             var linePoints = new List<Vector3> { transform.position };
-            if(HasPath)
+            if(IsMoving)
                 linePoints.Add(NextHexagon.transform.position);
         
             linePoints.AddRange(_hexWaypoints.Select(hex => hex.transform.position));
