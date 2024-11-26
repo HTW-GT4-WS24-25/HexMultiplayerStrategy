@@ -9,7 +9,7 @@ namespace Unit
         
         public void OnTriggerEnter(Collider other)
         {
-            if(!unitGroup.Movement.CanMove 
+            if(!unitGroup.Movement.CanMove() 
                || !other.CompareTag("UnitGroup")) 
                 return;
             
