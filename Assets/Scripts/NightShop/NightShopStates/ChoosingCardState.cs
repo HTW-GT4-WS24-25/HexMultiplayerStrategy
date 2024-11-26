@@ -12,12 +12,11 @@ namespace NightShop.NightShopStates
             }
             public void EnterState()
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected();
+                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
                 GameEvents.NIGHT_SHOP.OnCardSelected += OnCardSelected;
                 GameEvents.NIGHT_SHOP.OnCardDeselected += OnCardDeselected;
                 
-                GameEvents.INPUT.OnHexSelectedDuringNightShop = null;
-                GameEvents.HEXAGON?.OnHexagonHideValidForPlacement();
+                GameEvents.HEXAGON.OnHideValidHexagonsForPlacement?.Invoke();
             }
 
             public void ExitState()

@@ -11,9 +11,9 @@ namespace NightShop
     public class NightShopManager : MonoBehaviour
     {
         [SerializeField] private NightShopUI nightShopUI;
-        [SerializeField] private UnitPlacement _unitPlacement;
+        [SerializeField] private UnitPlacement unitPlacement;
         [SerializeField] private MoneyController moneyController;
-        [SerializeField] private GridData _gridData;
+        [SerializeField] private GridData gridData;
         [SerializeField] private List<Card> cards;
     
         public Card selectedCard;
@@ -65,7 +65,7 @@ namespace NightShop
         bool CheckIfHexagonValidForPlacement(Hexagon hexagon)
         {
             var playerId = NetworkManager.Singleton.LocalClientId;
-            var hexagonData = _gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
+            var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
 
             if (hexagonData.ControllerPlayerId != playerId)
                 return false;
@@ -78,7 +78,7 @@ namespace NightShop
     
         public void OnSuccessfulPurchase()
         {
-            _unitPlacement.HandlePlacementCommand(selectedHexagon.Coordinates, 1);
+            unitPlacement.HandlePlacementCommand(selectedHexagon.Coordinates, 1);
 
             if (!selectedCard)
             {

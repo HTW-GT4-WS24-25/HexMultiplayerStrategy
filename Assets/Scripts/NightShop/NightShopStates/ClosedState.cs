@@ -4,7 +4,7 @@ namespace NightShop.NightShopStates
     {
             public void EnterState()
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected();
+                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
             }
 
             public void ExitState()

@@ -16,8 +16,8 @@ public class HexBorderLine : MonoBehaviour
     
     public void Initialize()
     {
-        GameEvents.HEXAGON.OnHexagonShowValidForPlacement += ShowValidForPlacement;
-        GameEvents.HEXAGON.OnHexagonHideValidForPlacement += HideValidForPlacement;
+        GameEvents.HEXAGON.OnShowValidHexagonsForPlacement += ShowValidForPlacement;
+        GameEvents.HEXAGON.OnHideValidHexagonsForPlacement += HideValidForPlacement;
         
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = 6;

@@ -50,8 +50,8 @@ public static class GameEvents
     
     public class HexagonEvents
     {
-        public UnityAction OnHexagonShowValidForPlacement;
-        public UnityAction OnHexagonHideValidForPlacement;
+        public UnityAction OnShowValidHexagonsForPlacement;
+        public UnityAction OnHideValidHexagonsForPlacement;
     }
     
     // These events are only meant to be called and received from the server

@@ -18,7 +18,7 @@ namespace NightShop.NightShopStates
                 GameEvents.NIGHT_SHOP.OnCardDeselected += OnCardDeselected;
                 
                 GameEvents.INPUT.OnHexSelectedDuringNightShop += OnHexSelectedDuringNightShop;
-                GameEvents.HEXAGON.OnHexagonShowValidForPlacement(); // should be some type / requirement
+                GameEvents.HEXAGON.OnShowValidHexagonsForPlacement?.Invoke(); // should be some type / requirement
             }
             
             public void ExitState()
@@ -27,7 +27,7 @@ namespace NightShop.NightShopStates
                 GameEvents.NIGHT_SHOP.OnCardDeselected -= OnCardDeselected;
                                 
                 GameEvents.INPUT.OnHexSelectedDuringNightShop -= OnHexSelectedDuringNightShop;
-                GameEvents.HEXAGON.OnHexagonHideValidForPlacement();
+                GameEvents.HEXAGON.OnHideValidHexagonsForPlacement?.Invoke();
             }
 
             private void OnHexSelectedDuringNightShop(Hexagon hexagon)

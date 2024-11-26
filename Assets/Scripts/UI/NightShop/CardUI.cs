@@ -30,7 +30,7 @@ namespace UI.NightShop
 
             if (isSelected && isDisabled)
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected();
+                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
             }
         }
 

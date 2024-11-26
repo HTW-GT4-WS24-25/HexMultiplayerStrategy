@@ -78,7 +78,6 @@ namespace NightShop
         #endregion
         
         
-        
         #region Client
         
         public void HandlePurchaseCommand(int cost)
@@ -94,7 +93,7 @@ namespace NightShop
         [ClientRpc]
         private void OnReceivedRoundMoneyClientRpc(int money)
         {
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged(money);
+            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged?.Invoke(money);
         }
         
         [ClientRpc]
@@ -102,7 +101,7 @@ namespace NightShop
         {
             if (success)
             {
-                GameEvents.NIGHT_SHOP.OnMoneyAmountChanged(remainingMoney);
+                GameEvents.NIGHT_SHOP.OnMoneyAmountChanged?.Invoke(remainingMoney);
                 nightShopManager.OnSuccessfulPurchase();
             } else
             {
