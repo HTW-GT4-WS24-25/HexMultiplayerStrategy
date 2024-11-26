@@ -14,11 +14,24 @@ namespace UI.NightShop
         private Card card;
         
         public bool isSelected = false;
+        public bool isDisabled = false;
 
         private void OnEnable()
         {
             GameEvents.NIGHT_SHOP.OnCardSelected += HandleCardSelected;
             GameEvents.NIGHT_SHOP.OnCardDeselected += HandleCardDeselected;
+            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged += CheckIfPlayerHasEnoughMoney;
+        }
+
+        private void CheckIfPlayerHasEnoughMoney(int currentMoney)
+        {
+            isDisabled = currentMoney < card.cost;
+            GetComponent<Button>().interactable = currentMoney >= card.cost;
+
+            if (isSelected && isDisabled)
+            {
+                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
+            }
         }
 
         public void Initialize(Card card)

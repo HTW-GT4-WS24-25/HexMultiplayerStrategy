@@ -13,6 +13,7 @@ public static class GameEvents
     public static readonly UnitEvents UNIT = new();
     public static readonly NetworkServerEvents NETWORK_SERVER = new();
     public static readonly NightShopEvents NIGHT_SHOP = new();
+    public static readonly HexagonEvents HEXAGON = new();
 
     public class InputEvents
     {
@@ -44,8 +45,13 @@ public static class GameEvents
     {
         public UnityAction<Card> OnCardSelected;
         public UnityAction OnCardDeselected;
-        public UnityAction<int> OnMoneySpent;
         public UnityAction<int> OnMoneyAmountChanged;
+    }
+    
+    public class HexagonEvents
+    {
+        public UnityAction OnShowValidHexagonsForPlacement;
+        public UnityAction OnHideValidHexagonsForPlacement;
     }
     
     // These events are only meant to be called and received from the server
@@ -57,3 +63,4 @@ public static class GameEvents
         public UnityAction<AxialCoordinates, ulong> OnHexControllerChanged;
     }
 }
+

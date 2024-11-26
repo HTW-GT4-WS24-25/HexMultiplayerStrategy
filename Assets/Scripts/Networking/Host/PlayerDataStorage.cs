@@ -71,7 +71,8 @@ namespace Networking.Host
             
             public ulong ClientId;
             public string PlayerName;
-
+            public PlayerMoney PlayerMoney = new();
+            
             public PlayerColor.ColorType PlayerColorType
             {
                 get => _playerColorType;

@@ -20,7 +20,8 @@ namespace Input
             
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
-                _unitPlacement.HandlePlacementCommand(clickedHexagon.Coordinates, 1);
+                // _unitPlacement.HandlePlacementCommand(clickedHexagon.Coordinates, 1);
+                Debug.Log("HandleMainPointerDown");
                 GameEvents.INPUT.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }
