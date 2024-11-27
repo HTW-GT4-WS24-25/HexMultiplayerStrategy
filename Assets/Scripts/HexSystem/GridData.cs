@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GameEvents;
 using Unit;
 using Unity.Netcode;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace HexSystem
 
         public override void OnNetworkSpawn()
         {
-            GameEvents.UNIT.OnUnitGroupDeleted += DeleteUnitGroup;
+            ServerEvents.Unit.OnUnitGroupWithIdDeleted += DeleteUnitGroup;
         }
 
         public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
@@ -72,8 +73,10 @@ namespace HexSystem
                 UpdateStationaryUnitGroupOfHexClientRpc(originalUnitCoordinates, true, copiedUnitGroupId);
         }
 
-        public void DeleteUnitGroup(UnitGroup unitGroupToRemove)
+        public void DeleteUnitGroup(ulong unitGroupIdToRemove)
         {
+            var unitGroupToRemove = UnitGroup.UnitGroupsInGame[unitGroupIdToRemove];
+            
             var coordinates = _coordinatesByUnitGroups[unitGroupToRemove.NetworkObjectId];
             DeleteUnitGroupFromHexClientRpc(coordinates, unitGroupToRemove.NetworkObjectId);
         }

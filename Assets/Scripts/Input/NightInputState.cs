@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameEvents;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Input
@@ -22,7 +23,7 @@ namespace Input
             {
                 // _unitPlacement.HandlePlacementCommand(clickedHexagon.Coordinates, 1);
                 Debug.Log("HandleMainPointerDown");
-                GameEvents.INPUT.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
+                ClientEvents.Input.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }
 

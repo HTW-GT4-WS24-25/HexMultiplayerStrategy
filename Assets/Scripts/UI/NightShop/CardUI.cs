@@ -1,4 +1,5 @@
 using System;
+using GameEvents;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -18,9 +19,9 @@ namespace UI.NightShop
 
         private void OnEnable()
         {
-            GameEvents.NIGHT_SHOP.OnCardSelected += HandleCardSelected;
-            GameEvents.NIGHT_SHOP.OnCardDeselected += HandleCardDeselected;
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged += CheckIfPlayerHasEnoughMoney;
+            ClientEvents.NightShop.OnCardSelected += HandleCardSelected;
+            ClientEvents.NightShop.OnCardDeselected += HandleCardDeselected;
+            ClientEvents.NightShop.OnMoneyAmountChanged += CheckIfPlayerHasEnoughMoney;
         }
 
         private void CheckIfPlayerHasEnoughMoney(int currentMoney)
@@ -30,7 +31,7 @@ namespace UI.NightShop
 
             if (isSelected && isDisabled)
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
+                ClientEvents.NightShop.OnCardDeselected?.Invoke();
             }
         }
 
@@ -45,10 +46,10 @@ namespace UI.NightShop
         {
             if (isSelected)
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected();
+                ClientEvents.NightShop.OnCardDeselected();
                 return;
             }
-            GameEvents.NIGHT_SHOP.OnCardSelected(card);
+            ClientEvents.NightShop.OnCardSelected(card);
         }
 
         void HandleCardSelected(Card card)

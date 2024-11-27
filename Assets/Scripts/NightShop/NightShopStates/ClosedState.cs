@@ -1,10 +1,12 @@
+using GameEvents;
+
 namespace NightShop.NightShopStates
 {
     public class ClosedState : INightShopState
     {
             public void EnterState()
             {
-                GameEvents.NIGHT_SHOP.OnCardDeselected?.Invoke();
+                ClientEvents.NightShop.OnCardDeselected?.Invoke();
             }
 
             public void ExitState()

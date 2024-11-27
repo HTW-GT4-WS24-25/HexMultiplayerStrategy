@@ -1,3 +1,4 @@
+using GameEvents;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -106,7 +107,7 @@ namespace Input
             if(context.performed)
             {
                 var scrollValue = context.ReadValue<float>();
-                GameEvents.INPUT.OnZoomInput?.Invoke(scrollValue);
+                ClientEvents.Input.OnZoomInput?.Invoke(scrollValue);
             }
         }
     }

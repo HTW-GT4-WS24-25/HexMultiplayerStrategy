@@ -1,3 +1,4 @@
+using GameEvents;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace UI
 
         private void OnEnable()
         {
-            cancelButton.onClick.AddListener(() => GameEvents.UNIT.OnUnitGroupDeselected.Invoke());
+            cancelButton.onClick.AddListener(() => ClientEvents.Unit.OnUnitGroupDeselected.Invoke());
         }
 
         private void OnDisable()

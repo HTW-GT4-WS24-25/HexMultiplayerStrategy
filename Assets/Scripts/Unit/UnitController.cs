@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GameEvents;
 using HexSystem;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,20 +18,24 @@ namespace Unit
 
         public override void OnNetworkSpawn()
         {
-            GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
-            GameEvents.UNIT.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
-            GameEvents.UNIT.OnUnitGroupDeselected += DeselectUnit;
-            GameEvents.UNIT.OnUnitGroupDeleted += DeselectDeletedUnit;
+            ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightSwitchState;
+            ClientEvents.Unit.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
+            ClientEvents.Unit.OnUnitGroupDeselected += DeselectUnit;
+            
+            if(IsServer)
+                ServerEvents.Unit.OnUnitGroupWithIdDeleted += DeselectUnitGroupIfSelectedClientRpc;
         }
 
         public override void OnNetworkDespawn()
         {
-            GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
-            GameEvents.UNIT.OnUnitGroupDeselected -= DeselectUnit;
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleDayNightSwitchState;
-            GameEvents.UNIT.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
-            GameEvents.UNIT.OnUnitGroupDeleted -= DeselectDeletedUnit;
+            ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleDayNightSwitchState;
+            ClientEvents.Unit.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
+            ClientEvents.Unit.OnUnitGroupDeselected -= DeselectUnit;
+            
+            if(IsServer)
+                ServerEvents.Unit.OnUnitGroupWithIdDeleted -= DeselectUnitGroupIfSelectedClientRpc;
         }
 
         #region Server
@@ -80,11 +85,21 @@ namespace Unit
         #endregion
 
         #region Client
+        
+        [ClientRpc]
+        private void DeselectUnitGroupIfSelectedClientRpc(ulong unitGroupId)
+        {
+            var unitGroup = UnitGroup.UnitGroupsInGame[unitGroupId];
+            if (_selectedUnitGroup != unitGroup)
+                return;
+
+            ClientEvents.Unit.OnUnitGroupDeselected?.Invoke();
+        }
 
         private static void HandleDayNightSwitchState(DayNightCycle.CycleState newCycleState)
         {
             if (newCycleState == DayNightCycle.CycleState.Night)
-                GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
+                ClientEvents.Unit.OnUnitGroupDeselected?.Invoke();
         }
 
         private void HandleHexClick(Hexagon clickedHex)
@@ -114,13 +129,13 @@ namespace Unit
                 _selectedUnitGroup.EnableHighlight();
                 _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
                 
-                GameEvents.UNIT.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
+                ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
             }
         }
 
         private void HandleUnitCountOfSelectedChanged(int newUnitCount)
         {
-            GameEvents.UNIT.OnUnitCountOfSelectedChanged?.Invoke(newUnitCount);
+            ClientEvents.Unit.OnUnitCountOfSelectedChanged?.Invoke(newUnitCount);
         }
 
         private void DeselectUnit()
@@ -135,14 +150,6 @@ namespace Unit
         private void UpdateSelectedUnitCount(int count)
         {
             _clientSelectionUnitCount = count;
-        }
-
-        private void DeselectDeletedUnit(UnitGroup unitGroup)
-        {
-            if (_selectedUnitGroup != unitGroup)
-                return;
-
-            GameEvents.UNIT.OnUnitGroupDeselected.Invoke();
         }
 
         #endregion
