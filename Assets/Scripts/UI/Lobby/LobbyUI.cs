@@ -20,7 +20,7 @@ namespace UI.Lobby
         [SerializeField] private ColorSelectionUI colorSelectionUI;
         [SerializeField] private Button startGameButton;
 
-        private const string MatchSceneName = "FreddieTestScene";
+        private const string MatchSceneName = "MatchScene";
         private const int MinimumPlayerCount = 1;
             
         private readonly List<LobbyUIPlayerEntry> _lobbyList = new();
@@ -53,11 +53,6 @@ namespace UI.Lobby
                 ServerEvents.Player.OnPlayerConnected += HandlePlayerConnected;
                 ServerEvents.Player.OnPlayerColorChanged += HandlePlayerColorChangedClientRPC;
             }
-        }
-
-        public static void StartMatch()
-        {
-            NetworkManager.Singleton.SceneManager.LoadScene(MatchSceneName, LoadSceneMode.Single);
         }
 
         #region Server
@@ -95,6 +90,11 @@ namespace UI.Lobby
                 
                 OnColorSelectionSuccessfulClientRPC(clientRpcParams);
             }
+        }
+        
+        public static void StartMatch()
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene(MatchSceneName, LoadSceneMode.Single);
         }
 
         private void HandlePlayerConnected(ulong clientId, FixedString32Bytes playerName)
