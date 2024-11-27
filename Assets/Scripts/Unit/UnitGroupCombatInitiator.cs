@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using GameEvents;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unit
@@ -17,7 +18,7 @@ namespace Unit
             if (collidedUnitGroup.Movement.IsFighting || unitGroup.PlayerId == collidedUnitGroup.PlayerId)
                 return;
             
-            GameEvents.UNIT.OnCombatTriggered?.Invoke(collidedUnitGroup, unitGroup);
+            ServerEvents.Unit.OnCombatTriggered?.Invoke(collidedUnitGroup, unitGroup);
         }
     }
 }

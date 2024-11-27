@@ -1,5 +1,6 @@
 using System.Collections;
 using DG.Tweening;
+using GameEvents;
 using Input;
 using Pinwheel.Jupiter;
 using Unity.Netcode;
@@ -13,13 +14,13 @@ public class DayNightCycle : NetworkBehaviour
     [SerializeField] private JDayNightCycle dayNightCycleSky;
     
     [Header("Settings")]
-    [SerializeField] private float dayDuration = 20f;
-    [SerializeField] private float nightDuration = 20f;
     [SerializeField] private float cycleSwitchAnimationDuration = 1.5f;
     [SerializeField] private float skyTimeForDay = 13f;
-    [SerializeField] private int nightsPerMatch;
 
     public CycleState cycleState = CycleState.Night;
+    public float DayDuration { get; set; }
+    public float NightDuration { get; set; }
+    public int NightsPerMatch { get; set; }
     
     private readonly NetworkVariable<float> _turnTime = new();
     private Tween _cycleSwitchTween;
@@ -29,13 +30,6 @@ public class DayNightCycle : NetworkBehaviour
     {
         if (IsClient)
             _turnTime.OnValueChanged += HandleTurnTimeChanged;
-            
-        if (IsServer)
-        {
-            StartCoroutine(TimerRoutine());
-            
-            SwitchToNightTimeClientRpc();
-        }
     }
 
     public override void OnNetworkDespawn()
@@ -46,27 +40,34 @@ public class DayNightCycle : NetworkBehaviour
     
     #region Server
 
-    private IEnumerator TimerRoutine()
+    public void StartMatch()
+    {
+        StartCoroutine(DayNightTimerRoutine());
+        
+        SwitchToNightTimeClientRpc();
+    }
+
+    private IEnumerator DayNightTimerRoutine()
     {
         while (true)
         {
             _turnTime.Value += Time.deltaTime;
 
-            if (cycleState == CycleState.Day && _turnTime.Value >= dayDuration)
+            if (cycleState == CycleState.Day && _turnTime.Value >= DayDuration)
             {
                 SwitchToNightTimeClientRpc();
                 _turnTime.Value = 0;
 
-                if (++_nightsThisGame == nightsPerMatch)
+                if (++_nightsThisGame == NightsPerMatch)
                 {
-                    GameEvents.DAY_NIGHT_CYCLE.OnGameEnded?.Invoke();
+                    ServerEvents.DayNightCycle.OnGameEnded?.Invoke();
                     break;
                 }
                 
-                GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded?.Invoke();
+                ServerEvents.DayNightCycle.OnTurnEnded?.Invoke();
             }
 
-            if (cycleState == CycleState.Night && _turnTime.Value >= nightDuration)
+            if (cycleState == CycleState.Night && _turnTime.Value >= NightDuration)
             {
                 SwitchToDayTimeClientRpc();
                 _turnTime.Value = 0;
@@ -89,7 +90,7 @@ public class DayNightCycle : NetworkBehaviour
         var skyTimeForNight = dayNightCycleSky.Time;
         _cycleSwitchTween = DOVirtual.Float(0, 12f, cycleSwitchAnimationDuration, time => dayNightCycleSky.Time = (skyTimeForNight + time) % 24f).SetEase(Ease.OutCirc);
         
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(cycleState);
+        ClientEvents.DayNightCycle.OnSwitchedCycleState?.Invoke(cycleState);
     }
 
     [ClientRpc]
@@ -101,12 +102,12 @@ public class DayNightCycle : NetworkBehaviour
         _cycleSwitchTween?.Kill();
         _cycleSwitchTween = DOVirtual.Float(0, 12f, cycleSwitchAnimationDuration, time => dayNightCycleSky.Time = (skyTimeForDay + time) % 24f).SetEase(Ease.OutCirc);
         
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState?.Invoke(cycleState);
+        ClientEvents.DayNightCycle.OnSwitchedCycleState?.Invoke(cycleState);
     }
     
     private void HandleTurnTimeChanged(float previousValue, float newValue)
     {
-        turnTimeUI.UpdateTurnTime(newValue, cycleState == CycleState.Day ? dayDuration : nightDuration);
+        turnTimeUI.UpdateTurnTime(newValue, cycleState == CycleState.Day ? DayDuration : NightDuration);
     }
 
     #endregion

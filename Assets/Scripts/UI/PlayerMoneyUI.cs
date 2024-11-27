@@ -1,3 +1,4 @@
+using GameEvents;
 using TMPro;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace UI
     
         private void OnEnable()
         {
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged += DisplayMoneyAmount;
+            ClientEvents.NightShop.OnMoneyAmountChanged += DisplayMoneyAmount;
         }
 
         void DisplayMoneyAmount(int amount)

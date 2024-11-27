@@ -1,6 +1,6 @@
+using GameEvents;
 using HexSystem;
 using UI.NightShop;
-using UnityEngine;
 
 namespace NightShop.NightShopStates
 { 
@@ -14,20 +14,20 @@ namespace NightShop.NightShopStates
             }
             public void EnterState()
             {
-                GameEvents.NIGHT_SHOP.OnCardSelected += OnCardSelected;
-                GameEvents.NIGHT_SHOP.OnCardDeselected += OnCardDeselected;
+                ClientEvents.NightShop.OnCardSelected += OnCardSelected;
+                ClientEvents.NightShop.OnCardDeselected += OnCardDeselected;
                 
-                GameEvents.INPUT.OnHexSelectedDuringNightShop += OnHexSelectedDuringNightShop;
-                GameEvents.HEXAGON.OnShowValidHexagonsForPlacement?.Invoke(); // should be some type / requirement
+                ClientEvents.Input.OnHexSelectedDuringNightShop += OnHexSelectedDuringNightShop;
+                ClientEvents.Hexagon.OnShowValidHexagonsForPlacement?.Invoke(); // should be some type / requirement
             }
             
             public void ExitState()
             {
-                GameEvents.NIGHT_SHOP.OnCardSelected -= OnCardSelected;
-                GameEvents.NIGHT_SHOP.OnCardDeselected -= OnCardDeselected;
-                                
-                GameEvents.INPUT.OnHexSelectedDuringNightShop -= OnHexSelectedDuringNightShop;
-                GameEvents.HEXAGON.OnHideValidHexagonsForPlacement?.Invoke();
+                ClientEvents.NightShop.OnCardSelected -= OnCardSelected;
+                ClientEvents.NightShop.OnCardDeselected -= OnCardDeselected;
+                
+                ClientEvents.Input.OnHexSelectedDuringNightShop -= OnHexSelectedDuringNightShop;
+                ClientEvents.Hexagon.OnHideValidHexagonsForPlacement?.Invoke();
             }
 
             private void OnHexSelectedDuringNightShop(Hexagon hexagon)

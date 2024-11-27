@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GameEvents;
 using Networking.Server;
 using Player;
 using Unity.Netcode;
@@ -61,7 +62,7 @@ namespace Networking.Host
             Debug.Log($"Player {newPlayerData.PlayerName} registered!");
             
             _playersByClientId.Add(playerClientId, newPlayerData);
-            GameEvents.NETWORK_SERVER.OnPlayerConnected?.Invoke(playerClientId, newPlayerData.PlayerName);
+            ServerEvents.Player.OnPlayerConnected?.Invoke(playerClientId, newPlayerData.PlayerName);
         }
         
         public class PlayerData : INetworkSerializable
@@ -79,7 +80,7 @@ namespace Networking.Host
                 set
                 {
                     _playerColorType = value;
-                    GameEvents.NETWORK_SERVER.OnPlayerColorChanged?.Invoke(ClientId, (int)_playerColorType);
+                    ServerEvents.Player.OnPlayerColorChanged?.Invoke(ClientId, (int)_playerColorType);
                 }
             }
             
@@ -90,7 +91,6 @@ namespace Networking.Host
                 {
                     Debug.Log($"Player {PlayerName}, new score: {value}, old score: {_playerScore}");
                     _playerScore = value;
-                    GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
                 }
             }
 

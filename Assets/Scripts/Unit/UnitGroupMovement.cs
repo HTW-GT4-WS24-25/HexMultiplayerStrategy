@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GameEvents;
 using HexSystem;
 using Player;
 using Unity.Netcode;
@@ -42,12 +43,12 @@ namespace Unit
 
         private void OnEnable()
         {
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleSwitchedDayNightCycle;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleSwitchedDayNightCycle;
         }
 
         private void OnDisable()
         {
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleSwitchedDayNightCycle;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleSwitchedDayNightCycle;
         }
 
         private void Update()
@@ -137,11 +138,11 @@ namespace Unit
                 IsMoving = false;
                 PreviousHexagon = null;
                 DisableTravelLineClientRpc();
-                GameEvents.UNIT.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
+                ServerEvents.Unit.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
             }
             else
             {
-                GameEvents.UNIT.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
+                ServerEvents.Unit.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
                 FetchNextWaypoint();
             }
         }

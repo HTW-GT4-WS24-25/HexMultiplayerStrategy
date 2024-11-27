@@ -1,4 +1,5 @@
-﻿using HexSystem;
+﻿using GameEvents;
+using HexSystem;
 using UnityEngine;
 
 namespace Input
@@ -21,7 +22,7 @@ namespace Input
 
         public void HandleMainPointerDrag(Vector2 dragValue)
         {
-            GameEvents.INPUT.OnDragInput(dragValue);
+            ClientEvents.Input.OnDragInput?.Invoke(dragValue);
         }
 
         protected bool TryGetHexOnScreenPosition(Vector2 screenPosition, out Hexagon hexagon)

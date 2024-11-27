@@ -10,7 +10,7 @@ namespace Testing.QuickSinglePlayerSetup
     {
         [SerializeField] PlayerColor.ColorType playerColorType = PlayerColor.ColorType.Red;
         
-        private const string GameSceneName = "FreddieTestScene";
+        private const string GameSceneName = "MatchScene";
         
         void Start()
         {

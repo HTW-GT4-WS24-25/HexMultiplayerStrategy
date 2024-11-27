@@ -1,4 +1,4 @@
-using System;
+using GameEvents;
 using Unit;
 using UnityEngine;
 
@@ -11,14 +11,14 @@ namespace UI
 
         private void OnEnable()
         {
-            GameEvents.UNIT.OnUnitGroupSelected += HandleGroupSelected;
-            GameEvents.UNIT.OnUnitGroupDeselected += HandleGroupDeselected;
+            ClientEvents.Unit.OnUnitGroupSelected += HandleGroupSelected;
+            ClientEvents.Unit.OnUnitGroupDeselected += HandleGroupDeselected;
         }
         
         private void OnDisable()
         {
-            GameEvents.UNIT.OnUnitGroupSelected -= HandleGroupSelected;
-            GameEvents.UNIT.OnUnitGroupDeselected -= HandleGroupDeselected;
+            ClientEvents.Unit.OnUnitGroupSelected -= HandleGroupSelected;
+            ClientEvents.Unit.OnUnitGroupDeselected -= HandleGroupDeselected;
         }
 
         private void HandleGroupSelected(UnitGroup selectedGroup)

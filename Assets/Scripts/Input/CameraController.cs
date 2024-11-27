@@ -1,3 +1,4 @@
+using GameEvents;
 using UnityEngine;
 
 namespace Input
@@ -36,14 +37,14 @@ namespace Input
 
         private void OnEnable()
         {
-            GameEvents.INPUT.OnZoomInput += HandleZoom;
-            GameEvents.INPUT.OnDragInput += HandleDrag;
+            ClientEvents.Input.OnZoomInput += HandleZoom;
+            ClientEvents.Input.OnDragInput += HandleDrag;
         }
 
         private void OnDisable()
         {
-            GameEvents.INPUT.OnZoomInput -= HandleZoom;
-            GameEvents.INPUT.OnDragInput -= HandleDrag;
+            ClientEvents.Input.OnZoomInput -= HandleZoom;
+            ClientEvents.Input.OnDragInput -= HandleDrag;
         }
 
         private void Update()

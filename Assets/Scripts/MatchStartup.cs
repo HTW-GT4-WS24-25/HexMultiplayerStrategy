@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Combat;
+using GameEvents;
 using Helper;
 using HexSystem;
 using Input;
@@ -13,22 +14,22 @@ using Random = UnityEngine.Random;
 
 public class MatchStartup : NetworkBehaviour
 {
-    [Header("References")] [SerializeField]
-    private MapBuilder mapBuilder;
-
-    [SerializeField] private MapGenerationConfig mapGenerationConfig;
+    [Header("References")] 
+    [SerializeField] private MapBuilder mapBuilder;
     [SerializeField] private UnitPlacement unitPlacement;
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GridData hexGridData;
     [SerializeField] private ScoreUpdater scoreUpdater;
-    
+    [SerializeField] private DayNightCycle dayNightCycle;
     [SerializeField] private HexControlObserver hexControlObserver;
-    [FormerlySerializedAs("combatObserver")] [SerializeField] private CombatController combatController;
+    [SerializeField] private CombatController combatController;
 
     [Header("Settings")]
     [Tooltip("X will be set to Q, Y will be set to R")]
     [SerializeField] private Vector2Int[] startCoordinates;
     [SerializeField] private int numberOfMapRings;
+    [SerializeField] private MapGenerationConfig mapGenerationConfig;
+    [SerializeField] private MatchConfiguration matchConfiguration;
 
     private List<AxialCoordinates> _remainingStartCoordinates;
     private int _playersInMatch;
@@ -43,6 +44,8 @@ public class MatchStartup : NetworkBehaviour
         
         hexControlObserver.InitializeOnServer();
         combatController.InitializeOnServer();
+        
+        ApplyMatchConfigurationClientRpc(matchConfiguration);
         
         _numberOfConnectedPlayers = NetworkManager.Singleton.ConnectedClients.Count;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += HandleClientFinishedLoadingScene;
@@ -62,6 +65,7 @@ public class MatchStartup : NetworkBehaviour
         {
             CreateMap();
             SetPlayerStartPositions();
+            dayNightCycle.StartMatch();
         }
     }
     
@@ -87,7 +91,7 @@ public class MatchStartup : NetworkBehaviour
             _remainingStartCoordinates.Remove(playerStartCoordinate);
             var playerStartHex = mapBuilder.Grid.Get(playerStartCoordinate);
             
-            GameEvents.NETWORK_SERVER.OnHexControllerChanged!.Invoke(playerStartCoordinate, playerData.ClientId);
+            ServerEvents.Player.OnInitialPlayerUnitsPlaced!.Invoke(playerStartCoordinate, playerData.ClientId);
             unitPlacement.TryAddUnitsToHex(playerStartCoordinate, playerData, 30);
             
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);
@@ -109,6 +113,14 @@ public class MatchStartup : NetworkBehaviour
     private void SetupHexGridDataClientRpc()
     {
         hexGridData.SetupNewData(numberOfMapRings);
+    }
+    
+    [ClientRpc]
+    private void ApplyMatchConfigurationClientRpc(MatchConfiguration matchConfigurationFromHost)
+    {
+        dayNightCycle.DayDuration = matchConfigurationFromHost.dayDuration;
+        dayNightCycle.NightDuration = matchConfigurationFromHost.nightDuration;
+        dayNightCycle.NightsPerMatch = matchConfigurationFromHost.nightsPerMatch;
     }
 
     #endregion

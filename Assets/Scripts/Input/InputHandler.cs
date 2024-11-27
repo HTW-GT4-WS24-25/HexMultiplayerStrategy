@@ -1,4 +1,5 @@
 using System;
+using GameEvents;
 using UnityEngine;
 
 namespace Input
@@ -25,14 +26,14 @@ namespace Input
         {
             SubscribeInputStateToInputEvents(_currentInputState);
 
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += OnSwitchedDayNightState;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += OnSwitchedDayNightState;
         }
 
         private void OnDisable()
         {
             UnsubscribeInputStateToInputEvents(_currentInputState);
             
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= OnSwitchedDayNightState;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState -= OnSwitchedDayNightState;
         }
         
         private void OnSwitchedDayNightState(DayNightCycle.CycleState newCycleState)

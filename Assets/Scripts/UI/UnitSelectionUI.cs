@@ -1,4 +1,5 @@
 using System;
+using GameEvents;
 using TMPro;
 using Unit;
 using UnityEngine;
@@ -14,17 +15,17 @@ namespace UI
 
         private void OnEnable()
         {
-            GameEvents.UNIT.OnUnitCountOfSelectedChanged += SetSliderMaximum;
+            ClientEvents.Unit.OnUnitCountOfSelectedChanged += SetSliderMaximum;
         }
 
         private void OnDisable()
         {
-            GameEvents.UNIT.OnUnitCountOfSelectedChanged -= SetSliderMaximum;
+            ClientEvents.Unit.OnUnitCountOfSelectedChanged -= SetSliderMaximum;
         }
         
         public void UpdateUnitCount(float count)
         {
-            GameEvents.UNIT.OnUnitSelectionSliderUpdate.Invoke((int)count);
+            ClientEvents.Unit.OnUnitSelectionSliderUpdate.Invoke((int)count);
             unitAmountText.text = count.ToString("0");
         }
         

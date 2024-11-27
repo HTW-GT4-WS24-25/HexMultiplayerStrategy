@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameEvents;
 using HexSystem;
 using Networking.Host;
 using Player;
@@ -76,7 +77,7 @@ namespace Unit
         
         public void Delete()
         {
-            GameEvents.UNIT.OnUnitGroupDeleted.Invoke(this);
+            ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
             Destroy(gameObject);
         }
         
@@ -104,7 +105,7 @@ namespace Unit
         private void SetAsSelectedClientRpc()
         {
             if(NetworkManager.Singleton.LocalClientId == PlayerId)
-                GameEvents.UNIT.OnUnitGroupSelected?.Invoke(this);
+                ClientEvents.Unit.OnUnitGroupSelected?.Invoke(this);
         }
 
         [ClientRpc]
