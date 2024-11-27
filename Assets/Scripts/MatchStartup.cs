@@ -90,7 +90,7 @@ public class MatchStartup : NetworkBehaviour
             _remainingStartCoordinates.Remove(playerStartCoordinate);
             var playerStartHex = mapBuilder.Grid.Get(playerStartCoordinate);
             
-            GameEvents.NETWORK_SERVER.OnHexControllerChanged!.Invoke(playerStartCoordinate, playerData.ClientId);
+            GameEvents.NETWORK_SERVER.OnInitialPlayerUnitsPlaced!.Invoke(playerStartCoordinate, playerData.ClientId);
             unitPlacement.TryAddUnitsToHex(playerStartCoordinate, playerData, 30);
             
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);

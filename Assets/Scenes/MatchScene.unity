@@ -425,6 +425,14 @@ PrefabInstance:
       propertyPath: unitController
       value: 
       objectReference: {fileID: 694091047}
+    - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: gridData
+      value: 
+      objectReference: {fileID: 1533390224}
+    - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: unitPlacement
+      value: 
+      objectReference: {fileID: 121099228}
     - target: {fileID: 3168967069251171779, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_Pivot.x
       value: 0

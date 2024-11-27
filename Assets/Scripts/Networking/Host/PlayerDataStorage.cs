@@ -90,7 +90,6 @@ namespace Networking.Host
                 {
                     Debug.Log($"Player {PlayerName}, new score: {value}, old score: {_playerScore}");
                     _playerScore = value;
-                    GameEvents.NETWORK_SERVER.OnPlayerScoreChanged?.Invoke(ClientId, PlayerScore);
                 }
             }
 
