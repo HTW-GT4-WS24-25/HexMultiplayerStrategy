@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameEvents;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Input
@@ -14,14 +15,12 @@ namespace Input
                 return;
             
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
-            {
-                GameEvents.INPUT.OnHexSelectedForUnitSelectionOrMovement?.Invoke(clickedHexagon);
-            }
+                ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement?.Invoke(clickedHexagon);
         }
 
         public override void HandleRightClick()
         {
-            GameEvents.UNIT.OnUnitGroupDeselected?.Invoke();
+            ClientEvents.Unit.OnUnitGroupDeselected?.Invoke();
             HandleMainPointerDown();
         }
     }

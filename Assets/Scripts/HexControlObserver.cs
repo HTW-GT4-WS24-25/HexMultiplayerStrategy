@@ -1,4 +1,5 @@
-﻿using HexSystem;
+﻿using GameEvents;
+using HexSystem;
 using Networking.Host;
 using Player;
 using Unit;
@@ -12,8 +13,8 @@ public class HexControlObserver : NetworkBehaviour
 
     public void InitializeOnServer()
     {
-        GameEvents.NETWORK_SERVER.OnInitialPlayerUnitsPlaced += HandleHexControllerChanged;
-        GameEvents.UNIT.OnUnitGroupReachedHexCenter += HandleUnitGroupReachedHexCenter;
+        ServerEvents.Player.OnInitialPlayerUnitsPlaced += HandleHexControllerChanged;
+        ServerEvents.Unit.OnUnitGroupReachedHexCenter += HandleUnitGroupReachedHexCenter;
     }
 
     #region Server
@@ -37,7 +38,7 @@ public class HexControlObserver : NetworkBehaviour
         if (stationaryUnitGroup.PlayerId != unitGroup.PlayerId)
         {
             Debug.Log("Initiating Combat in HexCenter");
-            GameEvents.UNIT.OnCombatTriggered?.Invoke(stationaryUnitGroup, unitGroup);
+            ServerEvents.Unit.OnCombatTriggered?.Invoke(stationaryUnitGroup, unitGroup);
         } 
         else if (!unitGroup.Movement.IsMoving)
         {

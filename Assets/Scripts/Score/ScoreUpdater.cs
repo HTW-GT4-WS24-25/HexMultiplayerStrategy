@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using GameEvents;
 using Networking.Host;
 using UI;
 using Unity.Netcode;
@@ -20,14 +21,14 @@ namespace Score
 
                 public override void OnNetworkSpawn()
                 {
-                        GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded += DistributeScoresAtNight;
-                        GameEvents.DAY_NIGHT_CYCLE.OnGameEnded += HandleEndOfGame;
+                        ServerEvents.DayNightCycle.OnTurnEnded += DistributeScoresAtNight;
+                        ServerEvents.DayNightCycle.OnGameEnded += HandleEndOfGame;
                 }
 
                 public override void OnNetworkDespawn()
                 {
-                        GameEvents.DAY_NIGHT_CYCLE.OnTurnEnded -= DistributeScoresAtNight;
-                        GameEvents.DAY_NIGHT_CYCLE.OnGameEnded -= HandleEndOfGame;
+                        ServerEvents.DayNightCycle.OnTurnEnded -= DistributeScoresAtNight;
+                        ServerEvents.DayNightCycle.OnGameEnded -= HandleEndOfGame;
                 }
 
                 #region Server

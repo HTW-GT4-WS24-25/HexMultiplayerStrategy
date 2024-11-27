@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GameEvents;
 using Helper;
 using Networking.Host;
 using Player;
@@ -40,8 +41,8 @@ namespace UI.Lobby
 
             if (IsServer)
             {
-                GameEvents.NETWORK_SERVER.OnPlayerConnected += HandlePlayerConnected;
-                GameEvents.NETWORK_SERVER.OnPlayerColorChanged += HandlePlayerColorChangedClientRPC;
+                ServerEvents.Player.OnPlayerConnected += HandlePlayerConnected;
+                ServerEvents.Player.OnPlayerColorChanged += HandlePlayerColorChangedClientRPC;
             }
         }
 
@@ -49,8 +50,8 @@ namespace UI.Lobby
         {
             if (IsServer)
             {
-                GameEvents.NETWORK_SERVER.OnPlayerConnected -= HandlePlayerConnected;
-                GameEvents.NETWORK_SERVER.OnPlayerColorChanged -= HandlePlayerColorChangedClientRPC;
+                ServerEvents.Player.OnPlayerConnected += HandlePlayerConnected;
+                ServerEvents.Player.OnPlayerColorChanged += HandlePlayerColorChangedClientRPC;
             }
         }
 
