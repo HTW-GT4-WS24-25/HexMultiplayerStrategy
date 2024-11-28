@@ -425,6 +425,14 @@ PrefabInstance:
       propertyPath: unitController
       value: 
       objectReference: {fileID: 694091047}
+    - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: gridData
+      value: 
+      objectReference: {fileID: 1533390224}
+    - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: unitPlacement
+      value: 
+      objectReference: {fileID: 121099228}
     - target: {fileID: 3168967069251171779, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -505,9 +513,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4423819880621845921, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6548401546078417604, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_Name
       value: 'InGameUI '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8809423467196657296, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2388875677
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -923,11 +939,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   turnTimeUI: {fileID: 1031734881}
   dayNightCycleSky: {fileID: 1752909281}
-  dayDuration: 20
-  nightDuration: 5
   cycleSwitchAnimationDuration: 1.5
   skyTimeForDay: 13
-  nightsPerMatch: 3
   cycleState: 1
 --- !u!114 &1819706681
 MonoBehaviour:
@@ -1265,6 +1278,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1429588806}
     - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
+      propertyPath: dayNightCycle
+      value: 
+      objectReference: {fileID: 1819706680}
+    - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
       propertyPath: mapRingAmount
       value: 4
       objectReference: {fileID: 0}
@@ -1280,6 +1297,10 @@ PrefabInstance:
       propertyPath: cameraController
       value: 
       objectReference: {fileID: 384568204}
+    - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
+      propertyPath: combatController
+      value: 
+      objectReference: {fileID: 1922756001}
     - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
       propertyPath: hexControlSystem
       value: 

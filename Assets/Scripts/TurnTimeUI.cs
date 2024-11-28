@@ -1,3 +1,4 @@
+using GameEvents;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,12 +12,12 @@ public class TurnTimeUI : MonoBehaviour
 
     private void OnEnable()
     {
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += HandleCycleStateSwitch;
+        ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleCycleStateSwitch;
     }
 
     private void OnDisable()
     {
-        GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState -= HandleCycleStateSwitch;
+        ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleCycleStateSwitch;
     }
     
     public void UpdateTurnTime(float newTurnTime, float maxTurnTime)

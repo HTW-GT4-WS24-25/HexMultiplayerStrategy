@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 269887590
+  GlobalObjectIdHash: 770181370
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -71,9 +71,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  mapCreator: {fileID: 0}
+  mapBuilder: {fileID: 0}
   unitPlacement: {fileID: 0}
   cameraController: {fileID: 0}
+  hexGridData: {fileID: 0}
+  scoreUpdater: {fileID: 0}
+  dayNightCycle: {fileID: 0}
+  hexControlObserver: {fileID: 0}
+  combatController: {fileID: 0}
   startCoordinates:
   - {x: -2, y: 2}
   - {x: 0, y: 2}
@@ -81,3 +86,6 @@ MonoBehaviour:
   - {x: 2, y: -2}
   - {x: 0, y: -2}
   - {x: -2, y: 0}
+  numberOfMapRings: 0
+  mapGenerationConfig: {fileID: 0}
+  matchConfiguration: {fileID: 11400000, guid: 17cb93db49d7fb649bb1434e3dd56fbf, type: 2}

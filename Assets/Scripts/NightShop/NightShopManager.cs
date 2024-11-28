@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameEvents;
 using HexSystem;
 using NightShop.NightShopStates;
 using UI.NightShop;
@@ -24,7 +25,7 @@ namespace NightShop
 
         private void Start()
         {
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += ToggleNightShop;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += ToggleNightShop;
             nightShopUI.Initialize(cards);
             _stateManager.ChangeState(new ChoosingCardState(this));
         }

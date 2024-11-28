@@ -1,3 +1,4 @@
+using GameEvents;
 using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace NightShop
 
         public override void OnNetworkSpawn() {
             if (IsServer) {
-                GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += OnSwitchedCycleState;
+                ClientEvents.DayNightCycle.OnSwitchedCycleState += OnSwitchedCycleState;
 
                 _incomeHandler = new();
                 _paymentHandler = new();
@@ -93,7 +94,7 @@ namespace NightShop
         [ClientRpc]
         private void OnReceivedRoundMoneyClientRpc(int money)
         {
-            GameEvents.NIGHT_SHOP.OnMoneyAmountChanged?.Invoke(money);
+            ClientEvents.NightShop.OnMoneyAmountChanged?.Invoke(money);
         }
         
         [ClientRpc]
@@ -101,7 +102,7 @@ namespace NightShop
         {
             if (success)
             {
-                GameEvents.NIGHT_SHOP.OnMoneyAmountChanged?.Invoke(remainingMoney);
+                ClientEvents.NightShop.OnMoneyAmountChanged?.Invoke(remainingMoney);
                 nightShopManager.OnSuccessfulPurchase();
             } else
             {

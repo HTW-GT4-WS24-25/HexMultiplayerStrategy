@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using GameEvents;
 using HexSystem;
 using Sirenix.Utilities;
 using Unit;
@@ -38,8 +37,8 @@ namespace Combat
 
         public void InitializeOnServer()
         {
-            GameEvents.UNIT.OnCombatTriggered += InitiateCombat; 
-            GameEvents.DAY_NIGHT_CYCLE.OnSwitchedCycleState += UpdateIsPaused;
+            ServerEvents.Unit.OnCombatTriggered += InitiateCombat; 
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += UpdateIsPaused;
             
             UpdateIsPaused(dayNightCycle.cycleState);
         }
