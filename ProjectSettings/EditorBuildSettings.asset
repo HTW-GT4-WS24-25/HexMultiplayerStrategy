@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Setup/Lobby.unity
     guid: d41da55517ca2c840a18509bf70f6864
   - enabled: 1
-    path: Assets/Scenes/FreddieTestScene.unity
+    path: Assets/Scenes/MatchScene.unity
     guid: 017738f53f87fdf46b0ae4c5d3883705
   - enabled: 1
     path: Assets/Scenes/Testing/QuickSingleplayerSetup.unity
