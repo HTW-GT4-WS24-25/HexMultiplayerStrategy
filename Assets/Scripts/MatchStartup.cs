@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Combat;
+using ExtensionMethods;
 using GameEvents;
 using Helper;
 using HexSystem;
@@ -72,7 +74,9 @@ public class MatchStartup : NetworkBehaviour
     private void CreateMap()
     {
         var mapGenerator = new MapDataGenerator(mapGenerationConfig);
-        var mapData = mapGenerator.Generate(numberOfMapRings);
+        var mapData = mapGenerator.Generate(
+            numberOfMapRings, 
+            startCoordinates.Select(coord => coord.ToAxialCoordinates()).ToList());
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
         SetupHexGridDataClientRpc();
