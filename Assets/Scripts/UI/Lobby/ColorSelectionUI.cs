@@ -65,7 +65,7 @@ namespace UI.Lobby
         {
             var newColorSelection = _colorSelectionFieldsByType.First(field => field.Value == selectedColorField);
             _selectedPlayerColor = newColorSelection.Key;
-            selectedColorField.SetSelectedMarking(true);
+            selectedColorField.SetAsSelected(true);
 
             continueButton.interactable = true;
         }
