@@ -14,7 +14,7 @@ namespace UI.Lobby
         [SerializeField] private ColorSelectionField colorSelectionFieldPrefab;
         [SerializeField] private Transform colorSelectionFieldContainer;
         [SerializeField] private Button continueButton;
-        
+
         private readonly Dictionary<PlayerColor.ColorType, ColorSelectionField> _colorSelectionFieldsByType = new();
         private PlayerColor.ColorType _selectedPlayerColor = PlayerColor.ColorType.None;
 
@@ -22,7 +22,7 @@ namespace UI.Lobby
         {
             ColorSelectionField.OnClicked += SelectPlayerColor;
         }
-        
+
         private void OnDisable()
         {
             ColorSelectionField.OnClicked -= SelectPlayerColor;
@@ -33,9 +33,9 @@ namespace UI.Lobby
             var playerColors = PlayerColor.GetAll();
             foreach (var playerColor in playerColors)
             {
-                if(playerColor.colorType == PlayerColor.ColorType.None)
+                if (playerColor.colorType == PlayerColor.ColorType.None)
                     continue;
-                
+
                 var newColorSelectionField = Instantiate(colorSelectionFieldPrefab, colorSelectionFieldContainer);
                 newColorSelectionField.SetColor(playerColor.baseColor);
                 _colorSelectionFieldsByType.Add(playerColor.colorType, newColorSelectionField);
@@ -51,18 +51,21 @@ namespace UI.Lobby
 
             foreach (var unavailableColor in unavailableColors)
             {
-                if(unavailableColor == PlayerColor.ColorType.None)
+                if (unavailableColor == PlayerColor.ColorType.None)
                     continue;
-                
+
                 _colorSelectionFieldsByType[unavailableColor].SetAvailable(false);
             }
-            
-            if(unavailableColors.Contains(_selectedPlayerColor))
+
+            if (unavailableColors.Contains(_selectedPlayerColor))
                 Unselect();
         }
 
         private void SelectPlayerColor(ColorSelectionField selectedColorField)
         {
+            if (_selectedPlayerColor != PlayerColor.ColorType.None)
+                _colorSelectionFieldsByType[_selectedPlayerColor].SetSelectedMarking(false);
+
             var newColorSelection = _colorSelectionFieldsByType.First(field => field.Value == selectedColorField);
             _selectedPlayerColor = newColorSelection.Key;
             selectedColorField.SetAsSelected(true);
@@ -74,12 +77,16 @@ namespace UI.Lobby
         {
             lobbyUI.SubmitPlayerColorSelection(_selectedPlayerColor);
         }
-        
+
         private void Unselect()
         {
-            if(_selectedPlayerColor != PlayerColor.ColorType.None)
-                _colorSelectionFieldsByType[_selectedPlayerColor].SetAvailable(false);
-            
+            if (_selectedPlayerColor != PlayerColor.ColorType.None)
+            {
+                var unselectColorField = _colorSelectionFieldsByType[_selectedPlayerColor];
+                unselectColorField.SetAvailable(false);
+                unselectColorField.SetSelectedMarking(false);
+            }
+
             _selectedPlayerColor = PlayerColor.ColorType.None;
             continueButton.interactable = false;
         }

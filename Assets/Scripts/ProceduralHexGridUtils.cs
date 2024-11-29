@@ -23,8 +23,8 @@ public static class ProceduralHexGridUtils
         float probability,
         float enforcement = 2f,
         int areaSize = 2,
-        List<HexType> hexTypesToIgnore = null,
-        List<AxialCoordinates> hexagonsToIgnore = null)
+        List<HexType> hexTypesToAvoid = null,
+        List<AxialCoordinates> hexagonsToAvoid = null)
     {
         Debug.Assert(map is not null);
         Debug.Assert(probability is >= 0 and <= 1);
@@ -35,8 +35,8 @@ public static class ProceduralHexGridUtils
         var selected = new HashSet<AxialCoordinates>();
 
         foreach (var coord in map.Keys
-                     .Where(coord => hexTypesToIgnore is null || !hexTypesToIgnore.Contains(map[coord]))
-                     .Where(coord => hexagonsToIgnore is null || !hexagonsToIgnore.Contains(coord)))
+                     .Where(coord => hexTypesToAvoid is null || !hexTypesToAvoid.Contains(map[coord]))
+                     .Where(coord => hexagonsToAvoid is null || !hexagonsToAvoid.Contains(coord)))
         {
             visited.Add(coord);
 
