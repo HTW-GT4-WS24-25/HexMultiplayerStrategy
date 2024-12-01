@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e16476d0bb4474ab05da226258bbd96, type: 3}
   m_Name: MatchConfig
   m_EditorClassIdentifier: 
-  nightsPerMatch: 3
+  nightsPerMatch: 10
   dayDuration: 20
   nightDuration: 20

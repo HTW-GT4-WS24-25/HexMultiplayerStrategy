@@ -64,7 +64,7 @@ namespace UI.Lobby
         private void SelectPlayerColor(ColorSelectionField selectedColorField)
         {
             if (_selectedPlayerColor != PlayerColor.ColorType.None)
-                _colorSelectionFieldsByType[_selectedPlayerColor].SetSelectedMarking(false);
+                _colorSelectionFieldsByType[_selectedPlayerColor].SetAsSelected(false);
 
             var newColorSelection = _colorSelectionFieldsByType.First(field => field.Value == selectedColorField);
             _selectedPlayerColor = newColorSelection.Key;
@@ -84,7 +84,7 @@ namespace UI.Lobby
             {
                 var unselectColorField = _colorSelectionFieldsByType[_selectedPlayerColor];
                 unselectColorField.SetAvailable(false);
-                unselectColorField.SetSelectedMarking(false);
+                unselectColorField.SetAsSelected(false);
             }
 
             _selectedPlayerColor = PlayerColor.ColorType.None;
