@@ -13,36 +13,41 @@ public class MapDataGenerator
         _config = mapGenerationConfig;
     }
     
-    public int[] Generate(int nRings)
+    public int[] Generate(int nRings, List<AxialCoordinates> hexagonsToAvoid = null)
     {
         var map = new Dictionary<AxialCoordinates, HexType>();
 
         ProceduralHexGridUtils.FillMapWithHexes(map, nRings);
-        GenerateMountains(map);
-        GenerateForests(map);
+        GenerateMountains(map, hexagonsToAvoid);
+        GenerateForests(map, hexagonsToAvoid);
         
         return map.ToIntArray(nRings);
     }
 
-    private void GenerateMountains(Dictionary<AxialCoordinates, HexType> map)
+    private void GenerateMountains(
+        Dictionary<AxialCoordinates, HexType> map, 
+        List<AxialCoordinates> hexagonsToAvoid = null)
     {
         var mountainCoords = ProceduralHexGridUtils.SelectHexagons(
             map, 
             _config.mountainProbability,
             _config.mountainProbabilityEnforcement,
-            _config.mountainAreaCheckingSize);
+            _config.mountainAreaCheckingSize,
+            hexagonsToAvoid: hexagonsToAvoid);
 
         foreach (var mountainCoord in mountainCoords) map[mountainCoord] = HexType.Mountain;
     }
 
-    private void GenerateForests(Dictionary<AxialCoordinates, HexType> map)
+    private void GenerateForests(
+        Dictionary<AxialCoordinates, HexType> map,
+        List<AxialCoordinates> hexagonsToAvoid = null)
     {
         var srcForestCoords = ProceduralHexGridUtils.SelectHexagons(
             map, 
             _config.forestProbability,
             _config.forestProbabilityEnforcement,
-            _config.forestAreaCheckingSize
-        );
+            _config.forestAreaCheckingSize,
+            hexagonsToAvoid: hexagonsToAvoid);
         
         foreach (var srcForestCords in srcForestCoords)
         {
@@ -50,7 +55,8 @@ public class MapDataGenerator
                 map, 
                 srcForestCords,
                 _config.diminishingProbabilityPerDistance,
-                new List<HexType> { HexType.Mountain });
+                new List<HexType> { HexType.Mountain },
+                hexagonsToAvoid: hexagonsToAvoid);
 
             foreach (var forestCoord in forestCoords) map[forestCoord] = HexType.Forest;
         }

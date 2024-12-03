@@ -727,7 +727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  forestTilePrefab: {fileID: 0}
+  forestTilePrefab: {fileID: 536300325094858728, guid: 7b332742bf0dbd343b08ded021ce1d43, type: 3}
   grassTilePrefab: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
   mountainTilePrefab: {fileID: 536300325094858728, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
   spacing: 0

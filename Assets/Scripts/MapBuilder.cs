@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
@@ -18,6 +19,7 @@ public class MapBuilder : NetworkBehaviour
 
     public const float TileWidth = 1;
     
+    private Dictionary<HexType, Hexagon> _hexPrefabsByType = new Dictionary<HexType, Hexagon>();
     private float _horizontalSpacing;
     private float _verticalSpacing;
     private Vector3 _qOffset;
@@ -49,8 +51,8 @@ public class MapBuilder : NetworkBehaviour
         foreach (var coordinates in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
             var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
-                    
-            var hexPrefab = mapData[dataIndex++] == (int)HexType.Mountain ? mountainTilePrefab : grassTilePrefab;
+
+            var hexPrefab = _hexPrefabsByType[(HexType)mapData[dataIndex++]];
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
             var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
@@ -68,6 +70,13 @@ public class MapBuilder : NetworkBehaviour
 
         _qOffset = new Vector3(_horizontalSpacing, 0, 0);
         _rOffset = new Vector3(0.5f * _horizontalSpacing, 0, _verticalSpacing);
+
+        _hexPrefabsByType = new Dictionary<HexType, Hexagon>
+        {
+            { HexType.Grass, grassTilePrefab },
+            { HexType.Mountain, mountainTilePrefab },
+            { HexType.Forest, forestTilePrefab }
+        };
     }
     
     #endregion
