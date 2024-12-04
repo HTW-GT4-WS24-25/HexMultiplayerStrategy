@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: IsTraversable
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8503581652947059578, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
+      propertyPath: isTraversable
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
