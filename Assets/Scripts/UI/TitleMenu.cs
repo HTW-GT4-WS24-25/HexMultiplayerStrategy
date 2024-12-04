@@ -28,6 +28,11 @@ namespace UI
             await ClientSingleton.Instance.GameManager.StartClientAsync(joinCodeInputField.text);
         }
 
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
+
         public void OnJoinCodeUpdated(string joinCode)
         {
             joinButton.interactable = !string.IsNullOrEmpty(joinCode);

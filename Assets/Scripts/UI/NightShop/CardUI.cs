@@ -3,19 +3,23 @@ using GameEvents;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
 namespace UI.NightShop
 {
     public class CardUI : MonoBehaviour
     {
-        [SerializeField] private Image background;
+        [SerializeField] private Image innerBackground;
+        [SerializeField] private Image focus;
+        [SerializeField] private Image focusGlow;
+        
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI costText;
         
         private Card card;
         
-        public bool isSelected = false;
-        public bool isDisabled = false;
+        public bool isSelected;
+        public bool isDisabled;
 
         private void OnEnable()
         {
@@ -69,13 +73,19 @@ namespace UI.NightShop
         
         void SelectCard()
         {
-            background.color = new Color(1f, 0.75f, 0.75f, 1);
+            innerBackground.gameObject.SetActive(false);
+            focus.gameObject.SetActive(true);
+            focusGlow.gameObject.SetActive(true);
+            
             isSelected = true;
         }
 
         void DeselectCard()
         {
-            background.color = Color.white;
+            innerBackground.gameObject.SetActive(true);
+            focus.gameObject.SetActive(false);
+            focusGlow.gameObject.SetActive(false);
+            
             isSelected = false;
         }
     }

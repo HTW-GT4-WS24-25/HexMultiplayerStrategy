@@ -1,0 +1,10 @@
+# ninja log v5
+64	2279	7546284740965824	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	57bbc232a578a239
+9	2332	7546284741444816	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	dbf4452da67eb7ad
+116	2390	7546284742158263	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	8ab56e35989231f9
+85	2536	7546284743595794	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	6ad239c9e5c8fa5a
+105	2538	7546284743550626	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	e0ad609f5e16ae5f
+0	2660	7546284744888505	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	3243e9c536c9f4f7
+94	2974	7546284748036813	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	1603c5b759481d07
+56	3172	7546284750046069	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	37bf160f15015943
+3172	3348	7546284751891968	C:/Users/frede/Documents/GameDev/HexMultiplayerStrategy/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/5z1w3ao4/obj/arm64-v8a/libgame.so	1191311681370478
