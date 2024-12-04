@@ -1,26 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using UnityEngine;
+using UnityEngine.Serialization;
 
-public static class HexTypeDataProvider
+public class HexTypeDataProvider : MonoBehaviour
 {
-    public static bool IsTraversable(HexType type)
+    [SerializeField] private List<HexTypeData> HexTypeData = new();
+    private readonly Dictionary<HexType, HexTypeData> _hexDataByType = new();
+    
+    public static HexTypeDataProvider Instance;
+
+    private void Awake()
     {
-        return type switch
-        {
-            HexType.Forest or HexType.Grass => true,
-            HexType.Mountain => false,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unhandled value.")
-        };
-    }
+        if (Instance != null) Destroy(this);
         
-    public static float GetMovementSpeedFactor(HexType type)
-    {
-        return type switch
+        Instance = this;
+        foreach (var typeData in HexTypeData)
         {
-            HexType.Forest => 0.5f,
-            HexType.Grass => 1f,
-            HexType.Mountain => throw new ArgumentException(
-                "You shouldn't ever try to retrieve a movement speed factor when working with this hex type."),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unhandled value.")
-        };
+            _hexDataByType.Add(typeData.Type, typeData);
+        }
+    }
+
+    public HexTypeData GetData(HexType type)
+    {
+        return _hexDataByType[type];
     }
 }
