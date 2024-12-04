@@ -4,6 +4,7 @@ namespace HexSystem
 {
     public class HexagonData
     {
+        public HexType HexType { get; set; }
         public AxialCoordinates Coordinates { get; set; }
         public List<ulong> UnitsOnHex { get; } = new();
         public ulong? StationaryUnitGroup { get; set; }
