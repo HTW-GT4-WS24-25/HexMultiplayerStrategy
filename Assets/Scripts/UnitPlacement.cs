@@ -34,9 +34,6 @@ public class UnitPlacement : NetworkBehaviour
 
         if (hexagonData.ControllerPlayerId != playerData.ClientId)
             return false;
-
-        if (hexagonData.IsWarGround)
-            return false;
         
         if (hexagonData.StationaryUnitGroup != null)
         {

@@ -106,11 +106,6 @@ namespace HexSystem
                 UpdateStationaryUnitGroupOfHexClientRpc(coordinate, false, 0);
         }
 
-        public void UpdateWarStateOnHex(AxialCoordinates coordinate, bool isWarGround)
-        {
-            UpdateWarStateOnHexClientRpc(coordinate, isWarGround);
-        }
-
         #endregion
 
         #region Client
@@ -179,13 +174,6 @@ namespace HexSystem
                 Debug.Assert(hexagonData.UnitsOnHex.Contains(newStationaryUnitGroup),
                     "Tried to add stationary unit group that does not exist on hexagon!");
             }
-        }
-
-        [ClientRpc]
-        private void UpdateWarStateOnHexClientRpc(AxialCoordinates coordinate, bool isWarGround)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinate];
-            hexagonData.IsWarGround = isWarGround;
         }
 
         #endregion
