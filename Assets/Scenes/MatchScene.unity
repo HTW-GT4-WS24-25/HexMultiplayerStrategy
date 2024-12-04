@@ -269,8 +269,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c7ee79625842be820a10445b333b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hexTypeData:
-  - {fileID: 0}
+  HexTypeData:
+  - {fileID: 11400000, guid: 21d588f7d3d631c4b81a15c858fdee4e, type: 2}
+  - {fileID: 11400000, guid: ff6ece3b02077844587826c908e1d298, type: 2}
+  - {fileID: 11400000, guid: 4048beff72dc7d844b74793448103b3e, type: 2}
 --- !u!4 &319244229
 Transform:
   m_ObjectHideFlags: 0
@@ -773,9 +775,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  forestTilePrefab: {fileID: 536300325094858728, guid: 7b332742bf0dbd343b08ded021ce1d43, type: 3}
-  grassTilePrefab: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
-  mountainTilePrefab: {fileID: 536300325094858728, guid: ba24b2907c1a45740b64dab9114353a9, type: 3}
   spacing: 0
 --- !u!4 &1588253354
 Transform:

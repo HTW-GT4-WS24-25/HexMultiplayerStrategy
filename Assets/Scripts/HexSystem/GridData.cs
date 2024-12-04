@@ -12,13 +12,16 @@ namespace HexSystem
         private readonly Dictionary<AxialCoordinates, HexagonData> _hexDataByCoordinates = new();
         private readonly Dictionary<ulong, AxialCoordinates> _coordinatesByUnitGroups = new();
 
-        public void SetupNewData(int nRings)
+        public void SetupNewData(int[] mapData, int nRings)
         {
             _hexDataByCoordinates.Clear();
             
+            var dataIndex = 0;
             foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
-                _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate));       
+                var hexType = (HexType)mapData[dataIndex++];
+                _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate, hexType));  
+                Debug.Log(hexType);
             }
         }
 

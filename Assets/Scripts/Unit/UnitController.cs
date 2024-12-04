@@ -106,6 +106,7 @@ namespace Unit
         {
             if (_selectedUnitGroup != null && clickedHex.isTraversable)
             {
+                Debug.Log("Move Command Registered");
                 RequestMoveCommandRpc(clickedHex.Coordinates, _selectedUnitGroup.NetworkObjectId, _clientSelectionUnitCount);
             }
             else
