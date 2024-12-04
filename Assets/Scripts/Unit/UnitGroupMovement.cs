@@ -1,218 +1,112 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Generic;
 using GameEvents;
 using HexSystem;
-using Player;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Unit
 {
-    [RequireComponent(typeof(UnitGroup))]
     public class UnitGroupMovement : NetworkBehaviour
     {
-        [Header("References")]
-        [SerializeField] private UnitGroupTravelLine groupTravelLine;
-        
-        [Header("Settings")]
-        [SerializeField] private float moveSpeed = 1f;
-        
-        public GridData GridData { get; set; }
-        public Hexagon PreviousHexagon { get; private set; }
-        public Hexagon NextHexagon { get; set; }
-        public bool IsMoving { get; private set; }
-        private bool IsResting { get; set; }
-        public bool IsFighting { get; set; }
-        
-        private Queue<Hexagon> _hexWaypoints = new ();
+        public bool hasMovementLeft;
 
-        private UnitGroup _unitGroup;
-        private float _distanceToNextHexagon;
-        private float _travelProgress;
-        private float _currentTravelStartTime;
-        private Vector3 _currentStartPosition;
+        public Hexagon startHexagon;
+        public Hexagon goalHexagon;
+
+        [SerializeField] private UnitGroup unitGroup;
+        [SerializeField] private float moveSpeed = 3;
+
+        private Vector3 _startPosition;
         private bool _assignedToNextHexagon;
+        private float _movementProgress;
+        private float _distanceToGoal;
 
-        private void Awake()
-        {
-            _unitGroup = GetComponent<UnitGroup>();
-        }
-
-        #region Server
-
-        private void OnEnable()
-        {
-            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleSwitchedDayNightCycle;
-        }
-
-        private void OnDisable()
-        {
-            ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleSwitchedDayNightCycle;
-        }
-
-        private void Update()
+        public override void OnNetworkSpawn()
         {
             if (!IsServer)
                 return;
-            
-            if (!CanMove() || !IsMoving)
-                return;
-            
-            FollowWaypoints();
+
+            unitGroup.WaypointQueue.OnWaypointsUpdated += OnWaypointsUpdated;
         }
 
-        public bool CanMove()
+        public override void OnNetworkDespawn()
         {
-            return !IsResting && !IsFighting;
-        }
-
-        public void CopyValuesFrom(UnitGroupMovement movementToCopy)
-        {
-            PreviousHexagon = movementToCopy.PreviousHexagon;
-            var pathToCopy = movementToCopy.GetAllWaypoints();
-            
-            if (pathToCopy.Count > 0)
-                pathToCopy.Insert(0, movementToCopy.NextHexagon);
-            
-            SetAllWaypoints(pathToCopy);
-        }
-        
-        public void SetAllWaypoints(List<Hexagon> newWaypoints)
-        {
-            _hexWaypoints.Clear();
-            _hexWaypoints = new Queue<Hexagon>(newWaypoints);
-            
-            if (_hexWaypoints.Count == 0) 
+            if (!IsServer)
                 return;
 
-            if (!IsMoving || _hexWaypoints.Peek().Equals(PreviousHexagon))
-            {
-                IsMoving = true;
-                FetchNextWaypoint();
-            }
-            else
-            {
-                UpdateTravelLine();
-            }
+            unitGroup.WaypointQueue.OnWaypointsUpdated -= OnWaypointsUpdated;
         }
-        
-        public List<Hexagon> GetAllWaypoints()
+
+        public void Initialize(Hexagon currentHexagon)
         {
-            return new List<Hexagon>(_hexWaypoints);
+            goalHexagon = currentHexagon;
+            ResetForNextMovementStep();
         }
 
-        private void FollowWaypoints()
+        private void ResetForNextMovementStep()
         {
-            Move();
-
-            if (!_assignedToNextHexagon && Vector3.Distance(NextHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
-            {
-                Debug.Log("Unit reached next hex");
-
-                GridData.MoveUnitGroupToHex(PreviousHexagon.Coordinates, NextHexagon.Coordinates, _unitGroup);
-                _assignedToNextHexagon = true;
-            }
-            
-            if (_travelProgress >= 1f)
-            {
-                OnWaypointReached();
-            }
+            startHexagon = goalHexagon;
+            _startPosition = transform.position;
+            _movementProgress = 0;
+            _assignedToNextHexagon = false;
         }
-        
+
+        public void Update()
+        {
+            if (!IsServer)
+                return;
+
+            if (hasMovementLeft && unitGroup.CanMove)
+                Move();
+
+            if (_movementProgress >= 1)
+                SetupForMovementToNextGoal(true);
+        }
+
+
         private void Move()
         {
-            var traveledTime = Time.time - _currentTravelStartTime;
-            var traveledDistance = traveledTime * moveSpeed;
-            _travelProgress = traveledDistance / _distanceToNextHexagon;
-            
-            transform.position = Vector3.Lerp(_currentStartPosition, NextHexagon.transform.position, _travelProgress);
-            
-            SyncFirstTravelLinePositionClientRpc();
-        }
-        
-        private void OnWaypointReached()
-        {
-            if (_hexWaypoints.Count == 0)
+            _movementProgress += Time.deltaTime * moveSpeed / _distanceToGoal;
+            transform.position = Vector3.Lerp(_startPosition, goalHexagon.transform.position, _movementProgress);
+
+            if (!_assignedToNextHexagon &&
+                Vector3.Distance(goalHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
             {
-                IsMoving = false;
-                PreviousHexagon = null;
-                DisableTravelLineClientRpc();
-                ServerEvents.Unit.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
-            }
-            else
-            {
-                ServerEvents.Unit.OnUnitGroupReachedHexCenter?.Invoke(_unitGroup, NextHexagon.Coordinates);
-                FetchNextWaypoint();
+                ServerEvents.Unit.OnUnitGroupReachedNewHex?.Invoke(unitGroup, goalHexagon.Coordinates);
+                _assignedToNextHexagon = true;
             }
         }
 
-        private void FetchNextWaypoint()
+        private void OnWaypointsUpdated(List<Hexagon> waypoints)
         {
-            PreviousHexagon = NextHexagon;
-            NextHexagon = _hexWaypoints.Dequeue();
-            
-            GridData.RemoveStationaryUnitGroupFromHex(PreviousHexagon.Coordinates, _unitGroup);
-        
-            _currentTravelStartTime = Time.time;
-            _currentStartPosition = transform.position;
-            _distanceToNextHexagon = Vector3.Distance(NextHexagon.transform.position, transform.position);
-            _travelProgress = 0f;
-
-            transform.rotation = Quaternion.LookRotation(NextHexagon.transform.position - transform.position);
-
-            _assignedToNextHexagon = false;
-            UpdateTravelLine();
-        }
-
-        private void UpdateTravelLine()
-        { 
-            var linePoints = new List<Vector3> { transform.position };
-            if(IsMoving)
-                linePoints.Add(NextHexagon.transform.position);
-        
-            linePoints.AddRange(_hexWaypoints.Select(hex => hex.transform.position));
-            if (linePoints.Count > 1)
+            if (!hasMovementLeft || waypoints[0] == startHexagon)
             {
-                UpdateFullTravelLineClientRpc(linePoints.ToArray());
+                //Pretend to have reached goal and immediately startMovingToNext
+                SetupForMovementToNextGoal(false);
             }
         }
-        
-        private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
+
+        private void SetupForMovementToNextGoal(bool reachedHexCenter)
         {
-            IsResting = newDayNightCycle == DayNightCycle.CycleState.Night;
+            ResetForNextMovementStep();
+
+            var newGoal = unitGroup.WaypointQueue.FetchWaypoint();
+            hasMovementLeft = newGoal is not null;
+
+            if (reachedHexCenter)
+                ServerEvents.Unit.OnUnitGroupReachedHexCenter.Invoke(unitGroup, goalHexagon.Coordinates);
+
+            if (hasMovementLeft)
+                StartMovingToGoal(newGoal);
         }
 
-        #endregion
-
-        #region Client
-
-        public void Initialize(PlayerColor playerColor)
+        private void StartMovingToGoal(Hexagon goal)
         {
-            groupTravelLine.Initialize(playerColor);
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(unitGroup);
+            goalHexagon = goal;
+            var goalPosition = goal.transform.position;
+            transform.rotation = Quaternion.LookRotation(goalPosition - transform.position);
+            _distanceToGoal = Vector3.Distance(transform.position, goalPosition);
         }
-
-        [ClientRpc]
-        private void UpdateFullTravelLineClientRpc(Vector3[] travelLinePoints)
-        {
-            if (_unitGroup.PlayerId != NetworkManager.Singleton.LocalClientId)
-                travelLinePoints = new [] { travelLinePoints[0], travelLinePoints[1] };
-            
-            groupTravelLine.SetAllPositions(travelLinePoints);
-        }
-
-        [ClientRpc]
-        private void SyncFirstTravelLinePositionClientRpc()
-        {
-            groupTravelLine.SetFirstNodePosition(transform.position);
-        }
-        
-        [ClientRpc]
-        private void DisableTravelLineClientRpc()
-        {
-            groupTravelLine.gameObject.SetActive(false);
-        }
-
-        #endregion
     }
 }

@@ -47,21 +47,21 @@ namespace Unit
             var requestedDestination = mapBuilder.Grid.Get(coordinates);
             var newUnitPath = GetPathForUnitGroup(requestUnitGroup, requestedDestination);
 
-            if (!requestUnitGroup.Movement.CanMove())
+            if (!requestUnitGroup.CanMove)
                 return;
             
             if (selectionUnitCount < requestUnitGroup.UnitCount.Value && requestUnitGroup.UnitCount.Value > 1)
                 SplitUnitGroup(requestUnitGroup, selectionUnitCount);
             
-            requestUnitGroup.Movement.SetAllWaypoints(newUnitPath);
+            requestUnitGroup.WaypointQueue.UpdateWaypoints(newUnitPath);
         }
 
         private List<Hexagon> GetPathForUnitGroup(UnitGroup unitGroup, Hexagon clickedHex)
         {
-            var currentUnitCoordinates = unitGroup.Movement.NextHexagon.Coordinates;
+            var pathStartCoordinates = unitGroup.Movement.goalHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
 
-            return mapBuilder.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+            return mapBuilder.Grid.GetPathBetween(pathStartCoordinates, clickedCoordinates);
         }
 
         private void SplitUnitGroup(UnitGroup unitGroup, int selectionUnitCount)
@@ -71,14 +71,10 @@ namespace Unit
             splitUnitGroup.NetworkObject.Spawn();
             splitUnitGroup.Initialize(
                 unitGroup.UnitCount.Value - selectionUnitCount,
-                unitGroup.PlayerId,
-                unitGroup.Movement.NextHexagon,
-                gridData);
-            
-            splitUnitGroup.Movement.CopyValuesFrom(unitGroup.Movement);
+                unitGroup.PlayerId, unitGroup.Movement.startHexagon, gridData);
+            splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints());
             
             unitGroup.UnitCount.Value = selectionUnitCount;
-            
             gridData.CopyUnitGroupOnHex(unitGroup, splitUnitGroup);
         }
 

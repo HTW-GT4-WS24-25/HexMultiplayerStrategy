@@ -39,6 +39,15 @@ namespace HexSystem
         public override void OnNetworkSpawn()
         {
             ServerEvents.Unit.OnUnitGroupWithIdDeleted += DeleteUnitGroup;
+            ServerEvents.Unit.OnUnitGroupReachedNewHex += MoveUnitGroupToHex;
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter += RemoveStationaryUnitGroupFromHex;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            ServerEvents.Unit.OnUnitGroupWithIdDeleted -= DeleteUnitGroup;
+            ServerEvents.Unit.OnUnitGroupReachedNewHex -= MoveUnitGroupToHex;
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter -= RemoveStationaryUnitGroupFromHex;
         }
 
         public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
@@ -81,9 +90,11 @@ namespace HexSystem
             DeleteUnitGroupFromHexClientRpc(coordinates, unitGroupToRemove.NetworkObjectId);
         }
 
-        public void MoveUnitGroupToHex(AxialCoordinates oldCoordinate, AxialCoordinates newCoordinate, UnitGroup unitGroupToMove)
+        public void MoveUnitGroupToHex(UnitGroup unitGroupToMove, AxialCoordinates newCoordinate)
         {
-            MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupToMove.NetworkObjectId);
+            var unitGroupId = unitGroupToMove.NetworkObjectId;
+            var oldCoordinate = _coordinatesByUnitGroups[unitGroupId];
+            MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
         }
 
         public void UpdateControllingPlayerOfHex(AxialCoordinates coordinate, ulong playerId)
@@ -98,11 +109,13 @@ namespace HexSystem
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, newStationaryUnitGroup, newStationaryUnitGroup.NetworkObjectId);   
         }
 
-        public void RemoveStationaryUnitGroupFromHex(AxialCoordinates coordinate, UnitGroup unitGroupToRemove)
+        public void RemoveStationaryUnitGroupFromHex(UnitGroup unitGroupToRemove)
         {
+            var unitGroupId = unitGroupToRemove.NetworkObjectId;
+            var coordinate = _coordinatesByUnitGroups[unitGroupId];
             var hexagonData = _hexDataByCoordinates[coordinate];
             
-            if(hexagonData.StationaryUnitGroup == unitGroupToRemove.NetworkObjectId)
+            if(hexagonData.StationaryUnitGroup == unitGroupId)
                 UpdateStationaryUnitGroupOfHexClientRpc(coordinate, false, 0);
         }
 

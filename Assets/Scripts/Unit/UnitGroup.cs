@@ -15,6 +15,7 @@ namespace Unit
     {
         [Header("References")]
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
+        [field: SerializeField] public WaypointQueue WaypointQueue { get; private set; }
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
@@ -27,6 +28,10 @@ namespace Unit
 
         public static Dictionary<ulong, UnitGroup> UnitGroupsInGame = new();
         
+        public bool IsFighting { get; set; }
+        private bool IsResting { get; set; }
+        public bool CanMove => !IsFighting && !IsResting;
+        
         public ulong PlayerId { get; private set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
         public PlayerColor PlayerColor { get; private set; }
@@ -35,8 +40,14 @@ namespace Unit
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
             UnitGroupsInGame.Add(NetworkObjectId, this);
+
             if (!IsServer)
+            {
                 Destroy(combatInitiator.gameObject);
+                return;
+            }
+            
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleSwitchedDayNightCycle;
         }
 
         public override void OnNetworkDespawn()
@@ -54,8 +65,7 @@ namespace Unit
             
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
             InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
-            Movement.NextHexagon = startHexagon;
-            Movement.GridData = gridData;
+            Movement.Initialize(startHexagon);
         }
 
         public void IntegrateUnitsOf(UnitGroup otherUnitGroup)
@@ -85,6 +95,12 @@ namespace Unit
         {
             UnitCount.Value -= amount;
         }
+        
+        
+        private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
+        {
+            IsResting = newDayNightCycle == DayNightCycle.CycleState.Night;
+        }
 
         #endregion
 
@@ -98,7 +114,7 @@ namespace Unit
             PlayerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
             meshRenderer.material = PlayerColor.unitMaterial;
             
-            Movement.Initialize(PlayerColor);
+            //TODO TravelLineColor setzen
         }
         
         [ClientRpc]

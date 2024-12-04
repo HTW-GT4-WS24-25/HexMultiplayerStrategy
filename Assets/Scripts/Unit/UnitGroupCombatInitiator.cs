@@ -10,12 +10,12 @@ namespace Unit
         
         public void OnTriggerEnter(Collider other)
         {
-            if(!unitGroup.Movement.CanMove() 
+            if(!unitGroup.CanMove 
                || !other.CompareTag("UnitGroup")) 
                 return;
             
             var collidedUnitGroup = other.GetComponentInParent<UnitGroup>();
-            if (collidedUnitGroup.Movement.IsFighting || unitGroup.PlayerId == collidedUnitGroup.PlayerId)
+            if (collidedUnitGroup.IsFighting || unitGroup.PlayerId == collidedUnitGroup.PlayerId)
                 return;
             
             ServerEvents.Unit.OnCombatTriggered?.Invoke(collidedUnitGroup, unitGroup);
