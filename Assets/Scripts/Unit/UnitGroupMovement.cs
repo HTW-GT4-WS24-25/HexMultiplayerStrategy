@@ -3,6 +3,7 @@ using GameEvents;
 using HexSystem;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Unit
 {
@@ -12,6 +13,8 @@ namespace Unit
 
         public Hexagon startHexagon;
         public Hexagon goalHexagon;
+
+        public event UnityAction OnPathChanged;
 
         [SerializeField] private UnitGroup unitGroup;
         [SerializeField] private float moveSpeed = 3;
@@ -59,8 +62,11 @@ namespace Unit
             if (hasMovementLeft && unitGroup.CanMove)
                 Move();
 
-            if (_movementProgress >= 1)
-                SetupForMovementToNextGoal(true);
+            if (_movementProgress < 1) 
+                return;
+            
+            SetupForMovementToNextGoal(true);
+            OnPathChanged?.Invoke();
         }
 
 
@@ -68,7 +74,9 @@ namespace Unit
         {
             _movementProgress += Time.deltaTime * moveSpeed / _distanceToGoal;
             transform.position = Vector3.Lerp(_startPosition, goalHexagon.transform.position, _movementProgress);
-
+            
+            unitGroup.TravelLineDrawer.SyncFirstTravelLinePositionClientRpc();
+            
             if (!_assignedToNextHexagon &&
                 Vector3.Distance(goalHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
             {
@@ -80,10 +88,9 @@ namespace Unit
         private void OnWaypointsUpdated(List<Hexagon> waypoints)
         {
             if (!hasMovementLeft || waypoints[0] == startHexagon)
-            {
-                //Pretend to have reached goal and immediately startMovingToNext
                 SetupForMovementToNextGoal(false);
-            }
+            
+            OnPathChanged?.Invoke();
         }
 
         private void SetupForMovementToNextGoal(bool reachedHexCenter)
@@ -103,6 +110,7 @@ namespace Unit
         private void StartMovingToGoal(Hexagon goal)
         {
             ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(unitGroup);
+            
             goalHexagon = goal;
             var goalPosition = goal.transform.position;
             transform.rotation = Quaternion.LookRotation(goalPosition - transform.position);

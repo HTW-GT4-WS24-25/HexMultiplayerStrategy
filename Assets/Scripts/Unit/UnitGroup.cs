@@ -16,12 +16,16 @@ namespace Unit
         [Header("References")]
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
         [field: SerializeField] public WaypointQueue WaypointQueue { get; private set; }
+
+        [field: SerializeField]
+        public UnitGroupTravelLineDrawer TravelLineDrawer { get; private set; }
+        
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
 
-        public UnityEvent OnUnitHighlightEnabled;
-        public UnityEvent OnUnitHighlightDisabled;
+        public event UnityAction OnUnitHighlightEnabled;
+        public event UnityAction OnUnitHighlightDisabled;
         public UnityEvent OnDamageTaken;
 
         public Action<int> OnUnitCountUpdated;
