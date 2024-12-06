@@ -14,7 +14,6 @@ namespace Unit
         public Hexagon startHexagon;
         public Hexagon goalHexagon;
 
-        public event UnityAction OnPathChanged;
 
         [SerializeField] private UnitGroup unitGroup;
         [SerializeField] private float moveSpeed = 3;
@@ -66,7 +65,6 @@ namespace Unit
                 return;
             
             SetupForMovementToNextGoal(true);
-            OnPathChanged?.Invoke();
         }
 
 
@@ -74,8 +72,6 @@ namespace Unit
         {
             _movementProgress += Time.deltaTime * moveSpeed / _distanceToGoal;
             transform.position = Vector3.Lerp(_startPosition, goalHexagon.transform.position, _movementProgress);
-            
-            unitGroup.TravelLineDrawer.SyncFirstTravelLinePositionClientRpc();
             
             if (!_assignedToNextHexagon &&
                 Vector3.Distance(goalHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
@@ -85,31 +81,32 @@ namespace Unit
             }
         }
 
-        private void OnWaypointsUpdated(List<Hexagon> waypoints)
+        private void OnWaypointsUpdated(Hexagon firstWaypoint, bool wasSplit)
         {
-            if (!hasMovementLeft || waypoints[0] == startHexagon)
+            if (!hasMovementLeft && !wasSplit)
+                SetupForMovementToNextGoal(true);
+            else if(!hasMovementLeft || startHexagon == firstWaypoint || wasSplit)
                 SetupForMovementToNextGoal(false);
-            
-            OnPathChanged?.Invoke();
         }
 
-        private void SetupForMovementToNextGoal(bool reachedHexCenter)
+        private void SetupForMovementToNextGoal(bool startsFromHexCenter)
         {
             ResetForNextMovementStep();
 
             var newGoal = unitGroup.WaypointQueue.FetchWaypoint();
             hasMovementLeft = newGoal is not null;
 
-            if (reachedHexCenter)
+            if (startsFromHexCenter)
                 ServerEvents.Unit.OnUnitGroupReachedHexCenter.Invoke(unitGroup, goalHexagon.Coordinates);
 
             if (hasMovementLeft)
-                StartMovingToGoal(newGoal);
+                StartMovingToGoal(newGoal, startsFromHexCenter);
         }
 
-        private void StartMovingToGoal(Hexagon goal)
+        private void StartMovingToGoal(Hexagon goal, bool startsFromHexCenter)
         {
-            ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(unitGroup);
+            if (startsFromHexCenter)
+                ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(unitGroup);
             
             goalHexagon = goal;
             var goalPosition = goal.transform.position;

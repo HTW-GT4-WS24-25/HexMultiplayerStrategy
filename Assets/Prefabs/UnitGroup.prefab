@@ -791,12 +791,6 @@ MonoBehaviour:
   unitCountText: {fileID: 4551166243816071142}
   meshRenderer: {fileID: 1545902685784368369}
   combatInitiator: {fileID: 2089195780864258209}
-  OnUnitHighlightEnabled:
-    m_PersistentCalls:
-      m_Calls: []
-  OnUnitHighlightDisabled:
-    m_PersistentCalls:
-      m_Calls: []
   OnDamageTaken:
     m_PersistentCalls:
       m_Calls:
@@ -829,7 +823,7 @@ MonoBehaviour:
   startHexagon: {fileID: 0}
   goalHexagon: {fileID: 0}
   unitGroup: {fileID: 7360500778174264170}
-  moveSpeed: 3
+  moveSpeed: 0.5
 --- !u!114 &4679020199164109524
 MonoBehaviour:
   m_ObjectHideFlags: 0

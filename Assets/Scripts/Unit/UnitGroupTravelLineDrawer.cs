@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexSystem;
 using Player;
@@ -15,15 +16,19 @@ namespace Unit
         
         private UnitGroupTravelLine _travelLine;
 
+        public void Awake()
+        {
+            InitializeTravelLine();
+        }
+
         public override void OnNetworkSpawn()
         {
             if (!IsServer)
                 return;
             
-            unitGroup.Movement.OnPathChanged += UpdateTravelLine;
+            unitGroup.WaypointQueue.OnPathChanged += UpdateTravelLine;
             unitGroup.OnUnitHighlightEnabled += OnEnableHighlight;
             unitGroup.OnUnitHighlightDisabled += OnDisableHighlight;
-            
         }
 
         public override void OnNetworkDespawn()
@@ -31,15 +36,20 @@ namespace Unit
             if (!IsServer)
                 return;
             
-            unitGroup.Movement.OnPathChanged -= UpdateTravelLine;
+            unitGroup.WaypointQueue.OnPathChanged -= UpdateTravelLine;
             unitGroup.OnUnitHighlightEnabled -= OnEnableHighlight;
             unitGroup.OnUnitHighlightDisabled -= OnDisableHighlight;
         }
 
+        public void Update()
+        {
+            if (_travelLine.gameObject.activeSelf)
+                SyncFirstTravelLinePositionClientRpc();
+        }
+        
         private void UpdateTravelLine()
         {
-            if (_travelLine is null)
-                DrawLine(unitGroup.PlayerColor);
+            _travelLine.gameObject.SetActive(true);
             
             var linePoints = new List<Vector3> { transform.position };
         
@@ -54,10 +64,11 @@ namespace Unit
                 DisableTravelLineClientRpc();
         }
 
-        private void DrawLine(PlayerColor playerColor)
+        private void InitializeTravelLine()
         {
             _travelLine = Instantiate(travelLinePrefab, transform);
-            _travelLine.Initialize(playerColor);
+            _travelLine.Initialize(unitGroup.PlayerColor);
+            _travelLine.gameObject.SetActive(false);
         }
 
         [ClientRpc]
@@ -70,7 +81,7 @@ namespace Unit
         }
 
         [ClientRpc]
-        public void SyncFirstTravelLinePositionClientRpc()
+        private void SyncFirstTravelLinePositionClientRpc()
         {
             _travelLine?.SetFirstNodePosition(transform.position);
         }
@@ -78,17 +89,17 @@ namespace Unit
         [ClientRpc]
         private void DisableTravelLineClientRpc()
         {
-            Destroy(_travelLine.gameObject);
+            _travelLine.gameObject.SetActive(false);
         }
 
         private void OnEnableHighlight()
         {
-            _travelLine.EnableHighlight();
+            _travelLine?.EnableHighlight();
         }
 
         private void OnDisableHighlight()
         {
-            _travelLine.DisableHighlight();
+            _travelLine?.DisableHighlight();
         }
     }
 }

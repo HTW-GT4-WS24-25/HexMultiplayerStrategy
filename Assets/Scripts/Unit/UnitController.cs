@@ -72,7 +72,7 @@ namespace Unit
             splitUnitGroup.Initialize(
                 unitGroup.UnitCount.Value - selectionUnitCount,
                 unitGroup.PlayerId, unitGroup.Movement.startHexagon, gridData);
-            splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints());
+            splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints(), true);
             
             unitGroup.UnitCount.Value = selectionUnitCount;
             gridData.CopyUnitGroupOnHex(unitGroup, splitUnitGroup);
@@ -113,20 +113,20 @@ namespace Unit
         private void SelectUnitGroupOnHex(Hexagon hex)
         {
             var unitOnHex = gridData.FirstPlayerUnitOnHexOrNull(hex.Coordinates, NetworkManager.Singleton.LocalClientId);
-            if (unitOnHex != null)
+            if (unitOnHex == null) 
+                return;
+            
+            if (_selectedUnitGroup != null)
             {
-                if (_selectedUnitGroup != null)
-                {
-                    _selectedUnitGroup.DisableHighlight();
-                    _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
-                }
-                
-                _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
-                _selectedUnitGroup.EnableHighlight();
-                _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
-                
-                ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
+                _selectedUnitGroup.DisableHighlight();
+                _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
             }
+                
+            _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
+            _selectedUnitGroup.EnableHighlight();
+            _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
+                
+            ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
 
         private void HandleUnitCountOfSelectedChanged(int newUnitCount)

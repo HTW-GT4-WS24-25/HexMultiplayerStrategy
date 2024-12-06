@@ -93,8 +93,10 @@ namespace HexSystem
         public void MoveUnitGroupToHex(UnitGroup unitGroupToMove, AxialCoordinates newCoordinate)
         {
             var unitGroupId = unitGroupToMove.NetworkObjectId;
-            var oldCoordinate = _coordinatesByUnitGroups[unitGroupId];
-            MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
+            if (_coordinatesByUnitGroups.TryGetValue(unitGroupId, out var oldCoordinate))
+                MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
+            else
+                AddUnitToUnitsOnHexClientRpc(newCoordinate, unitGroupId);
         }
 
         public void UpdateControllingPlayerOfHex(AxialCoordinates coordinate, ulong playerId)

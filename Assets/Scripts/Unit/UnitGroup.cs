@@ -8,6 +8,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Unit
 {
@@ -16,10 +17,8 @@ namespace Unit
         [Header("References")]
         [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
         [field: SerializeField] public WaypointQueue WaypointQueue { get; private set; }
-
-        [field: SerializeField]
-        public UnitGroupTravelLineDrawer TravelLineDrawer { get; private set; }
         
+        [SerializeField] private UnitGroupTravelLineDrawer travelLineDrawer;
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
