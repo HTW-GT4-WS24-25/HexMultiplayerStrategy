@@ -5,6 +5,7 @@ using HexSystem;
 using Networking.Host;
 using Player;
 using TMPro;
+using Unit.Model;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +19,9 @@ namespace Unit
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
-
+        
+        // [SerializeField] private AnimalMaskTint animalMaskTint;
+        
         public UnityEvent OnUnitHighlightEnabled;
         public UnityEvent OnUnitHighlightDisabled;
         public UnityEvent OnDamageTaken;
@@ -31,6 +34,8 @@ namespace Unit
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
         public PlayerColor PlayerColor { get; private set; }
 
+        
+        
         public override void OnNetworkSpawn()
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
@@ -97,6 +102,8 @@ namespace Unit
             
             PlayerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
             meshRenderer.material = PlayerColor.unitMaterial;
+            
+            // animalMaskTint.ApplyMaterials(PlayerColor.playerMaterial);
             
             Movement.Initialize(PlayerColor);
         }
