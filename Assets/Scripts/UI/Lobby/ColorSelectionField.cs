@@ -27,9 +27,10 @@ namespace UI.Lobby
             _isAvailable = isAvailable;
         }
 
-        public void SetSelectedMarking(bool isSelected)
+        public void SetAsSelected(bool isSelected)
         {
             selectedMarking.SetActive(isSelected);
+            transform.localScale = isSelected ? Vector3.one * 1.1f : Vector3.one;
         }
 
         public void OnPointerDown(PointerEventData eventData)

@@ -29,7 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Testing/QuickSinglePlayerFollowUp2.unity
     guid: 8625dbd9a1810cc45875eae9d28dcf3a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ToniTestScene.unity
     guid: 771ee7bd0c3b8fd40b6fa540d0f7a9b0
   m_configObjects:
