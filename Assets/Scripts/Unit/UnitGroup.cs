@@ -5,6 +5,7 @@ using HexSystem;
 using Networking.Host;
 using Player;
 using TMPro;
+using Unit.Model;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,6 +26,7 @@ namespace Unit
 
         public event UnityAction OnUnitHighlightEnabled;
         public event UnityAction OnUnitHighlightDisabled;
+
         public UnityEvent OnDamageTaken;
 
         public Action<int> OnUnitCountUpdated;
@@ -39,6 +41,8 @@ namespace Unit
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
         public PlayerColor PlayerColor { get; private set; }
 
+        
+        
         public override void OnNetworkSpawn()
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
