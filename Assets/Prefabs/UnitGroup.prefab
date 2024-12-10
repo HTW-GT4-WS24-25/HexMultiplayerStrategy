@@ -788,6 +788,7 @@ MonoBehaviour:
   unitCountText: {fileID: 4551166243816071142}
   meshRenderer: {fileID: 1545902685784368369}
   combatInitiator: {fileID: 2089195780864258209}
+  animalMaskTint: {fileID: 0}
   OnUnitHighlightEnabled:
     m_PersistentCalls:
       m_Calls:

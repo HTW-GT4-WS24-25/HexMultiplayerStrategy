@@ -13,7 +13,7 @@ namespace Player
             
         public ColorType colorType;
         public Color baseColor;
-
+        
         //TODO Getter der anderen Materials ruft defaultMaterial auf falls NULL
         public Material defaultMaterial;
         
@@ -27,6 +27,8 @@ namespace Player
         public Material travelEndPointMaterial;
         public Material highlightedTravelEndPointMaterial;
 
+        public Material playerMaterial;
+        
         public static void AddColorToStorage(PlayerColor playerColor) => _playerColorStorage.Add(playerColor.colorType, playerColor);
         public static PlayerColor GetFromColorType(ColorType colorType) => _playerColorStorage[colorType];
         public static PlayerColor[] GetAll() => _playerColorStorage.Values.ToArray();

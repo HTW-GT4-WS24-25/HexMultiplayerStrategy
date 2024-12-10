@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorType: 2
   baseColor: {r: 0.011614433, g: 0.25481582, b: 0.8207547, a: 1}
+  species: 0
+  unitModelSpecies: {fileID: 0}
   defaultMaterial: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}
   unitMaterial: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}
   highlightedUnitMaterial: {fileID: 2100000, guid: 28f8eecb711f06c45b510f3d14f48fa2, type: 2}
@@ -22,3 +24,4 @@ MonoBehaviour:
   highlightedTravelLineMaterial: {fileID: 2100000, guid: 9da9b14c8a822614f8afadfa3043b6ec, type: 2}
   travelEndPointMaterial: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
   highlightedTravelEndPointMaterial: {fileID: 2100000, guid: 9da9b14c8a822614f8afadfa3043b6ec, type: 2}
+  playerMaterial: {fileID: 2100000, guid: 2edb338456fd7e04ba00d58d6bec133c, type: 2}
