@@ -25,8 +25,9 @@ namespace UI
         
         public void UpdateUnitCount(float count)
         {
-            ClientEvents.Unit.OnUnitSelectionSliderUpdate.Invoke((int)count);
-            unitAmountText.text = count.ToString("0");
+            var intCount = (int)count;
+            ClientEvents.Unit.OnUnitSelectionSliderUpdate.Invoke(intCount);
+            unitAmountText.text = intCount.ToString("0");
         }
         
         public void SetSliderMaximumAndValue(int unitCount)

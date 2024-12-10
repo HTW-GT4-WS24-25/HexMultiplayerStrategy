@@ -24,7 +24,8 @@ namespace UI
         private void HandleGroupSelected(UnitGroup selectedGroup)
         {
             cancelSelectionWindow.SetActive(true);
-            if (selectedGroup.UnitCount.Value > 1) unitSelectionUI.gameObject.SetActive(true);
+            if (selectedGroup.UnitCount.Value > 1) 
+                unitSelectionUI.gameObject.SetActive(true);
          
             unitSelectionUI.SetSliderMaximumAndValue(selectedGroup.UnitCount.Value);
         }
