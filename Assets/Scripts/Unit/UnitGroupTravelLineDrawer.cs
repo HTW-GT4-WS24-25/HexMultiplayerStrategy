@@ -29,6 +29,7 @@ namespace Unit
         {
             unitGroup.OnUnitHighlightEnabled -= OnEnableHighlight;
             unitGroup.OnUnitHighlightDisabled -= OnDisableHighlight;
+            Destroy(_travelLine.gameObject);
             
             if (!IsServer)
                 return;
