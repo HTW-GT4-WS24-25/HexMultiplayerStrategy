@@ -47,21 +47,21 @@ namespace Unit
             var requestedDestination = mapBuilder.Grid.Get(coordinates);
             var newUnitPath = GetPathForUnitGroup(requestUnitGroup, requestedDestination);
 
-            if (!requestUnitGroup.Movement.CanMove())
+            if (!requestUnitGroup.CanMove)
                 return;
             
             if (selectionUnitCount < requestUnitGroup.UnitCount.Value && requestUnitGroup.UnitCount.Value > 1)
                 SplitUnitGroup(requestUnitGroup, selectionUnitCount);
             
-            requestUnitGroup.Movement.SetAllWaypoints(newUnitPath);
+            requestUnitGroup.WaypointQueue.UpdateWaypoints(newUnitPath);
         }
 
         private List<Hexagon> GetPathForUnitGroup(UnitGroup unitGroup, Hexagon clickedHex)
         {
-            var currentUnitCoordinates = unitGroup.Movement.NextHexagon.Coordinates;
+            var pathStartCoordinates = unitGroup.Movement.goalHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
 
-            return mapBuilder.Grid.GetPathBetween(currentUnitCoordinates, clickedCoordinates);
+            return mapBuilder.Grid.GetPathBetween(pathStartCoordinates, clickedCoordinates);
         }
 
         private void SplitUnitGroup(UnitGroup unitGroup, int selectionUnitCount)
@@ -71,14 +71,10 @@ namespace Unit
             splitUnitGroup.NetworkObject.Spawn();
             splitUnitGroup.Initialize(
                 unitGroup.UnitCount.Value - selectionUnitCount,
-                unitGroup.PlayerId,
-                unitGroup.Movement.NextHexagon,
-                gridData);
-            
-            splitUnitGroup.Movement.CopyValuesFrom(unitGroup.Movement);
+                unitGroup.PlayerId, unitGroup.Movement.startHexagon, gridData);
+            splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints(), true);
             
             unitGroup.UnitCount.Value = selectionUnitCount;
-            
             gridData.CopyUnitGroupOnHex(unitGroup, splitUnitGroup);
         }
 
@@ -117,20 +113,20 @@ namespace Unit
         private void SelectUnitGroupOnHex(Hexagon hex)
         {
             var unitOnHex = gridData.FirstPlayerUnitOnHexOrNull(hex.Coordinates, NetworkManager.Singleton.LocalClientId);
-            if (unitOnHex != null)
+            if (unitOnHex == null) 
+                return;
+            
+            if (_selectedUnitGroup != null)
             {
-                if (_selectedUnitGroup != null)
-                {
-                    _selectedUnitGroup.DisableHighlight();
-                    _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
-                }
-                
-                _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
-                _selectedUnitGroup.EnableHighlight();
-                _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
-                
-                ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
+                _selectedUnitGroup.DisableHighlight();
+                _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
             }
+                
+            _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
+            _selectedUnitGroup.EnableHighlight();
+            _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
+                
+            ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
 
         private void HandleUnitCountOfSelectedChanged(int newUnitCount)
