@@ -787,7 +787,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   <Movement>k__BackingField: {fileID: 1155326024646559241}
   <WaypointQueue>k__BackingField: {fileID: 4679020199164109524}
-  <TravelLineDrawer>k__BackingField: {fileID: 8072151556570626517}
+  travelLineDrawer: {fileID: 8072151556570626517}
   unitCountText: {fileID: 4551166243816071142}
   meshRenderer: {fileID: 1545902685784368369}
   combatInitiator: {fileID: 2089195780864258209}
@@ -850,7 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  travelLinePrefab: {fileID: 8281693299373841100, guid: 38dee5985909fd64395dde93dae5e6b8, type: 3}
+  travelLinePrefab: {fileID: 6402713168850666235, guid: 38dee5985909fd64395dde93dae5e6b8, type: 3}
   unitGroup: {fileID: 7360500778174264170}
 --- !u!114 &-6189825913930052847
 MonoBehaviour:

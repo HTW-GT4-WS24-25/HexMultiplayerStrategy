@@ -117,7 +117,7 @@ namespace Unit
             PlayerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
             meshRenderer.material = PlayerColor.unitMaterial;
             
-            //TODO TravelLineColor setzen
+            travelLineDrawer.InitializeTravelLine(PlayerColor);
         }
         
         [ClientRpc]
