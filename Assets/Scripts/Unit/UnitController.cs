@@ -58,7 +58,7 @@ namespace Unit
 
         private List<Hexagon> GetPathForUnitGroup(UnitGroup unitGroup, Hexagon clickedHex)
         {
-            var pathStartCoordinates = unitGroup.Movement.goalHexagon.Coordinates;
+            var pathStartCoordinates = unitGroup.Movement.GoalHexagon.Coordinates;
             var clickedCoordinates = clickedHex.Coordinates;
 
             return mapBuilder.Grid.GetPathBetween(pathStartCoordinates, clickedCoordinates);
@@ -71,7 +71,7 @@ namespace Unit
             splitUnitGroup.NetworkObject.Spawn();
             splitUnitGroup.Initialize(
                 unitGroup.UnitCount.Value - selectionUnitCount,
-                unitGroup.PlayerId, unitGroup.Movement.startHexagon, gridData);
+                unitGroup.PlayerId, unitGroup.Movement.StartHexagon, gridData);
             splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints(), true);
             
             unitGroup.UnitCount.Value = selectionUnitCount;

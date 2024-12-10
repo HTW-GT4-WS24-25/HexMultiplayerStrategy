@@ -65,6 +65,7 @@ namespace HexSystem
         public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd) 
         {
             var unitGroupToAddId = unitGroupToAdd.NetworkObjectId;
+            unitGroupToAdd.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[coordinate]);
             
             AddUnitToUnitsOnHexClientRpc(coordinate, unitGroupToAddId);
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, true, unitGroupToAddId);
@@ -96,6 +97,8 @@ namespace HexSystem
         public void MoveUnitGroupToHex(UnitGroup unitGroupToMove, AxialCoordinates newCoordinate)
         {
             var unitGroupId = unitGroupToMove.NetworkObjectId;
+            unitGroupToMove.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[newCoordinate]);
+            
             if (_coordinatesByUnitGroups.TryGetValue(unitGroupId, out var oldCoordinate))
                 MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
             else

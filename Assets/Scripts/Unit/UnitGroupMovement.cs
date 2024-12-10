@@ -1,22 +1,18 @@
-using System.Collections.Generic;
 using GameEvents;
 using HexSystem;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Unit
 {
     public class UnitGroupMovement : NetworkBehaviour
     {
-        public bool hasMovementLeft;
-
-        public Hexagon startHexagon;
-        public Hexagon goalHexagon;
-
-
         [SerializeField] private UnitGroup unitGroup;
-        [SerializeField] private float moveSpeed = 3;
+        
+        public bool HasMovementLeft { get; set; }
+        public Hexagon StartHexagon { get; set; }
+        public Hexagon GoalHexagon { get; set; }
+        public float MoveSpeed { get; set; }
 
         private Vector3 _startPosition;
         private bool _assignedToNextHexagon;
@@ -41,13 +37,13 @@ namespace Unit
 
         public void Initialize(Hexagon currentHexagon)
         {
-            goalHexagon = currentHexagon;
+            GoalHexagon = currentHexagon;
             ResetForNextMovementStep();
         }
 
         private void ResetForNextMovementStep()
         {
-            startHexagon = goalHexagon;
+            StartHexagon = GoalHexagon;
             _startPosition = transform.position;
             _movementProgress = 0;
             _assignedToNextHexagon = false;
@@ -58,7 +54,7 @@ namespace Unit
             if (!IsServer)
                 return;
 
-            if (hasMovementLeft && unitGroup.CanMove)
+            if (HasMovementLeft && unitGroup.CanMove)
                 Move();
 
             if (_movementProgress < 1) 
@@ -67,25 +63,24 @@ namespace Unit
             SetupForMovementToNextGoal(true);
         }
 
-
         private void Move()
         {
-            _movementProgress += Time.deltaTime * moveSpeed / _distanceToGoal;
-            transform.position = Vector3.Lerp(_startPosition, goalHexagon.transform.position, _movementProgress);
+            _movementProgress += Time.deltaTime * MoveSpeed / _distanceToGoal;
+            transform.position = Vector3.Lerp(_startPosition, GoalHexagon.transform.position, _movementProgress);
             
             if (!_assignedToNextHexagon &&
-                Vector3.Distance(goalHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
+                Vector3.Distance(GoalHexagon.transform.position, transform.position) < MapBuilder.TileWidth * 0.5f)
             {
-                ServerEvents.Unit.OnUnitGroupReachedNewHex?.Invoke(unitGroup, goalHexagon.Coordinates);
+                ServerEvents.Unit.OnUnitGroupReachedNewHex?.Invoke(unitGroup, GoalHexagon.Coordinates);
                 _assignedToNextHexagon = true;
             }
         }
 
         private void OnWaypointsUpdated(Hexagon firstWaypoint, bool wasSplit)
         {
-            if (!hasMovementLeft && !wasSplit)
+            if (!HasMovementLeft && !wasSplit)
                 SetupForMovementToNextGoal(true);
-            else if(!hasMovementLeft || startHexagon == firstWaypoint || wasSplit)
+            else if(!HasMovementLeft || StartHexagon == firstWaypoint || wasSplit)
                 SetupForMovementToNextGoal(false);
         }
 
@@ -94,12 +89,12 @@ namespace Unit
             ResetForNextMovementStep();
 
             var newGoal = unitGroup.WaypointQueue.FetchWaypoint();
-            hasMovementLeft = newGoal is not null;
+            HasMovementLeft = newGoal is not null;
 
             if (startsFromHexCenter)
-                ServerEvents.Unit.OnUnitGroupReachedHexCenter.Invoke(unitGroup, goalHexagon.Coordinates);
+                ServerEvents.Unit.OnUnitGroupReachedHexCenter.Invoke(unitGroup, GoalHexagon.Coordinates);
 
-            if (hasMovementLeft)
+            if (HasMovementLeft)
                 StartMovingToGoal(newGoal, startsFromHexCenter);
         }
 
@@ -108,7 +103,7 @@ namespace Unit
             if (startsFromHexCenter)
                 ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(unitGroup);
             
-            goalHexagon = goal;
+            GoalHexagon = goal;
             var goalPosition = goal.transform.position;
             transform.rotation = Quaternion.LookRotation(goalPosition - transform.position);
             _distanceToGoal = Vector3.Distance(transform.position, goalPosition);
