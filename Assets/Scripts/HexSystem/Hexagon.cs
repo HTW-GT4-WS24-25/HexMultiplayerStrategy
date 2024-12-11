@@ -25,6 +25,9 @@ namespace HexSystem
 
         public void SetTopping(Topping topping)
         {
+            if (_topping != null)
+                Destroy(_topping.gameObject);
+            
             _topping = topping;
             Instantiate(_topping, transform.position, QuaternionUtils.GetRandomHexRotation());
         }
