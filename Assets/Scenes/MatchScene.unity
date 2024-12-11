@@ -795,6 +795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  defaultHexagon: {fileID: 3928565022265745366, guid: 59f11e0706deddc41a454281d6dcb356, type: 3}
   spacing: 0
 --- !u!4 &1588253354
 Transform:

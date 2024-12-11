@@ -11,6 +11,7 @@ public class MapBuilder : NetworkBehaviour
     public HexagonGrid Grid;
 
     [Header("Settings")]
+    [SerializeField] private Hexagon defaultHexagon;
     [SerializeField] private float spacing;
 
     public const float TileWidth = 1;
@@ -49,11 +50,12 @@ public class MapBuilder : NetworkBehaviour
         {
             var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
 
-            var hexPrefab = hexDataByType[(ToppingType)mapData[dataIndex++]].HexagonPrefab;
+            var toppingPrefab = hexDataByType[(ToppingType)mapData[dataIndex++]].ToppingPrefab;
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
-            var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
+            var newHex = Instantiate(defaultHexagon, hexPosition, randomHexRotation, transform);
             newHex.Initialize(coordinates);
+            newHex.SetTopping(toppingPrefab);
             Grid.Add(newHex);
         }
     }
