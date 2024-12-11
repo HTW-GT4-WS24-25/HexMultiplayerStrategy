@@ -104,7 +104,7 @@ namespace HexSystem
                 for (var i = numExploredHexes; i < numDiscoveredHexes; i++)
                 {
                     foreach (var neighbor in GetAllNeighborsOf(reachableHexes[i].Coordinates)
-                                 .Where(neighbor => neighbor.isTraversable && !reachableHexes.Contains(neighbor)))
+                                 .Where(neighbor => neighbor.IsTraversable && !reachableHexes.Contains(neighbor)))
                     {
                         reachableHexes.Add(neighbor);
                     }
@@ -138,7 +138,7 @@ namespace HexSystem
                 if (currentHex == destHex) break;
 
                 foreach (var neighbor in GetAllNeighborsOf(currentHex.Coordinates)
-                             .Where(neighbor => neighbor.isTraversable && !hexToPredecessor.ContainsKey(neighbor)))
+                             .Where(neighbor => neighbor.IsTraversable && !hexToPredecessor.ContainsKey(neighbor)))
                 {
                     Console.WriteLine(neighbor.Coordinates);
                     hexQueue.Enqueue(neighbor);

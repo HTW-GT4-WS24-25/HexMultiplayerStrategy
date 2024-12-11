@@ -100,7 +100,7 @@ namespace Unit
 
         private void HandleHexClick(Hexagon clickedHex)
         {
-            if (_selectedUnitGroup != null && clickedHex.isTraversable)
+            if (_selectedUnitGroup != null && clickedHex.IsTraversable)
             {
                 Debug.Log("Move Command Registered");
                 RequestMoveCommandRpc(clickedHex.Coordinates, _selectedUnitGroup.NetworkObjectId, _clientSelectionUnitCount);
