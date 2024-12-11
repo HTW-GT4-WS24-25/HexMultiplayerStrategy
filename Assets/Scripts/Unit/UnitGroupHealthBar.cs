@@ -9,8 +9,8 @@ namespace Unit
     public class UnitGroupHealthBar : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] Slider healthSlider;
-        [SerializeField] Image healthBarSeparationLinePrefab;
+        [SerializeField] private Slider healthSlider;
+        [SerializeField] private Image healthBarSeparationLinePrefab;
         [SerializeField] private Transform healthBarSeparationLineHolder;
         [SerializeField] private Image sliderBackground;
         [SerializeField] private Image sliderFill;
@@ -19,7 +19,7 @@ namespace Unit
         [SerializeField] private float minXHealthBarPosition;
         [SerializeField] private float maxXHealthBarPosition;
 
-        private List<Image> healthBarSeparationLines = new();
+        private readonly List<Image> healthBarSeparationLines = new();
         private int _maxUnitCount;
         private Vector3 _defaultScale;
         private const int FULL_HEALTH = 1;

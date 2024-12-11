@@ -18,7 +18,6 @@ namespace Combat
 
         private readonly List<Combat> _ongoingCombats = new();
 
-        private const float AttackSpeed = 1.5f;
         private float _deltaTime;
         private bool _isPaused;
         
