@@ -10,7 +10,7 @@ public static class ProceduralHexGridUtils
     public static void FillMapWithHexes(
         Dictionary<AxialCoordinates, ToppingType> map, 
         int nRings, 
-        ToppingType toppingType = ToppingType.Grass)
+        ToppingType toppingType = ToppingType.None)
     {
         foreach (var coord in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {

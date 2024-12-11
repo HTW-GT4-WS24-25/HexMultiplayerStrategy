@@ -6,11 +6,11 @@ using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class HexTypeDataProvider : MonoBehaviour
+public class ToppingTypeDataProvider : MonoBehaviour
 {
     [SerializeField] private List<ToppingTypeData> HexTypeData = new();
     
-    public static HexTypeDataProvider Instance;
+    public static ToppingTypeDataProvider Instance;
     
     private readonly Dictionary<ToppingType, ToppingTypeData> _hexDataByType = new();
     

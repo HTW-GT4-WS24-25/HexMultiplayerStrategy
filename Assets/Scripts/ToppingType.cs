@@ -1,6 +1,6 @@
 ﻿public enum ToppingType
 {
-    Grass = 0,
+    None = 0,
     Mountain = 1,
     Forest = 2
 }

@@ -44,7 +44,7 @@ public class MapBuilder : NetworkBehaviour
         var dataIndex = 0;
         Debug.Log("Building Map");
         
-        var hexDataByType = HexTypeDataProvider.Instance.GetAllData();
+        var hexDataByType = ToppingTypeDataProvider.Instance.GetAllData();
         
         foreach (var coordinates in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
