@@ -19,7 +19,7 @@ namespace HexSystem
         {
             Coordinates = coordinate;
             
-            if(hexBorderLine != null)
+            if (hexBorderLine != null)
                 hexBorderLine.Initialize();
         }
 
