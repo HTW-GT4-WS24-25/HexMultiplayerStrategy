@@ -49,7 +49,7 @@ public class MapBuilder : NetworkBehaviour
         {
             var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
 
-            var hexPrefab = hexDataByType[(HexType)mapData[dataIndex++]].HexagonPrefab;
+            var hexPrefab = hexDataByType[(ToppingType)mapData[dataIndex++]].HexagonPrefab;
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
             var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);

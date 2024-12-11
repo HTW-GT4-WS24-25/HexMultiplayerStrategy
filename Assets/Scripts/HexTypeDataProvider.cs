@@ -8,11 +8,11 @@ using UnityEngine.Serialization;
 
 public class HexTypeDataProvider : MonoBehaviour
 {
-    [SerializeField] private List<HexTypeData> HexTypeData = new();
+    [SerializeField] private List<ToppingTypeData> HexTypeData = new();
     
     public static HexTypeDataProvider Instance;
     
-    private readonly Dictionary<HexType, HexTypeData> _hexDataByType = new();
+    private readonly Dictionary<ToppingType, ToppingTypeData> _hexDataByType = new();
     
     private void Awake()
     {
@@ -25,13 +25,13 @@ public class HexTypeDataProvider : MonoBehaviour
         }
     }
 
-    public HexTypeData GetData(HexType type)
+    public ToppingTypeData GetData(ToppingType type)
     {
         return _hexDataByType[type];
     }
 
-    public Dictionary<HexType, HexTypeData> GetAllData()
+    public Dictionary<ToppingType, ToppingTypeData> GetAllData()
     {
-        return new Dictionary<HexType, HexTypeData>(_hexDataByType);
+        return new Dictionary<ToppingType, ToppingTypeData>(_hexDataByType);
     }
 }

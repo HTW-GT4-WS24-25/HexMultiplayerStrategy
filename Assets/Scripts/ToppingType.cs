@@ -1,4 +1,4 @@
-﻿public enum HexType
+﻿public enum ToppingType
 {
     Grass = 0,
     Mountain = 1,

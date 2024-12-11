@@ -8,22 +8,22 @@ using Random = UnityEngine.Random;
 public static class ProceduralHexGridUtils
 {
     public static void FillMapWithHexes(
-        Dictionary<AxialCoordinates, HexType> map, 
+        Dictionary<AxialCoordinates, ToppingType> map, 
         int nRings, 
-        HexType hexType = HexType.Grass)
+        ToppingType toppingType = ToppingType.Grass)
     {
         foreach (var coord in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
-            map[coord] = hexType;
+            map[coord] = toppingType;
         }
     }
     
     public static List<AxialCoordinates> SelectHexagons(
-        Dictionary<AxialCoordinates, HexType> map,
+        Dictionary<AxialCoordinates, ToppingType> map,
         float probability,
         float enforcement = 2f,
         int areaSize = 2,
-        List<HexType> hexTypesToAvoid = null,
+        List<ToppingType> hexTypesToAvoid = null,
         List<AxialCoordinates> hexagonsToAvoid = null)
     {
         Debug.Assert(map is not null);
@@ -51,10 +51,10 @@ public static class ProceduralHexGridUtils
     }
 
     public static List<AxialCoordinates> SelectSurrounding(
-        Dictionary<AxialCoordinates, HexType> map,
+        Dictionary<AxialCoordinates, ToppingType> map,
         AxialCoordinates srcCoord,
         float diminishingProbabilityPerDistance,
-        List<HexType> hexTypesToAvoid = null,
+        List<ToppingType> hexTypesToAvoid = null,
         List<AxialCoordinates> hexagonsToAvoid = null)
     {
         Debug.Assert(map is not null);
