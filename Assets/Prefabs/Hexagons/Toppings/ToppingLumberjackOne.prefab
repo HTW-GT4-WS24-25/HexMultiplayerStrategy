@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a5d03f37f5243b59f7464cc2ebed6e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTraversable: 0
+  isTraversable: 1
 --- !u!1001 &289088837315592011
 PrefabInstance:
   m_ObjectHideFlags: 0
