@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3389252848002074367}
   m_Layer: 0
-  m_Name: topping-lumberjack
+  m_Name: ToppingLumberjackOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
