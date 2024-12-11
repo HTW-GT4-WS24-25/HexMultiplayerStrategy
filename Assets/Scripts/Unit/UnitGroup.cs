@@ -36,6 +36,8 @@ namespace Unit
         public bool IsFighting { get; set; }
         private bool IsResting { get; set; }
         public bool CanMove => !IsFighting && !IsResting;
+
+        private float _combatHealth;
         
         public ulong PlayerId { get; private set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
@@ -84,12 +86,21 @@ namespace Unit
         public void AddUnits(int amount)
         {
             UnitCount.Value += amount;
+            _combatHealth += amount;
         }
 
-        public void TakeDamage(int damageAmount)
+        public void TakeDamage(float damageAmount)
         {
-            SubtractUnits(damageAmount);
+            _combatHealth -= damageAmount;
+            while (_combatHealth < UnitCount.Value - 1)
+                SubtractUnits(1);
+
             TriggerOnDamageTakenClientRpc();
+        }
+
+        public void SetHealthToCount()
+        {
+            _combatHealth = UnitCount.Value;
         }
         
         public void Delete()
@@ -102,6 +113,7 @@ namespace Unit
         {
             UnitCount.Value -= amount;
         }
+        
         
         
         private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
