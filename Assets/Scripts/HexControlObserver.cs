@@ -22,7 +22,7 @@ public class HexControlObserver : NetworkBehaviour
     private void HandleUnitGroupReachedHexCenter(UnitGroup unitGroup, AxialCoordinates hexCoordinates)
     {
         var hexagonData = gridData.GetHexagonDataOnCoordinate(hexCoordinates);
-        
+        Debug.Log("UnitGroupReachedHexCenter");
         if (hexagonData.StationaryUnitGroup == null)
         {
             Debug.Log("Unit should become stationary");
@@ -40,7 +40,7 @@ public class HexControlObserver : NetworkBehaviour
             Debug.Log("Initiating Combat in HexCenter");
             ServerEvents.Unit.OnCombatTriggered?.Invoke(stationaryUnitGroup, unitGroup);
         } 
-        else if (!unitGroup.Movement.IsMoving)
+        else if (!unitGroup.Movement.HasMovementLeft)
         {
             Debug.Log("Unit should be added to other stationary group");
 

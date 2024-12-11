@@ -28,6 +28,8 @@ namespace GameEvents
         {
             public UnityAction<ulong> OnUnitGroupWithIdDeleted;
             public UnityAction<UnitGroup, AxialCoordinates> OnUnitGroupReachedHexCenter;
+            public UnityAction<UnitGroup, AxialCoordinates> OnUnitGroupReachedNewHex;
+            public UnityAction<UnitGroup> OnUnitGroupLeftHexCenter;
             public UnityAction<UnitGroup, UnitGroup> OnCombatTriggered;
         }
     }

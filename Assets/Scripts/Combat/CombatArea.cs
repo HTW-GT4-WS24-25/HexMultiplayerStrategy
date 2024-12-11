@@ -21,7 +21,7 @@ namespace Combat
             
             var collidedUnitGroup = other.GetComponentInParent<UnitGroup>();
             
-            if (collidedUnitGroup.Movement.IsFighting)
+            if (collidedUnitGroup.IsFighting)
                 return;
 
             _combat.JoinCombat(collidedUnitGroup);

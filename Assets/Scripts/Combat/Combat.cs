@@ -18,8 +18,8 @@ namespace Combat
             CombatIndicator = combatIndicator;
             CombatArea = combatArea;
             
-            unitGroup1.Movement.IsFighting = true;
-            unitGroup2.Movement.IsFighting = true;
+            unitGroup1.IsFighting = true;
+            unitGroup2.IsFighting = true;
             _unitGroups = new HashSet<UnitGroup> { unitGroup1, unitGroup2 };
             _killedUnitGroups = new HashSet<UnitGroup>();
         }
@@ -38,7 +38,7 @@ namespace Combat
         public void End()
         {
             foreach (var unitGroup in _unitGroups)
-                unitGroup.Movement.IsFighting = false;
+                unitGroup.IsFighting = false;
         }
 
         public void JoinCombat(UnitGroup unitGroup)
@@ -52,7 +52,7 @@ namespace Combat
             }
             else
             {
-                unitGroup.Movement.IsFighting = true;
+                unitGroup.IsFighting = true;
                 _unitGroups.Add(unitGroup);
             }
         }

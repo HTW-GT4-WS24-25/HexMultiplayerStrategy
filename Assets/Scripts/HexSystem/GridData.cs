@@ -12,13 +12,16 @@ namespace HexSystem
         private readonly Dictionary<AxialCoordinates, HexagonData> _hexDataByCoordinates = new();
         private readonly Dictionary<ulong, AxialCoordinates> _coordinatesByUnitGroups = new();
 
-        public void SetupNewData(int nRings)
+        public void SetupNewData(int[] mapData, int nRings)
         {
             _hexDataByCoordinates.Clear();
             
+            var dataIndex = 0;
             foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
-                _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate));       
+                var hexType = (HexType)mapData[dataIndex++];
+                _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate, hexType));  
+                Debug.Log(hexType);
             }
         }
 
@@ -39,6 +42,15 @@ namespace HexSystem
         public override void OnNetworkSpawn()
         {
             ServerEvents.Unit.OnUnitGroupWithIdDeleted += DeleteUnitGroup;
+            ServerEvents.Unit.OnUnitGroupReachedNewHex += MoveUnitGroupToHex;
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter += RemoveStationaryUnitGroupFromHex;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            ServerEvents.Unit.OnUnitGroupWithIdDeleted -= DeleteUnitGroup;
+            ServerEvents.Unit.OnUnitGroupReachedNewHex -= MoveUnitGroupToHex;
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter -= RemoveStationaryUnitGroupFromHex;
         }
 
         public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
@@ -53,6 +65,7 @@ namespace HexSystem
         public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd) 
         {
             var unitGroupToAddId = unitGroupToAdd.NetworkObjectId;
+            unitGroupToAdd.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[coordinate]);
             
             AddUnitToUnitsOnHexClientRpc(coordinate, unitGroupToAddId);
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, true, unitGroupToAddId);
@@ -81,9 +94,15 @@ namespace HexSystem
             DeleteUnitGroupFromHexClientRpc(coordinates, unitGroupToRemove.NetworkObjectId);
         }
 
-        public void MoveUnitGroupToHex(AxialCoordinates oldCoordinate, AxialCoordinates newCoordinate, UnitGroup unitGroupToMove)
+        public void MoveUnitGroupToHex(UnitGroup unitGroupToMove, AxialCoordinates newCoordinate)
         {
-            MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupToMove.NetworkObjectId);
+            var unitGroupId = unitGroupToMove.NetworkObjectId;
+            unitGroupToMove.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[newCoordinate]);
+            
+            if (_coordinatesByUnitGroups.TryGetValue(unitGroupId, out var oldCoordinate))
+                MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
+            else
+                AddUnitToUnitsOnHexClientRpc(newCoordinate, unitGroupId);
         }
 
         public void UpdateControllingPlayerOfHex(AxialCoordinates coordinate, ulong playerId)
@@ -98,17 +117,14 @@ namespace HexSystem
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, newStationaryUnitGroup, newStationaryUnitGroup.NetworkObjectId);   
         }
 
-        public void RemoveStationaryUnitGroupFromHex(AxialCoordinates coordinate, UnitGroup unitGroupToRemove)
+        public void RemoveStationaryUnitGroupFromHex(UnitGroup unitGroupToRemove)
         {
+            var unitGroupId = unitGroupToRemove.NetworkObjectId;
+            var coordinate = _coordinatesByUnitGroups[unitGroupId];
             var hexagonData = _hexDataByCoordinates[coordinate];
             
-            if(hexagonData.StationaryUnitGroup == unitGroupToRemove.NetworkObjectId)
+            if(hexagonData.StationaryUnitGroup == unitGroupId)
                 UpdateStationaryUnitGroupOfHexClientRpc(coordinate, false, 0);
-        }
-
-        public void UpdateWarStateOnHex(AxialCoordinates coordinate, bool isWarGround)
-        {
-            UpdateWarStateOnHexClientRpc(coordinate, isWarGround);
         }
 
         #endregion
@@ -179,13 +195,6 @@ namespace HexSystem
                 Debug.Assert(hexagonData.UnitsOnHex.Contains(newStationaryUnitGroup),
                     "Tried to add stationary unit group that does not exist on hexagon!");
             }
-        }
-
-        [ClientRpc]
-        private void UpdateWarStateOnHexClientRpc(AxialCoordinates coordinate, bool isWarGround)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinate];
-            hexagonData.IsWarGround = isWarGround;
         }
 
         #endregion

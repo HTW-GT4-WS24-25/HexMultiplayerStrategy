@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using Player;
 using UnityEngine;
 
 namespace Unit
 {
-    [RequireComponent(typeof(LineRenderer))]
     public class UnitGroupTravelLine : MonoBehaviour
     {
         [Header("References")] 
@@ -21,11 +19,6 @@ namespace Unit
         private const float DefaultEndPointScale = .2f;
         private const float HighlightedEndPointScale = .25f;
         private bool _isHighlighted;
-
-        private void Awake()
-        {
-            lineRenderer = GetComponent<LineRenderer>();
-        }
 
         public void Initialize(PlayerColor playerColor)
         {
