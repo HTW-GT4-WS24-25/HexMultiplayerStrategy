@@ -7,7 +7,7 @@ public class UnitSpeedCalculator : MonoBehaviour
 
     public static float Calculate(HexagonData hexagonData)
     {
-        var hexTypeData = ToppingTypeDataProvider.Instance.GetData(hexagonData.ToppingType);
+        var hexTypeData = HexTypeDataProvider.Instance.GetData(hexagonData.HexType);
         
         return defaultSpeed * hexTypeData.MovementSpeedFactor;
     }

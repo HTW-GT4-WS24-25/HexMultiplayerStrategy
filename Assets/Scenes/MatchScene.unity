@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 319244229}
   - component: {fileID: 319244228}
   m_Layer: 0
-  m_Name: ToppingTypeDataProvider
+  m_Name: HexTypeDataProvider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,10 +269,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c7ee79625842be820a10445b333b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToppingTypeData:
+  hexTypeData:
+  - {fileID: 11400000, guid: 21d588f7d3d631c4b81a15c858fdee4e, type: 2}
   - {fileID: 11400000, guid: ff6ece3b02077844587826c908e1d298, type: 2}
   - {fileID: 11400000, guid: 4048beff72dc7d844b74793448103b3e, type: 2}
-  - {fileID: 11400000, guid: 21d588f7d3d631c4b81a15c858fdee4e, type: 2}
 --- !u!4 &319244229
 Transform:
   m_ObjectHideFlags: 0
@@ -795,7 +795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  defaultHexagon: {fileID: 8503581652947059578, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
+  defaultHexagon: {fileID: 8503581652947059578, guid: 9b1eadb198c9a13449f21fe7626fd3df, type: 3}
   spacing: 0
 --- !u!4 &1588253354
 Transform:

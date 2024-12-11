@@ -19,7 +19,7 @@ namespace HexSystem
             var dataIndex = 0;
             foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
             {
-                var hexType = (ToppingType)mapData[dataIndex++];
+                var hexType = (HexType)mapData[dataIndex++];
                 _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate, hexType));  
                 Debug.Log(hexType);
             }

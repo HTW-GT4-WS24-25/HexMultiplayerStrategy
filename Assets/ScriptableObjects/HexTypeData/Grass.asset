@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd8f650556b408c856c4f58b6d73864, type: 3}
-  m_Name: Mountain
+  m_Name: Grass
   m_EditorClassIdentifier: 
-  <Type>k__BackingField: 1
-  <IsTraversable>k__BackingField: 0
-  <MovementSpeedFactor>k__BackingField: 0
-  <ToppingPrefab>k__BackingField: {fileID: 781579999609161741, guid: ee05ffa41f77d2848bd32a919e0ff8fa, type: 3}
+  <Type>k__BackingField: 0
+  <IsTraversable>k__BackingField: 1
+  <MovementSpeedFactor>k__BackingField: 1
+  <Hexagon>k__BackingField: {fileID: 8503581652947059578, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
+  <Topping>k__BackingField: {fileID: 0}

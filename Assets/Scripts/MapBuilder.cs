@@ -4,6 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
 using Unity.Netcode;
+using Utils;
 using static MapDataGenerator;
 
 public class MapBuilder : NetworkBehaviour
@@ -40,22 +41,20 @@ public class MapBuilder : NetworkBehaviour
             Initialize();
         
         Grid = new HexagonGrid();
-        var rotation180 = Quaternion.Euler(0, 180, 0);
         var dataIndex = 0;
         Debug.Log("Building Map");
         
-        var hexDataByType = ToppingTypeDataProvider.Instance.GetAllData();
+        var hexDataByType = HexTypeDataProvider.Instance.GetAllData();
         
         foreach (var coordinates in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
             var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
 
-            var toppingPrefab = hexDataByType[(ToppingType)mapData[dataIndex++]].ToppingPrefab;
-            var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
+            var hexData = hexDataByType[(HexType)mapData[dataIndex++]];
                     
-            var newHex = Instantiate(defaultHexagon, hexPosition, randomHexRotation, transform);
+            var newHex = Instantiate(hexData.Hexagon, hexPosition, QuaternionUtils.GetRandomHexRotation(), transform);
             newHex.Initialize(coordinates);
-            newHex.SetTopping(toppingPrefab);
+            newHex.SetTopping(hexData.Topping);
             Grid.Add(newHex);
         }
     }

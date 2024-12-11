@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexBorderLine: {fileID: 705385829547447668}
-  isTraversable: 0
+  isTraversable: 1
 --- !u!1 &7215505191323519224
 GameObject:
   m_ObjectHideFlags: 0

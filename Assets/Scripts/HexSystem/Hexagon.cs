@@ -11,9 +11,9 @@ namespace HexSystem
         
         public AxialCoordinates Coordinates { get; private set; }
         
-        private Topping _topping;
+        private GameObject _topping;
         
-        public bool IsTraversable => _topping == null || _topping.IsTraversable;
+        public bool isTraversable;
 
         public void Initialize(AxialCoordinates coordinate)
         {
@@ -23,13 +23,15 @@ namespace HexSystem
                 hexBorderLine.Initialize();
         }
 
-        public void SetTopping(Topping topping)
+        public void SetTopping(GameObject topping)
         {
             if (_topping != null)
                 Destroy(_topping.gameObject);
             
             _topping = topping;
-            Instantiate(_topping, transform.position, QuaternionUtils.GetRandomHexRotation());
+            
+            if (_topping != null)
+                Instantiate(_topping, transform.position, QuaternionUtils.GetRandomHexRotation());
         }
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)

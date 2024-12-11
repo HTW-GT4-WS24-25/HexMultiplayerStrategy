@@ -75,8 +75,8 @@ namespace MapGeneratorTestScene
                 var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
                 var hexPrefab = mapData[dataIndex++] switch
                 {
-                    (int)ToppingType.Mountain => mountainHexPrefab,
-                    (int)ToppingType.Forest => forestHexPrefab,
+                    (int)HexType.Mountain => mountainHexPrefab,
+                    (int)HexType.Forest => forestHexPrefab,
                     _ => grassHexPrefab
                 };                
                 

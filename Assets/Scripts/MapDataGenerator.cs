@@ -15,7 +15,7 @@ public class MapDataGenerator
     
     public int[] Generate(int nRings, List<AxialCoordinates> hexagonsToAvoid = null)
     {
-        var map = new Dictionary<AxialCoordinates, ToppingType>();
+        var map = new Dictionary<AxialCoordinates, HexType>();
 
         ProceduralHexGridUtils.FillMapWithHexes(map, nRings);
         GenerateMountains(map, hexagonsToAvoid);
@@ -25,7 +25,7 @@ public class MapDataGenerator
     }
 
     private void GenerateMountains(
-        Dictionary<AxialCoordinates, ToppingType> map, 
+        Dictionary<AxialCoordinates, HexType> map, 
         List<AxialCoordinates> hexagonsToAvoid = null)
     {
         var mountainCoords = ProceduralHexGridUtils.SelectHexagons(
@@ -35,11 +35,11 @@ public class MapDataGenerator
             _config.mountainAreaCheckingSize,
             hexagonsToAvoid: hexagonsToAvoid);
 
-        foreach (var mountainCoord in mountainCoords) map[mountainCoord] = ToppingType.Mountain;
+        foreach (var mountainCoord in mountainCoords) map[mountainCoord] = HexType.Mountain;
     }
 
     private void GenerateForests(
-        Dictionary<AxialCoordinates, ToppingType> map,
+        Dictionary<AxialCoordinates, HexType> map,
         List<AxialCoordinates> hexagonsToAvoid = null)
     {
         var srcForestCoords = ProceduralHexGridUtils.SelectHexagons(
@@ -55,10 +55,10 @@ public class MapDataGenerator
                 map, 
                 srcForestCords,
                 _config.diminishingProbabilityPerDistance,
-                new List<ToppingType> { ToppingType.Mountain },
+                new List<HexType> { HexType.Mountain },
                 hexagonsToAvoid: hexagonsToAvoid);
 
-            foreach (var forestCoord in forestCoords) map[forestCoord] = ToppingType.Forest;
+            foreach (var forestCoord in forestCoords) map[forestCoord] = HexType.Forest;
         }
     }
 }
