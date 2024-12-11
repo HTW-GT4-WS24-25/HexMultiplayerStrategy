@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2296164630636250300}
+  - component: {fileID: -3844008059119712615}
   m_Layer: 0
   m_Name: ToppingBarrackTwo
   m_TagString: Untagged
@@ -34,6 +35,19 @@ Transform:
   - {fileID: 7895841240728503130}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3844008059119712615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833862617032494333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a5d03f37f5243b59f7464cc2ebed6e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTraversable: 0
 --- !u!1001 &5815451134887363254
 PrefabInstance:
   m_ObjectHideFlags: 0
