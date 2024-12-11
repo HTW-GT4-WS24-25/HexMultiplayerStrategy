@@ -79,7 +79,7 @@ public class MatchStartup : NetworkBehaviour
             startCoordinates.Select(coord => coord.ToAxialCoordinates()).ToList());
         mapBuilder.BuildMapForAll(mapData, numberOfMapRings);
         
-        SetupHexGridDataClientRpc();
+        SetupHexGridDataClientRpc(mapData);
         var scoreCalculator = new ScoreCalculator(hexGridData);
         scoreUpdater.Initialize(scoreCalculator);
     }
@@ -114,9 +114,9 @@ public class MatchStartup : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void SetupHexGridDataClientRpc()
+    private void SetupHexGridDataClientRpc(int[] mapData)
     {
-        hexGridData.SetupNewData(numberOfMapRings);
+        hexGridData.SetupNewData(mapData, numberOfMapRings);
     }
     
     [ClientRpc]

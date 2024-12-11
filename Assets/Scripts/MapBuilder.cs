@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
@@ -7,11 +8,6 @@ using static MapDataGenerator;
 
 public class MapBuilder : NetworkBehaviour
 {
-    [Header("Hexagon Prefabs")] 
-    [SerializeField] private Hexagon forestTilePrefab;
-    [SerializeField] private Hexagon grassTilePrefab;
-    [SerializeField] private Hexagon mountainTilePrefab;
-    
     public HexagonGrid Grid;
 
     [Header("Settings")]
@@ -19,7 +15,6 @@ public class MapBuilder : NetworkBehaviour
 
     public const float TileWidth = 1;
     
-    private Dictionary<HexType, Hexagon> _hexPrefabsByType = new Dictionary<HexType, Hexagon>();
     private float _horizontalSpacing;
     private float _verticalSpacing;
     private Vector3 _qOffset;
@@ -48,11 +43,13 @@ public class MapBuilder : NetworkBehaviour
         var dataIndex = 0;
         Debug.Log("Building Map");
         
+        var hexDataByType = HexTypeDataProvider.Instance.GetAllData();
+        
         foreach (var coordinates in HexagonGrid.GetHexRingsAroundCoordinates(AxialCoordinates.Zero, nRings))
         {
             var hexPosition = _qOffset * coordinates.Q + _rOffset * coordinates.R;
 
-            var hexPrefab = _hexPrefabsByType[(HexType)mapData[dataIndex++]];
+            var hexPrefab = hexDataByType[(HexType)mapData[dataIndex++]].HexagonPrefab;
             var randomHexRotation = Random.Range(0, 2) == 0 ? rotation180 : Quaternion.identity;
                     
             var newHex = Instantiate(hexPrefab, hexPosition, randomHexRotation, transform);
@@ -70,13 +67,6 @@ public class MapBuilder : NetworkBehaviour
 
         _qOffset = new Vector3(_horizontalSpacing, 0, 0);
         _rOffset = new Vector3(0.5f * _horizontalSpacing, 0, _verticalSpacing);
-
-        _hexPrefabsByType = new Dictionary<HexType, Hexagon>
-        {
-            { HexType.Grass, grassTilePrefab },
-            { HexType.Mountain, mountainTilePrefab },
-            { HexType.Forest, forestTilePrefab }
-        };
     }
     
     #endregion
