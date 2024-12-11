@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 319244229}
   - component: {fileID: 319244228}
   m_Layer: 0
-  m_Name: HexTypeDataProvider
+  m_Name: ToppingTypeDataProvider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

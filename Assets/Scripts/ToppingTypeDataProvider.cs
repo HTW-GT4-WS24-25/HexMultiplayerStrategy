@@ -8,30 +8,30 @@ using UnityEngine.Serialization;
 
 public class ToppingTypeDataProvider : MonoBehaviour
 {
-    [SerializeField] private List<ToppingTypeData> HexTypeData = new();
+    [SerializeField] private List<ToppingTypeData> ToppingTypeData = new();
     
     public static ToppingTypeDataProvider Instance;
     
-    private readonly Dictionary<ToppingType, ToppingTypeData> _hexDataByType = new();
+    private readonly Dictionary<ToppingType, ToppingTypeData> _toppingDataByType = new();
     
     private void Awake()
     {
         if (Instance != null) Destroy(this);
         
         Instance = this;
-        foreach (var typeData in HexTypeData)
+        foreach (var typeData in ToppingTypeData)
         {
-            _hexDataByType.Add(typeData.Type, typeData);
+            _toppingDataByType.Add(typeData.Type, typeData);
         }
     }
 
     public ToppingTypeData GetData(ToppingType type)
     {
-        return _hexDataByType[type];
+        return _toppingDataByType[type];
     }
 
     public Dictionary<ToppingType, ToppingTypeData> GetAllData()
     {
-        return new Dictionary<ToppingType, ToppingTypeData>(_hexDataByType);
+        return new Dictionary<ToppingType, ToppingTypeData>(_toppingDataByType);
     }
 }
