@@ -20,15 +20,17 @@ namespace Unit
         [SerializeField] private float maxXHealthBarPosition;
 
         private List<Image> healthBarSeparationLines = new();
-        private int _unitCount;
+        private int _maxUnitCount;
         private Vector3 _defaultScale;
+        private const int FULL_HEALTH = 1;
 
         [Button]
-        public void Show()
+        public void Show(int maxUnitCount)
         {
             transform.localScale = Vector3.zero;
             gameObject.SetActive(true);
             transform.DOScale(_defaultScale, 0.3f).SetEase(Ease.InSine);
+            SetMaxHealth(maxUnitCount);
         }
 
         [Button]
@@ -46,22 +48,27 @@ namespace Unit
             sliderBackground.color = color;
         }
 
-        [Button]
-        public void SetHealth(float currentHealth, int unitCount)
+        public void SetMaxHealth(int maxHealth)
         {
-            if (unitCount != _unitCount)
-            {
-                _unitCount = unitCount;
-                PositionHealthBarSeparationLines();
-            }
+            _maxUnitCount = maxHealth;
+            healthSlider.value = FULL_HEALTH;
+        }
+
+        public void IncreaseMaxUnitCount(int unitsAdded){
+            _maxUnitCount += unitsAdded;
+            PositionHealthBarSeparationLines();
+        }
         
-            var healthPercentage = currentHealth / _unitCount;
+        [Button]
+        public void SetHealth(float currentHealth)
+        {
+            var healthPercentage = currentHealth / _maxUnitCount;
             healthSlider.value = healthPercentage;
         }
 
         private void PositionHealthBarSeparationLines()
         {
-            var separationLinesNeeded = _unitCount - 1;
+            var separationLinesNeeded = _maxUnitCount - 1;
             if (separationLinesNeeded > healthBarSeparationLines.Count)
             {
                 var separationLinesToInstantiate = separationLinesNeeded - healthBarSeparationLines.Count;
@@ -72,7 +79,7 @@ namespace Unit
             }
         
             var fullHealthBarRange = maxXHealthBarPosition - minXHealthBarPosition;
-            var separationLength = fullHealthBarRange / _unitCount;
+            var separationLength = fullHealthBarRange / _maxUnitCount;
 
             var separationLinesIndex = 0;
             foreach (var healthBarSeparationLine in healthBarSeparationLines)

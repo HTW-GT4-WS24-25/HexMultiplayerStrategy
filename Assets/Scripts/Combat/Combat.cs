@@ -65,8 +65,7 @@ namespace Combat
         
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
-            unitGroup.IsFighting = true;
-            unitGroup.SetHealthToCount();
+            unitGroup.UpdateFightingState(true);
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
             _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
@@ -92,7 +91,7 @@ namespace Combat
                     continue;
                 unitGroup.TakeDamage(damage);
                 
-                if (unitGroup.UnitCount.Value <= 0) 
+                if (unitGroup.UnitCount.Value <= 0)
                     DeleteUnitGroup(unitGroup);
             }
         }
@@ -107,10 +106,7 @@ namespace Combat
         private void End()
         {
             foreach (var unitGroup in _unitGroups)
-            {
-                unitGroup.IsFighting = false;
-                unitGroup.SetHealthToCount();
-            }
+                unitGroup.UpdateFightingState(false);
 
             OnCombatEnd?.Invoke(this);
         }

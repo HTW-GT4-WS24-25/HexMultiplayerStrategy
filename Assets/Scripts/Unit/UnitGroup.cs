@@ -16,9 +16,12 @@ namespace Unit
     public class UnitGroup : NetworkBehaviour
     {
         [Header("References")]
-        [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
+        [field: SerializeField]
+        public UnitGroupMovement Movement { get; private set; }
+
         [field: SerializeField] public WaypointQueue WaypointQueue { get; private set; }
         
+        [SerializeField] private UnitGroupHealthBar healthBar;
         [SerializeField] private UnitGroupTravelLineDrawer travelLineDrawer;
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private MeshRenderer meshRenderer;
@@ -27,22 +30,22 @@ namespace Unit
         public event UnityAction OnUnitHighlightEnabled;
         public event UnityAction OnUnitHighlightDisabled;
 
-        public UnityEvent OnDamageTaken;
+        public UnityEvent onUnitLost;
+        public UnityEvent<float> onDamageTaken;
 
         public Action<int> OnUnitCountUpdated;
 
         public static Dictionary<ulong, UnitGroup> UnitGroupsInGame = new();
         
-        public bool IsFighting { get; set; }
+        public bool IsFighting { get; private set; }
         private bool IsResting { get; set; }
         public bool CanMove => !IsFighting && !IsResting;
-
-        private float _combatHealth;
         
         public ulong PlayerId { get; private set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
-        public PlayerColor PlayerColor { get; private set; }
 
+        private float _combatHealth;
+        private PlayerColor _playerColor;
         
         
         public override void OnNetworkSpawn()
@@ -92,15 +95,24 @@ namespace Unit
         public void TakeDamage(float damageAmount)
         {
             _combatHealth -= damageAmount;
+            ApplyDamageClientRpc(_combatHealth, damageAmount);
+            
+            var unitLost = false;
             while (_combatHealth < UnitCount.Value - 1)
+            {
+                unitLost = true;
                 SubtractUnits(1);
+            }
 
-            TriggerOnDamageTakenClientRpc();
+            if(unitLost)
+                TriggerOnUnitLostClientRpc();
         }
 
-        public void SetHealthToCount()
+        public void UpdateFightingState(bool isFighting)
         {
+            IsFighting = isFighting;
             _combatHealth = UnitCount.Value;
+            ToggleHealthBarClientRpc(isFighting);
         }
         
         public void Delete()
@@ -113,8 +125,6 @@ namespace Unit
         {
             UnitCount.Value -= amount;
         }
-        
-        
         
         private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
         {
@@ -130,10 +140,11 @@ namespace Unit
         {
             PlayerId = playerId;
             
-            PlayerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
-            meshRenderer.material = PlayerColor.unitMaterial;
-            
-            travelLineDrawer.InitializeTravelLine(PlayerColor);
+            _playerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
+            meshRenderer.material = _playerColor.unitMaterial;
+
+            travelLineDrawer.InitializeTravelLine(_playerColor);
+            healthBar.Initialize(_playerColor.baseColor);
         }
         
         [ClientRpc]
@@ -144,28 +155,51 @@ namespace Unit
         }
 
         [ClientRpc]
-        private void TriggerOnDamageTakenClientRpc()
+        private void ApplyDamageClientRpc(float newHealth, float damageAmount)
         {
-            OnDamageTaken?.Invoke();
+            healthBar.SetHealth(newHealth);
+            onDamageTaken?.Invoke(damageAmount);
+        }
+
+        [ClientRpc]
+        private void TriggerOnUnitLostClientRpc()
+        {
+            onUnitLost?.Invoke();
         }
         
-        private void HandleUnitCountChanged(int previousvalue, int newvalue)
+        private void HandleUnitCountChanged(int previousValue, int newValue)
         {
-            unitCountText.text = newvalue.ToString();
+            unitCountText.text = newValue.ToString();
             
             if(IsServer)
-                OnUnitCountUpdated?.Invoke(newvalue);
+                OnUnitCountUpdated?.Invoke(newValue);
+        }
+
+        [ClientRpc]
+        private void ToggleHealthBarClientRpc(bool on)
+        {
+            if (on)
+                healthBar.Show(UnitCount.Value);
+            else
+                healthBar.Hide();
+        }
+
+        [ClientRpc]
+        private void IncreaseHealthBarClientRpc(int amount)
+        {
+            healthBar.IncreaseMaxUnitCount(amount);
+            healthBar.SetHealth(_combatHealth);
         }
         
         public void EnableHighlight()
         {
-            meshRenderer.material = PlayerColor.highlightedUnitMaterial;
+            meshRenderer.material = _playerColor.highlightedUnitMaterial;
             OnUnitHighlightEnabled?.Invoke();
         }
 
         public void DisableHighlight()
         {
-            meshRenderer.material = PlayerColor.unitMaterial;
+            meshRenderer.material = _playerColor.unitMaterial;
             OnUnitHighlightDisabled?.Invoke();
         }
         
