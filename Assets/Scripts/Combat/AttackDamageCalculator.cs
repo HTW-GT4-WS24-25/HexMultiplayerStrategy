@@ -5,14 +5,23 @@ namespace Combat
 {
     public class AttackDamageCalculator : MonoBehaviour
     {
-        private const float DefaultDamage = 0.2f;
+        private static AnimationCurve _damageCurve;
 
         public static float Calculate(UnitGroup damageDealer, UnitGroup target)
         {
-            var count = damageDealer.UnitCount;
+            if(_damageCurve == null)
+                LoadDamageCurve();
+            
+            var count = damageDealer.UnitCount.Value;
             //Get HexData for Forestdefence by Target
             //Other Multipliers
-            return DefaultDamage * count.Value;
+            return _damageCurve!.Evaluate(count);
+        }
+
+        private static void LoadDamageCurve()
+        {
+            var damageCurves = Resources.Load<DamageCurves>("DamageCurves");
+            _damageCurve = damageCurves.Default;
         }
     }
 }

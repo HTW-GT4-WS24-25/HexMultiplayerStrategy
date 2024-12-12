@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unit;
@@ -39,7 +38,7 @@ namespace Combat
                 AddNewUnitGroupToCombat(unitGroup);
         }
 
-        public void Update()
+        public void ProcessCombatFrame()
         {
             foreach (var unitGroup in _unitGroups)
                 _damageToDealToUnitGroup[unitGroup] = 0;

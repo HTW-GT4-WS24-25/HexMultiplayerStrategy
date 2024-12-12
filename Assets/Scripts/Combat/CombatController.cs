@@ -51,7 +51,7 @@ namespace Combat
         private void TriggerAllCombatUpdates()
         {
             for (var i = _ongoingCombats.Count - 1; i >= 0; i--)
-                _ongoingCombats[i].Update();
+                _ongoingCombats[i].ProcessCombatFrame();
         }
         
         private void InitiateCombat(UnitGroup unitGroup1, UnitGroup unitGroup2)

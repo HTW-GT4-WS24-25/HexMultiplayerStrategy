@@ -52,10 +52,13 @@ namespace Unit
         {
             _maxUnitCount = maxHealth;
             healthSlider.value = FULL_HEALTH;
+            
+            PositionHealthBarSeparationLines();
         }
 
         public void IncreaseMaxUnitCount(int unitsAdded){
             _maxUnitCount += unitsAdded;
+            
             PositionHealthBarSeparationLines();
         }
         
@@ -64,6 +67,8 @@ namespace Unit
         {
             var healthPercentage = currentHealth / _maxUnitCount;
             healthSlider.value = healthPercentage;
+            
+            PositionHealthBarSeparationLines();
         }
 
         private void PositionHealthBarSeparationLines()
