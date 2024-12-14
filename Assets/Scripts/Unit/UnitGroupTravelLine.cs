@@ -23,8 +23,8 @@ namespace Unit
         public void Initialize(PlayerColor playerColor)
         {
             _playerColor = playerColor;
-            lineRenderer.material = playerColor.travelLineMaterial;
-            lineEndPoint.material = playerColor.travelEndPointMaterial;
+            lineRenderer.material = playerColor.TravelLineMaterial;
+            lineEndPoint.material = playerColor.TravelEndPointMaterial;
         }
 
         public void SetAllPositions(Vector3[] positions)
@@ -50,11 +50,11 @@ namespace Unit
         {
             if (_isHighlighted) return;
             
-            lineRenderer.material = _playerColor.highlightedTravelLineMaterial;
+            lineRenderer.material = _playerColor.HighlightedTravelLineMaterial;
             lineRenderer.startWidth = HighlightedLineWidth;
             lineRenderer.endWidth = HighlightedLineWidth;
             
-            lineEndPoint.material = _playerColor.highlightedTravelEndPointMaterial;
+            lineEndPoint.material = _playerColor.HighlightedTravelEndPointMaterial;
             lineEndPoint.transform.localScale = new Vector3(HighlightedEndPointScale, 0.02f, HighlightedEndPointScale);
             
             //OffsetLineAndEndpoint(1);
@@ -66,11 +66,11 @@ namespace Unit
         {
             if(!_isHighlighted) return;
             
-            lineRenderer.material = _playerColor.travelLineMaterial;
+            lineRenderer.material = _playerColor.TravelLineMaterial;
             lineRenderer.startWidth = DefaultLineWidth;
             lineRenderer.endWidth = DefaultLineWidth;
             
-            lineEndPoint.material = _playerColor.travelEndPointMaterial;
+            lineEndPoint.material = _playerColor.TravelEndPointMaterial;
             lineEndPoint.transform.localScale = new Vector3(DefaultEndPointScale, 0.02f, DefaultEndPointScale);
             
             //OffsetLineAndEndpoint(-1);

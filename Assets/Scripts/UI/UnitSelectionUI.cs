@@ -40,6 +40,9 @@ namespace UI
         {
             unitSlider.maxValue = unitCount;
             unitSlider.value = Math.Min(unitSlider.value, unitCount);
+            
+            if(unitCount == 1)
+                gameObject.SetActive(false);
         }
     }
 }

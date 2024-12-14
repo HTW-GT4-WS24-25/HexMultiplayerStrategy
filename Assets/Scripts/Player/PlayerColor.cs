@@ -11,25 +11,20 @@ namespace Player
     {
         private static Dictionary<ColorType, PlayerColor> _playerColorStorage = new();
             
-        public ColorType colorType;
-        public Color baseColor;
-        
-        //TODO Getter der anderen Materials ruft defaultMaterial auf falls NULL
-        public Material defaultMaterial;
-        
-        public Material unitMaterial;
-        public Material highlightedUnitMaterial;
-        
-        public Material hexBorderMaterial;
-        
-        public Material travelLineMaterial;
-        public Material highlightedTravelLineMaterial;
-        public Material travelEndPointMaterial;
-        public Material highlightedTravelEndPointMaterial;
+        [field: SerializeField] public ColorType Type { get; private set; }
+        [field: SerializeField] public Color BaseColor { get; private set; }
 
-        public Material playerMaterial;
+        [field: SerializeField] public Material UnitColoringMaterial { get; private set; }
+        [field: SerializeField] public Material HighlightedUnitMaterial { get; private set; }
         
-        public static void AddColorToStorage(PlayerColor playerColor) => _playerColorStorage.Add(playerColor.colorType, playerColor);
+        [field: SerializeField] public Material HexBorderMaterial { get; private set; }
+        
+        [field: SerializeField] public Material TravelLineMaterial { get; private set; }
+        [field: SerializeField] public Material HighlightedTravelLineMaterial { get; private set; }
+        [field: SerializeField] public Material TravelEndPointMaterial { get; private set; }
+        [field: SerializeField] public Material HighlightedTravelEndPointMaterial { get; private set; }
+        
+        public static void AddColorToStorage(PlayerColor playerColor) => _playerColorStorage.Add(playerColor.Type, playerColor);
         public static PlayerColor GetFromColorType(ColorType colorType) => _playerColorStorage[colorType];
         public static PlayerColor[] GetAll() => _playerColorStorage.Values.ToArray();
 

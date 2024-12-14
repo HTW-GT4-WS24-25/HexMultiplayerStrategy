@@ -124,7 +124,7 @@ namespace UI.Lobby
             var playerColor = PlayerColor.GetFromColorType(colorType);
             
             var newLobbyEntry = Instantiate(playerEntryPrefab, playerEntryContainer);
-            newLobbyEntry.Initialize(playerName.Value, playerColor.baseColor, playerClientId);
+            newLobbyEntry.Initialize(playerName.Value, playerColor.BaseColor, playerClientId);
             _lobbyList.Add(newLobbyEntry);
         }
 
@@ -137,7 +137,7 @@ namespace UI.Lobby
             var playerColor = PlayerColor.GetFromColorType(colorType);
             
             var playerEntryToChange = _lobbyList.Find(entry => entry.ClientId == playerClientId);
-            playerEntryToChange?.UpdatePlayerColor(playerColor.baseColor);
+            playerEntryToChange?.UpdatePlayerColor(playerColor.BaseColor);
 
             if (IsHost)
                 startGameButton.interactable = _lobbyList.Count >= MinimumPlayerCount && _lobbyList.TrueForAll(player => player.ReadyToPlay);

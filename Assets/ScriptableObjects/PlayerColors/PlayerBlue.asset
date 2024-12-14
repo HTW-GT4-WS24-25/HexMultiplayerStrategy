@@ -12,16 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2a7c46b4deb8b4d9dcacf3e951a17c, type: 3}
   m_Name: PlayerBlue
   m_EditorClassIdentifier: 
-  colorType: 2
-  baseColor: {r: 0.011614433, g: 0.25481582, b: 0.8207547, a: 1}
-  species: 0
-  unitModelSpecies: {fileID: 0}
-  defaultMaterial: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}
-  unitMaterial: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}
-  highlightedUnitMaterial: {fileID: 2100000, guid: 28f8eecb711f06c45b510f3d14f48fa2, type: 2}
-  hexBorderMaterial: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
-  travelLineMaterial: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
-  highlightedTravelLineMaterial: {fileID: 2100000, guid: 9da9b14c8a822614f8afadfa3043b6ec, type: 2}
-  travelEndPointMaterial: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
-  highlightedTravelEndPointMaterial: {fileID: 2100000, guid: 9da9b14c8a822614f8afadfa3043b6ec, type: 2}
-  playerMaterial: {fileID: 2100000, guid: 2edb338456fd7e04ba00d58d6bec133c, type: 2}
+  <Type>k__BackingField: 2
+  <BaseColor>k__BackingField: {r: 0, g: 0.2669897, b: 1, a: 1}
+  <UnitColoringMaterial>k__BackingField: {fileID: 2100000, guid: 2edb338456fd7e04ba00d58d6bec133c, type: 2}
+  <HighlightedUnitMaterial>k__BackingField: {fileID: 2100000, guid: 2edb338456fd7e04ba00d58d6bec133c, type: 2}
+  <HexBorderMaterial>k__BackingField: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
+  <TravelLineMaterial>k__BackingField: {fileID: 2100000, guid: fe0c6de2525110746adae290088bdca6, type: 2}
+  <HighlightedTravelLineMaterial>k__BackingField: {fileID: 2100000, guid: 9da9b14c8a822614f8afadfa3043b6ec, type: 2}
+  <TravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}
+  <HighlightedTravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: bdf7118f076a57248b69419f4ff10d07, type: 2}

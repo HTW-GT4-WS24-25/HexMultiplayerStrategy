@@ -9,22 +9,19 @@ using Unit.Model;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace Unit
 {
     public class UnitGroup : NetworkBehaviour
     {
         [Header("References")]
-        [field: SerializeField]
-        public UnitGroupMovement Movement { get; private set; }
-
+        [field: SerializeField] public UnitGroupMovement Movement { get; private set; }
         [field: SerializeField] public WaypointQueue WaypointQueue { get; private set; }
         
         [SerializeField] private UnitGroupHealthBar healthBar;
         [SerializeField] private UnitGroupTravelLineDrawer travelLineDrawer;
         [SerializeField] private TextMeshProUGUI unitCountText;
-        [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private AnimalMaskTint modelColorTint;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
 
         public event UnityAction OnUnitHighlightEnabled;
@@ -47,7 +44,6 @@ namespace Unit
         private float _combatHealth;
         private PlayerColor _playerColor;
         
-        
         public override void OnNetworkSpawn()
         {
             UnitCount.OnValueChanged += HandleUnitCountChanged;
@@ -69,15 +65,30 @@ namespace Unit
 
         #region Server
 
-        public void Initialize(int unitCount, ulong playerId, Hexagon startHexagon, GridData gridData)
+        public void InitializeOnHexCenter(int unitCount, ulong playerId, Hexagon hexagon)
         {
-            PlayerId = playerId;
+            Initialize(unitCount, playerId);
+            Movement.InitializeAsStationary(hexagon);
+        }
+
+        public void InitializeAsSplitFrom(UnitGroup other, int splitAmount)
+        {
+            Debug.Assert(other.UnitCount.Value > splitAmount, "Tried to split a unitGroup by a bigger value than it's unit count.");
             
-            UnitCount.Value = unitCount;
+            Initialize(splitAmount, other.PlayerId);
+            other.UnitCount.Value -= splitAmount;
             
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
-            Movement.Initialize(startHexagon);
+            var otherPath = other.WaypointQueue.GetWaypoints();
+            if (other.Movement.HasMovementLeft)
+            {
+                Movement.Initialize(other.Movement.StartHexagon);
+                otherPath.Insert(0, other.Movement.GoalHexagon);
+                WaypointQueue.UpdateWaypoints(otherPath);
+            }
+            else
+            {
+                Movement.InitializeAsStationary(other.Movement.StartHexagon);
+            }
         }
 
         public void IntegrateUnitsOf(UnitGroup otherUnitGroup)
@@ -113,12 +124,38 @@ namespace Unit
             IsFighting = isFighting;
             _combatHealth = UnitCount.Value;
             ToggleHealthBarClientRpc(isFighting);
+
+            UpdateMovementPauseState();
         }
         
         public void Delete()
         {
             ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
             Destroy(gameObject);
+        }
+
+        public void HandleUnitGroupReachedNewHex(Hexagon hexagon)
+        {
+            ServerEvents.Unit.OnUnitGroupReachedNewHex?.Invoke(this, hexagon.Coordinates);
+        }
+
+        public void HandleUnitGroupReachedHexCenter(Hexagon hexagon)
+        {
+            ServerEvents.Unit.OnUnitGroupReachedHexCenter?.Invoke(this, hexagon.Coordinates);
+        }
+
+        public void HandleUnitGroupLeftHexCenter()
+        {
+            ServerEvents.Unit.OnUnitGroupLeftHexCenter?.Invoke(this);
+        }
+        
+        private void Initialize(int unitCount, ulong playerId)
+        {
+            UnitCount.Value = unitCount;
+            PlayerId = playerId;
+            
+            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
+            InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
         }
         
         private void SubtractUnits(int amount)
@@ -129,6 +166,12 @@ namespace Unit
         private void HandleSwitchedDayNightCycle(DayNightCycle.CycleState newDayNightCycle)
         {
             IsResting = newDayNightCycle == DayNightCycle.CycleState.Night;
+            UpdateMovementPauseState();
+        }
+
+        private void UpdateMovementPauseState()
+        {
+            Movement.SetPaused(!CanMove);
         }
 
         #endregion
@@ -141,10 +184,10 @@ namespace Unit
             PlayerId = playerId;
             
             _playerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
-            meshRenderer.material = _playerColor.unitMaterial;
+            modelColorTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
 
             travelLineDrawer.InitializeTravelLine(_playerColor);
-            healthBar.Initialize(_playerColor.baseColor);
+            healthBar.Initialize(_playerColor.BaseColor);
         }
         
         [ClientRpc]
@@ -193,13 +236,13 @@ namespace Unit
         
         public void EnableHighlight()
         {
-            meshRenderer.material = _playerColor.highlightedUnitMaterial;
+            modelColorTint.ApplyMaterials(_playerColor.HighlightedUnitMaterial);
             OnUnitHighlightEnabled?.Invoke();
         }
 
         public void DisableHighlight()
         {
-            meshRenderer.material = _playerColor.unitMaterial;
+            modelColorTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
             OnUnitHighlightDisabled?.Invoke();
         }
         
