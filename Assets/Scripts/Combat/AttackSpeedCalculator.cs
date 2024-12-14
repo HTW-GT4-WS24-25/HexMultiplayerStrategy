@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Combat
 {
-    public class AttackSpeedCalculator : MonoBehaviour
+    public static class AttackSpeedCalculator
     {
         private const float DefaultAttackSpeed = 1.5f;
 

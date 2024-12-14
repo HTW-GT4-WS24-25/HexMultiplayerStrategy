@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Combat
 {
-    public class AttackDamageCalculator : MonoBehaviour
+    public static class AttackDamageCalculator
     {
         private static AnimationCurve _damageCurve;
 
