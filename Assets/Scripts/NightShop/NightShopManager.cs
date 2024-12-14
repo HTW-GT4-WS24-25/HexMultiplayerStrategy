@@ -72,9 +72,6 @@ namespace NightShop
             if (hexagonData.ControllerPlayerId != playerId)
                 return false;
 
-            if (hexagonData.IsWarGround)
-                return false;
-
             return true;
         }
     

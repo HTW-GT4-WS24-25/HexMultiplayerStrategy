@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class UnitSpeedCalculator : MonoBehaviour
 {
-    private const float defaultSpeed = 1f;
+    private const float defaultSpeed = 0.5f;
 
     public static float Calculate(HexagonData hexagonData)
     {
-        return defaultSpeed;
+        var hexTypeData = HexTypeDataProvider.Instance.GetData(hexagonData.HexType);
+        
+        return defaultSpeed * hexTypeData.MovementSpeedFactor;
     }
 }

@@ -50,12 +50,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5339175942601238811, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
       propertyPath: m_Name
-      value: MountainTile
+      value: MountainHex
       objectReference: {fileID: 0}
     - target: {fileID: 6616332057385741778, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
       propertyPath: m_Name
       value: Model
       objectReference: {fileID: 0}
+    - target: {fileID: 6822215247254552464, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -1110245114279118486, guid: 1224f9edf0580b643a3c0004b3949fc9, type: 3}
     - target: {fileID: 7437103016764700877, guid: 05f9eda18f028174bb926523ca9a0742, type: 3}
       propertyPath: m_Mesh
       value: 
