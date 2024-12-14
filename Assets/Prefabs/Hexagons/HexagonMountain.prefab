@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 4582043746281608519}
   - component: {fileID: 8503581652947059578}
   m_Layer: 6
-  m_Name: Hex_Base
+  m_Name: HexagonMountain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
