@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Combat;
 using GameEvents;
 using HexSystem;
 using Networking.Host;
@@ -23,6 +24,8 @@ namespace Unit
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private AnimalMaskTint modelColorTint;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
+        [SerializeField] private UnitAnimator unitAnimator;
+        [SerializeField] private UnitDeathDummy deathDummyPrefab;
 
         public event UnityAction OnUnitHighlightEnabled;
         public event UnityAction OnUnitHighlightDisabled;
@@ -119,6 +122,11 @@ namespace Unit
                 TriggerOnUnitLostClientRpc();
         }
 
+        public void PlayHitAnimationInSeconds(float secondsUntilHit)
+        {
+            PlayHitAnimationInSecondsClientRpc(secondsUntilHit);
+        }
+
         public void UpdateFightingState(bool isFighting)
         {
             IsFighting = isFighting;
@@ -126,6 +134,34 @@ namespace Unit
             ToggleHealthBarClientRpc(isFighting);
 
             UpdateMovementPauseState();
+        }
+
+        public void StartFighting(CombatIndicator combatIndicator)
+        {
+            IsFighting = true;
+            ToggleHealthBarClientRpc(true);
+            UpdateMovementPauseState();
+            _combatHealth = UnitCount.Value;
+            
+            var combatPosition = combatIndicator.transform.position;
+            combatPosition.y = transform.position.y;
+            transform.LookAt(combatPosition);
+        }
+        
+        public void EndFighting()
+        {
+            IsFighting = false;
+            ToggleHealthBarClientRpc(false);
+            UpdateMovementPauseState();
+            
+            StopFightingAnimationClientRpc();
+        }
+
+        public void DieInCombat()
+        {
+            SpawnDeathDummyClientRpc(_playerColor.Type);
+            ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
+            Destroy(gameObject);
         }
         
         public void Delete()
@@ -232,6 +268,25 @@ namespace Unit
         {
             healthBar.IncreaseMaxUnitCount(amount);
             healthBar.SetHealth(_combatHealth);
+        }
+
+        [ClientRpc]
+        private void PlayHitAnimationInSecondsClientRpc(float secondsUntilHit)
+        {
+            unitAnimator.PlayHitAnimation(secondsUntilHit);
+        }
+
+        [ClientRpc]
+        private void StopFightingAnimationClientRpc()
+        {
+            unitAnimator.StopFightAnimations();
+        }
+
+        [ClientRpc]
+        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType)
+        {
+            var unitDeathDummy = Instantiate(deathDummyPrefab, transform.position, transform.rotation);
+            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType));
         }
         
         public void EnableHighlight()

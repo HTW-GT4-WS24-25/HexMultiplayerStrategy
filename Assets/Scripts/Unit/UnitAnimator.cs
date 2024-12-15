@@ -9,6 +9,7 @@ namespace Unit
     public class UnitAnimator : MonoBehaviour
     { 
         [SerializeField] private Animator unitAnimator;
+        [SerializeField] private float hitAnimationPercentageUntilHit;
 
         private int _hitSpeedHash;
         private int _walkSpeedHash;
@@ -18,6 +19,7 @@ namespace Unit
         private int _deathAnimationHash;
 
         private Tween _moveTestAnimation;
+        private Tween _hitDelayTween;
         
         private void Awake()
         {
@@ -33,8 +35,19 @@ namespace Unit
         public void PlayHitAnimation(float hitDuration)
         {
             var hitSpeedFactor = 1 / hitDuration;
-            unitAnimator.SetFloat(_hitSpeedHash, hitSpeedFactor);
-            unitAnimator.Play(_hitAnimationHash, -1, 0f);
+            var waitTimeBeforeAnimation = (1 - hitAnimationPercentageUntilHit) * hitDuration;
+            
+            _hitDelayTween = DOVirtual.DelayedCall(waitTimeBeforeAnimation, () =>
+            {
+                unitAnimator.SetFloat(_hitSpeedHash, hitSpeedFactor);    
+                unitAnimator.Play(_hitAnimationHash, -1, 0f);
+            });
+        }
+
+        public void StopFightAnimations()
+        {
+            _hitDelayTween?.Kill();
+            unitAnimator.CrossFade(_idleAnimationHash, 0.3f);
         }
 
         [Button]

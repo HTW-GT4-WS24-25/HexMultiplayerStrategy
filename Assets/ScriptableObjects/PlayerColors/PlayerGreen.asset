@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: PlayerGreen
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 3
-  <BaseColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
-  <UnitColoringMaterial>k__BackingField: {fileID: 0}
-  <HighlightedUnitMaterial>k__BackingField: {fileID: 0}
-  <HexBorderMaterial>k__BackingField: {fileID: 0}
-  <TravelLineMaterial>k__BackingField: {fileID: 0}
-  <HighlightedTravelLineMaterial>k__BackingField: {fileID: 0}
-  <TravelEndPointMaterial>k__BackingField: {fileID: 0}
-  <HighlightedTravelEndPointMaterial>k__BackingField: {fileID: 0}
+  <BaseColor>k__BackingField: {r: 0.0744927, g: 0.5849056, b: 0.08421479, a: 1}
+  <UnitColoringMaterial>k__BackingField: {fileID: 2100000, guid: f06799c1489de7a48b2bb2cebcfc8904, type: 2}
+  <HighlightedUnitMaterial>k__BackingField: {fileID: 2100000, guid: f06799c1489de7a48b2bb2cebcfc8904, type: 2}
+  <HexBorderMaterial>k__BackingField: {fileID: 2100000, guid: 9f3b0ee896f3f6244ae0f15e5e779098, type: 2}
+  <TravelLineMaterial>k__BackingField: {fileID: 2100000, guid: 9f3b0ee896f3f6244ae0f15e5e779098, type: 2}
+  <HighlightedTravelLineMaterial>k__BackingField: {fileID: 2100000, guid: 503cd1825b9322c4ea0df7f99fc9e973, type: 2}
+  <TravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: e240135072f3d8b46aeff1456708666d, type: 2}
+  <HighlightedTravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: 78ed9a12bb39ad04eb6f5d11de8c6db2, type: 2}

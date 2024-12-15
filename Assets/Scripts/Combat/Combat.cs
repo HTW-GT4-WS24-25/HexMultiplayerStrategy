@@ -53,6 +53,7 @@ namespace Combat
                 damageToDeal = true;
                 CalculateDamageToOtherUnits(unitGroup);
                 _attackChargeProgress[unitGroup] = 0;
+                unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
             }
             
             if(damageToDeal)
@@ -64,11 +65,13 @@ namespace Combat
         
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
-            unitGroup.UpdateFightingState(true);
+            unitGroup.StartFighting(CombatIndicator);
+            
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
             _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
             _damageToDealToUnitGroup.Add(unitGroup, 0);
+            unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
         }
         
         private void CalculateDamageToOtherUnits(UnitGroup unitGroup)
@@ -98,14 +101,14 @@ namespace Combat
         private void DeleteUnitGroup(UnitGroup unitGroup)
         {
             _unitGroups.Remove(unitGroup);
-            unitGroup.Delete();
+            unitGroup.DieInCombat();
         }
         
         
         private void End()
         {
             foreach (var unitGroup in _unitGroups)
-                unitGroup.UpdateFightingState(false);
+                unitGroup.EndFighting();
 
             OnCombatEnd?.Invoke(this);
         }
