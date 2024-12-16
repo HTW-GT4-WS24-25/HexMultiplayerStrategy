@@ -38,6 +38,11 @@ namespace Networking.Host
             _playersByClientId[playerClientId].PlayerColorType = newColorType;
         }
 
+        public void SetPlayerFaction(ulong playerClientId, UnitModel.ModelType newFactionType)
+        {
+            _playersByClientId[playerClientId].PlayerUnitModelType = newFactionType;
+        }
+
         public void SetPlayerScore(ulong playerClientId, int newScore)
         {
             Debug.Assert(_playersByClientId.ContainsKey(playerClientId));
@@ -73,6 +78,7 @@ namespace Networking.Host
             public ulong ClientId;
             public string PlayerName;
             public PlayerMoney PlayerMoney = new();
+            public UnitModel.ModelType PlayerUnitModelType;
             
             public PlayerColor.ColorType PlayerColorType
             {

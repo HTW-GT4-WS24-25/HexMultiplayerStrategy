@@ -16,9 +16,12 @@ public class HexTypeDataProvider : MonoBehaviour
     
     private void Awake()
     {
-        if (Instance != null) Destroy(this);
+        if (Instance != null) 
+            Destroy(this);
         
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+        
         foreach (var typeData in hexTypeData)
         {
             _hexDataByType.Add(typeData.Type, typeData);
