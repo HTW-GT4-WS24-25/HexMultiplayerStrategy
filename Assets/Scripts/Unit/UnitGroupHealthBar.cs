@@ -1,71 +1,104 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UnitGroupHealthBar : MonoBehaviour
+namespace Unit
 {
-    [Header("References")]
-    [SerializeField] Slider healthSlider;
-    [SerializeField] Image healthBarSeparationLinePrefab;
-    [SerializeField] private Transform healthBarSeparationLineHolder;
-    [SerializeField] private Image sliderBackground;
-    [SerializeField] private Image sliderFill;
+    public class UnitGroupHealthBar : MonoBehaviour
+    {
+        [Header("References")]
+        [SerializeField] private Slider healthSlider;
+        [SerializeField] private Image healthBarSeparationLinePrefab;
+        [SerializeField] private Transform healthBarSeparationLineHolder;
+        [SerializeField] private Image sliderBackground;
+        [SerializeField] private Image sliderFill;
     
-    [Header("Settings")]
-    [SerializeField] private float minXHealthBarPosition;
-    [SerializeField] private float maxXHealthBarPosition;
+        [Header("Settings")]
+        [SerializeField] private float minXHealthBarPosition;
+        [SerializeField] private float maxXHealthBarPosition;
 
-    private List<Image> healthBarSeparationLines = new();
-    private int _unitCount;
+        private readonly List<Image> healthBarSeparationLines = new();
+        private int _maxUnitCount;
+        private Vector3 _defaultScale;
+        private const int FULL_HEALTH = 1;
 
-    [Button]
-    public void SetColor(Color color)
-    {
-        sliderFill.color = color;
-        sliderBackground.color = color;
-    }
-
-    [Button]
-    public void SetHealth(float currentHealth, int unitCount)
-    {
-        if (unitCount != _unitCount)
+        [Button]
+        public void Show(int maxUnitCount)
         {
-            _unitCount = unitCount;
+            transform.localScale = Vector3.zero;
+            gameObject.SetActive(true);
+            transform.DOScale(_defaultScale, 0.3f).SetEase(Ease.InSine);
+            SetMaxHealth(maxUnitCount);
+        }
+
+        [Button]
+        public void Hide()
+        {
+            transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InSine).OnComplete(() => gameObject.SetActive(false));
+        }
+
+        [Button]
+        public void Initialize(Color color)
+        {
+            _defaultScale = transform.localScale;
+        
+            sliderFill.color = color;
+            sliderBackground.color = color;
+        }
+
+        public void SetMaxHealth(int maxHealth)
+        {
+            _maxUnitCount = maxHealth;
+            healthSlider.value = FULL_HEALTH;
+            
+            PositionHealthBarSeparationLines();
+        }
+
+        public void IncreaseMaxUnitCount(int unitsAdded){
+            _maxUnitCount += unitsAdded;
+            
             PositionHealthBarSeparationLines();
         }
         
-        var healthPercentage = currentHealth / _unitCount;
-        healthSlider.value = healthPercentage;
-    }
-
-    private void PositionHealthBarSeparationLines()
-    {
-        var separationLinesNeeded = _unitCount - 1;
-        if (separationLinesNeeded > healthBarSeparationLines.Count)
+        [Button]
+        public void SetHealth(float currentHealth)
         {
-            var separationLinesToInstantiate = separationLinesNeeded - healthBarSeparationLines.Count;
-            for (var i = 0; i < separationLinesToInstantiate; i++)
-            {
-                healthBarSeparationLines.Add(Instantiate(healthBarSeparationLinePrefab, healthBarSeparationLineHolder));
-            }
-        }
-        
-        var fullHealthBarRange = maxXHealthBarPosition - minXHealthBarPosition;
-        var separationLength = fullHealthBarRange / _unitCount;
-
-        var separationLinesIndex = 0;
-        foreach (var healthBarSeparationLine in healthBarSeparationLines)
-        {
-            if (separationLinesIndex >= separationLinesNeeded)
-            {
-                healthBarSeparationLine.gameObject.SetActive(false);
-                continue;
-            }
+            var healthPercentage = currentHealth / _maxUnitCount;
+            healthSlider.value = healthPercentage;
             
-            healthBarSeparationLine.transform.localPosition = new Vector3(minXHealthBarPosition + (separationLinesIndex + 1) * separationLength, 0, 0);
-            healthBarSeparationLine.gameObject.SetActive(true);
-            separationLinesIndex++;
+            PositionHealthBarSeparationLines();
+        }
+
+        private void PositionHealthBarSeparationLines()
+        {
+            var separationLinesNeeded = _maxUnitCount - 1;
+            if (separationLinesNeeded > healthBarSeparationLines.Count)
+            {
+                var separationLinesToInstantiate = separationLinesNeeded - healthBarSeparationLines.Count;
+                for (var i = 0; i < separationLinesToInstantiate; i++)
+                {
+                    healthBarSeparationLines.Add(Instantiate(healthBarSeparationLinePrefab, healthBarSeparationLineHolder));
+                }
+            }
+        
+            var fullHealthBarRange = maxXHealthBarPosition - minXHealthBarPosition;
+            var separationLength = fullHealthBarRange / _maxUnitCount;
+
+            var separationLinesIndex = 0;
+            foreach (var healthBarSeparationLine in healthBarSeparationLines)
+            {
+                if (separationLinesIndex >= separationLinesNeeded)
+                {
+                    healthBarSeparationLine.gameObject.SetActive(false);
+                    continue;
+                }
+            
+                healthBarSeparationLine.transform.localPosition = new Vector3(minXHealthBarPosition + (separationLinesIndex + 1) * separationLength, 0, 0);
+                healthBarSeparationLine.gameObject.SetActive(true);
+                separationLinesIndex++;
+            }
         }
     }
 }

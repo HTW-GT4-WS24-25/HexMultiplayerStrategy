@@ -1,5 +1,4 @@
-﻿using System;
-using Unit;
+﻿using Unit;
 using UnityEngine;
 
 namespace Combat
@@ -14,6 +13,7 @@ namespace Combat
             _combat = combat;
             GetComponent<CapsuleCollider>().radius = radius;
         }
+        
         private void OnTriggerEnter(Collider other)
         {
             if(!other.CompareTag("UnitGroup"))
