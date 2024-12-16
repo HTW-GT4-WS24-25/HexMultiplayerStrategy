@@ -43,35 +43,32 @@ namespace Combat
             foreach (var unitGroup in _unitGroups)
                 _damageToDealToUnitGroup[unitGroup] = 0;
             
-            var damageToDeal = false;
+            var hasDamageToDeal = false;
             foreach (var unitGroup in _unitGroups)
             {
                 _attackChargeProgress[unitGroup] += Time.deltaTime / _attackSpeeds[unitGroup];
                 if (_attackChargeProgress[unitGroup] < 1) 
                     continue;
 
-                damageToDeal = true;
+                hasDamageToDeal = true;
                 CalculateDamageToOtherUnits(unitGroup);
-                _attackChargeProgress[unitGroup] = 0;
-                unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
+                _attackChargeProgress[unitGroup] -= 1;
             }
             
-            if(damageToDeal)
+            if (hasDamageToDeal)
                 DealDamageToUnitGroups();
             
-            if(_unitGroups.Count <= 1)
+            if (_unitGroups.Count <= 1)
                 End();
         }
         
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
-            unitGroup.StartFighting(CombatIndicator);
-            
+            unitGroup.UpdateFightingState(true);
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
             _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
             _damageToDealToUnitGroup.Add(unitGroup, 0);
-            unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
         }
         
         private void CalculateDamageToOtherUnits(UnitGroup unitGroup)
@@ -100,15 +97,16 @@ namespace Combat
 
         private void DeleteUnitGroup(UnitGroup unitGroup)
         {
+            Debug.Assert(_unitGroups.Contains(unitGroup), "The passed unit group is unknown.");
             _unitGroups.Remove(unitGroup);
-            unitGroup.DieInCombat();
+            unitGroup.Delete();
         }
         
         
         private void End()
         {
             foreach (var unitGroup in _unitGroups)
-                unitGroup.EndFighting();
+                unitGroup.UpdateFightingState(false);
 
             OnCombatEnd?.Invoke(this);
         }
