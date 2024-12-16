@@ -52,9 +52,9 @@ public class MapBuilder : NetworkBehaviour
 
             var hexData = hexDataByType[(HexType)mapData[dataIndex++]];
                     
-            var newHex = Instantiate(hexData.Hexagon, hexPosition, QuaternionUtils.GetRandomHexRotation(), transform);
+            var newHex = Instantiate(hexData.HexagonPrefab, hexPosition, QuaternionUtils.GetRandomHexRotation(), transform);
             newHex.Initialize(coordinates);
-            newHex.SetTopping(hexData.Topping);
+            newHex.SetTopping(hexData.DefaultToppingPrefab);
             Grid.Add(newHex);
         }
     }
