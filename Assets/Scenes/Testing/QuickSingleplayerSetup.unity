@@ -531,9 +531,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
+      propertyPath: unitModelPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
       propertyPath: sceneNameAfterInitialization
       value: QuickSinglePlayerFollowUp
       objectReference: {fileID: 0}
+    - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
+      propertyPath: 'unitModelPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2775784481036110402, guid: 024f6ee0c3eee4049a132895d97f69f6, type: 3}
+    - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
+      propertyPath: 'unitModelPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2775784481036110402, guid: c519111328f33fd449a8452081b05cdd, type: 3}
+    - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
+      propertyPath: 'unitModelPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2775784481036110402, guid: 1fff7d92a2467c04295a8a8d506333fa, type: 3}
+    - target: {fileID: 4565510255256636864, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
+      propertyPath: 'unitModelPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2775784481036110402, guid: 2324292674e4ea147a307539d67d015a, type: 3}
     - target: {fileID: 4798736837249884922, guid: 477f45cf743e6ae459a15ea0eb0bb543, type: 3}
       propertyPath: m_Name
       value: ApplicationController
