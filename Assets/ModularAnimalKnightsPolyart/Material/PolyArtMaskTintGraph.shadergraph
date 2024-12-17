@@ -2325,8 +2325,8 @@
     "m_ObjectId": "3346fb8254f643398640518ce3a33f67",
     "m_Title": "Calculate Color Mas k2",
     "m_Position": {
-        "x": -3904.0,
-        "y": 276.0
+        "x": -3903.999755859375,
+        "y": 275.9999694824219
     }
 }
 
@@ -5055,7 +5055,7 @@
     "m_Title": "Calculate Color Mask 1",
     "m_Position": {
         "x": -3872.0,
-        "y": -611.0
+        "y": -610.9999389648438
     }
 }
 
@@ -5842,7 +5842,7 @@
     "m_Title": "Get Mask for Lerp",
     "m_Position": {
         "x": -2532.0,
-        "y": 947.0
+        "y": 946.9999389648438
     }
 }
 
@@ -6686,7 +6686,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Smoothness",
     "m_StageCapability": 2,
-    "m_Value": 0.5,
+    "m_Value": 0.0,
     "m_DefaultValue": 0.5,
     "m_Labels": []
 }

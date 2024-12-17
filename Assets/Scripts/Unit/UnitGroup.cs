@@ -47,6 +47,7 @@ namespace Unit
 
         private float _combatHealth;
         private PlayerColor _playerColor;
+        private UnitModel.ModelType _modelType;
         
         public override void OnNetworkSpawn()
         {
@@ -128,15 +129,6 @@ namespace Unit
             PlayHitAnimationInSecondsClientRpc(secondsUntilHit);
         }
 
-        public void UpdateFightingState(bool isFighting)
-        {
-            IsFighting = isFighting;
-            _combatHealth = UnitCount.Value;
-            ToggleHealthBarClientRpc(isFighting);
-
-            UpdateMovementPauseState();
-        }
-
         public void StartFighting(CombatIndicator combatIndicator)
         {
             IsFighting = true;
@@ -160,7 +152,7 @@ namespace Unit
 
         public void DieInCombat()
         {
-            SpawnDeathDummyClientRpc(_playerColor.Type);
+            SpawnDeathDummyClientRpc(_playerColor.Type, _modelType);
             ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
             Destroy(gameObject);
         }
@@ -220,6 +212,7 @@ namespace Unit
         {
             PlayerId = playerId;
             
+            _modelType = playerModelType;
             var model = Instantiate(UnitModel.GetModelPrefabFromType(playerModelType), modelHolder.position, modelHolder.rotation, modelHolder);
             UnitAnimator = model.Animator;
             Movement.OnMoveAnimationSpeedChanged += UnitAnimator.SetMoveSpeed;
@@ -288,10 +281,10 @@ namespace Unit
         }
 
         [ClientRpc]
-        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType)
+        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType, UnitModel.ModelType _playerModelType)
         {
             var unitDeathDummy = Instantiate(deathDummyPrefab, transform.position, transform.rotation);
-            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType));
+            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType), _playerModelType);
         }
         
         public void EnableHighlight()
