@@ -1,5 +1,7 @@
 ﻿using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Utils;
 
 namespace HexSystem
 {
@@ -7,16 +9,29 @@ namespace HexSystem
     {
         [SerializeField] private HexBorderLine hexBorderLine;
         
-        public bool isTraversable;
-        
         public AxialCoordinates Coordinates { get; private set; }
+        
+        private GameObject _topping;
+        
+        public bool isTraversable;
 
         public void Initialize(AxialCoordinates coordinate)
         {
             Coordinates = coordinate;
             
-            if(hexBorderLine != null)
+            if (hexBorderLine != null)
                 hexBorderLine.Initialize();
+        }
+
+        public void SetTopping(GameObject topping)
+        {
+            if (_topping != null)
+                Destroy(_topping.gameObject);
+            
+            _topping = topping;
+            
+            if (_topping != null)
+                Instantiate(_topping, transform.position, QuaternionUtils.GetRandomHexRotation());
         }
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)

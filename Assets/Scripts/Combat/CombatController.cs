@@ -18,21 +18,16 @@ namespace Combat
 
         private readonly List<Combat> _ongoingCombats = new();
 
-        private const float AttackSpeed = 1.5f;
         private float _deltaTime;
         private bool _isPaused;
+        
 
         private void Update()
         {
             if (_ongoingCombats.IsNullOrEmpty() || _isPaused)
                 return;
             
-            _deltaTime += Time.deltaTime;
-            if (_deltaTime < AttackSpeed) 
-                return;
-            
-            _deltaTime = 0f;
-            TriggerAllCombatSteps();
+            TriggerAllCombatUpdates();
         }
 
         public void InitializeOnServer()
@@ -53,16 +48,10 @@ namespace Combat
             };
         }
 
-        private void TriggerAllCombatSteps()
+        private void TriggerAllCombatUpdates()
         {
             for (var i = _ongoingCombats.Count - 1; i >= 0; i--)
-            {
-                var combat = _ongoingCombats[i];
-                var combatIsOver = combat.TriggerCombatStep();
-                
-                if (combatIsOver)
-                    DeleteCombat(combat);
-            }
+                _ongoingCombats[i].ProcessCombatFrame();
         }
         
         private void InitiateCombat(UnitGroup unitGroup1, UnitGroup unitGroup2)
@@ -74,7 +63,8 @@ namespace Combat
             var combatArea = Instantiate(combatAreaPrefab, combatPosition, Quaternion.identity, transform);
             var combat = new Combat(combatIndicator, combatArea, unitGroup1, unitGroup2);
             combatArea.Initialize(combat, combatRadius);
-            
+
+            combat.OnCombatEnd += DeleteCombat;
             _ongoingCombats.Add(combat);
         }
 
@@ -88,9 +78,10 @@ namespace Combat
 
         private void DeleteCombat(Combat combat)
         {
-            combat.End();
             Destroy(combat.CombatIndicator.gameObject);
             Destroy(combat.CombatArea.gameObject);
+            
+            combat.OnCombatEnd -= DeleteCombat;
             _ongoingCombats.Remove(combat);
         }
     }

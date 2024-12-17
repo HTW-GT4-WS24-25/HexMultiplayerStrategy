@@ -8,9 +8,9 @@ using UnityEngine.Serialization;
 
 public class HexTypeDataProvider : MonoBehaviour
 {
-    [SerializeField] private List<HexTypeData> HexTypeData = new();
-    
     public static HexTypeDataProvider Instance;
+    
+    [SerializeField] private List<HexTypeData> hexTypeData = new();
     
     private readonly Dictionary<HexType, HexTypeData> _hexDataByType = new();
     
@@ -19,7 +19,7 @@ public class HexTypeDataProvider : MonoBehaviour
         if (Instance != null) Destroy(this);
         
         Instance = this;
-        foreach (var typeData in HexTypeData)
+        foreach (var typeData in hexTypeData)
         {
             _hexDataByType.Add(typeData.Type, typeData);
         }
