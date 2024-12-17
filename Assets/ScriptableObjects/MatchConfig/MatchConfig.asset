@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MatchConfig
   m_EditorClassIdentifier: 
   nightsPerMatch: 10
-  dayDuration: 20
+  dayDuration: 200
   nightDuration: 2

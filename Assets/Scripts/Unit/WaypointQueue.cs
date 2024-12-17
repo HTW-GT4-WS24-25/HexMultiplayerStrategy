@@ -9,7 +9,7 @@ namespace Unit
 {
     public class WaypointQueue : NetworkBehaviour
     {
-        public event UnityAction<Hexagon, bool> OnWaypointsUpdated;
+        public event UnityAction OnWaypointsUpdated;
         public event UnityAction OnPathChanged;
         
         private Queue<Hexagon> _queue = new();
@@ -21,15 +21,25 @@ namespace Unit
             OnPathChanged?.Invoke();
             return _lastFetched;
         }
+
+        public Hexagon PeekNextWaypoint()
+        {
+            return _queue.Count == 0 ? null : _queue.Peek();
+        }
         
-        public void UpdateWaypoints(List<Hexagon> waypoints, bool wasSplit = false)
+        public void UpdateWaypoints(List<Hexagon> waypoints)
         {
             if (waypoints.IsNullOrEmpty()) 
                 return;
             
             _queue = new Queue<Hexagon>(waypoints);
-            OnWaypointsUpdated?.Invoke(waypoints[0], wasSplit);
+            OnWaypointsUpdated?.Invoke();
             OnPathChanged?.Invoke();
+        }
+
+        public List<Hexagon> GetWaypoints()
+        {
+            return _queue.ToList();
         }
 
         public List<Hexagon> GetCurrentAndNextWaypoints()
@@ -39,6 +49,13 @@ namespace Unit
                 waypoints.Insert(0,_lastFetched);
 
             return waypoints;
+        }
+
+        public void Clear()
+        {
+            _lastFetched = null;
+            _queue.Clear();
+            OnPathChanged?.Invoke();
         }
     }
 }

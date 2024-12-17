@@ -21,7 +21,7 @@ namespace Unit
             ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
             ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightSwitchState;
             ClientEvents.Unit.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
-            ClientEvents.Unit.OnUnitGroupDeselected += DeselectUnit;
+            ClientEvents.Unit.OnUnitGroupDeselected += CancelCurrentUnitSelection;
             
             if(IsServer)
                 ServerEvents.Unit.OnUnitGroupWithIdDeleted += DeselectUnitGroupIfSelectedClientRpc;
@@ -32,7 +32,7 @@ namespace Unit
             ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
             ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleDayNightSwitchState;
             ClientEvents.Unit.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
-            ClientEvents.Unit.OnUnitGroupDeselected -= DeselectUnit;
+            ClientEvents.Unit.OnUnitGroupDeselected -= CancelCurrentUnitSelection;
             
             if(IsServer)
                 ServerEvents.Unit.OnUnitGroupWithIdDeleted -= DeselectUnitGroupIfSelectedClientRpc;
@@ -44,11 +44,11 @@ namespace Unit
         private void RequestMoveCommandRpc(AxialCoordinates coordinates, ulong requestedUnitId, int selectionUnitCount)
         {
             var requestUnitGroup = UnitGroup.UnitGroupsInGame[requestedUnitId];
-            var requestedDestination = mapBuilder.Grid.Get(coordinates);
-            var newUnitPath = GetPathForUnitGroup(requestUnitGroup, requestedDestination);
-
             if (!requestUnitGroup.CanMove)
                 return;
+            
+            var requestedDestination = mapBuilder.Grid.Get(coordinates);
+            var newUnitPath = GetPathForUnitGroup(requestUnitGroup, requestedDestination);
             
             if (selectionUnitCount < requestUnitGroup.UnitCount.Value && requestUnitGroup.UnitCount.Value > 1)
                 SplitUnitGroup(requestUnitGroup, selectionUnitCount);
@@ -69,13 +69,10 @@ namespace Unit
             var splitUnitGroup =
                 Instantiate(unitGroupPrefab, unitGroup.transform.position, Quaternion.identity);
             splitUnitGroup.NetworkObject.Spawn();
-            splitUnitGroup.Initialize(
-                unitGroup.UnitCount.Value - selectionUnitCount,
-                unitGroup.PlayerId, unitGroup.Movement.StartHexagon, gridData);
-            splitUnitGroup.WaypointQueue.UpdateWaypoints(unitGroup.WaypointQueue.GetCurrentAndNextWaypoints(), true);
             
-            unitGroup.UnitCount.Value = selectionUnitCount;
             gridData.CopyUnitGroupOnHex(unitGroup, splitUnitGroup);
+            
+            splitUnitGroup.InitializeAsSplitFrom(unitGroup, unitGroup.UnitCount.Value - selectionUnitCount);
         }
 
         #endregion
@@ -102,7 +99,6 @@ namespace Unit
         {
             if (_selectedUnitGroup != null && clickedHex.isTraversable)
             {
-                Debug.Log("Move Command Registered");
                 RequestMoveCommandRpc(clickedHex.Coordinates, _selectedUnitGroup.NetworkObjectId, _clientSelectionUnitCount);
             }
             else
@@ -117,11 +113,7 @@ namespace Unit
             if (unitOnHex == null) 
                 return;
             
-            if (_selectedUnitGroup != null)
-            {
-                _selectedUnitGroup.DisableHighlight();
-                _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
-            }
+            CancelCurrentUnitSelection();
                 
             _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
             _selectedUnitGroup.EnableHighlight();
@@ -135,11 +127,12 @@ namespace Unit
             ClientEvents.Unit.OnUnitCountOfSelectedChanged?.Invoke(newUnitCount);
         }
 
-        private void DeselectUnit()
+        private void CancelCurrentUnitSelection()
         {
             if (_selectedUnitGroup == null)
                 return;
             
+            _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
             _selectedUnitGroup.DisableHighlight();
             _selectedUnitGroup = null;
         }

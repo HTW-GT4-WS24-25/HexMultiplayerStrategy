@@ -16,7 +16,7 @@ namespace UI
             
             foreach (var data in sortedDescendingPlayerData)
             {
-                var playerColor = PlayerColor.GetFromColorType(data.PlayerColorType).baseColor;
+                var playerColor = PlayerColor.GetFromColorType(data.PlayerColorType).BaseColor;
                 var playerScoreText = $"{data.PlayerName}: {data.PlayerScore}";
                 
                 var scoreEntry = Instantiate(scoreEntryUiPrefab, scoreListHolder.transform);

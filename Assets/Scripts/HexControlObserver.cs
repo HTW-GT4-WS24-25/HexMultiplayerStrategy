@@ -22,10 +22,8 @@ public class HexControlObserver : NetworkBehaviour
     private void HandleUnitGroupReachedHexCenter(UnitGroup unitGroup, AxialCoordinates hexCoordinates)
     {
         var hexagonData = gridData.GetHexagonDataOnCoordinate(hexCoordinates);
-        Debug.Log("UnitGroupReachedHexCenter");
         if (hexagonData.StationaryUnitGroup == null)
         {
-            Debug.Log("Unit should become stationary");
             gridData.UpdateStationaryUnitGroupOfHex(hexCoordinates, unitGroup);
             if(gridData.GetHexagonDataOnCoordinate(hexCoordinates).ControllerPlayerId != unitGroup.PlayerId)
                 HandleHexControllerChanged(hexagonData.Coordinates, unitGroup.PlayerId);
@@ -37,13 +35,10 @@ public class HexControlObserver : NetworkBehaviour
         
         if (stationaryUnitGroup.PlayerId != unitGroup.PlayerId)
         {
-            Debug.Log("Initiating Combat in HexCenter");
             ServerEvents.Unit.OnCombatTriggered?.Invoke(stationaryUnitGroup, unitGroup);
         } 
         else if (!unitGroup.Movement.HasMovementLeft)
         {
-            Debug.Log("Unit should be added to other stationary group");
-
             stationaryUnitGroup.IntegrateUnitsOf(unitGroup);
         }
     }

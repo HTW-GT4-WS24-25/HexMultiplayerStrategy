@@ -22,5 +22,14 @@ namespace Helper
                 }
             };
         }
+        
+        public static float InverseLerpUnclamped(float a, float b, float value)
+        {
+            // Ensure we don't divide by zero
+            if (Mathf.Abs(b - a) < Mathf.Epsilon)
+                return 0f;
+            
+            return (value - a) / (b - a);
+        }
     }
 }

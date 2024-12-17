@@ -33,12 +33,12 @@ namespace UI.Lobby
             var playerColors = PlayerColor.GetAll();
             foreach (var playerColor in playerColors)
             {
-                if (playerColor.colorType == PlayerColor.ColorType.None)
+                if (playerColor.Type == PlayerColor.ColorType.None)
                     continue;
 
                 var newColorSelectionField = Instantiate(colorSelectionFieldPrefab, colorSelectionFieldContainer);
-                newColorSelectionField.SetColor(playerColor.baseColor);
-                _colorSelectionFieldsByType.Add(playerColor.colorType, newColorSelectionField);
+                newColorSelectionField.SetColor(playerColor.BaseColor);
+                _colorSelectionFieldsByType.Add(playerColor.Type, newColorSelectionField);
             }
         }
 

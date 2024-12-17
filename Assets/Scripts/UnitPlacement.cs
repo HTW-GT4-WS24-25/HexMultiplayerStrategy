@@ -57,7 +57,7 @@ public class UnitPlacement : NetworkBehaviour
         var newUnitGroupNetworkObject = newUnitGroup.GetComponent<NetworkObject>();
         newUnitGroupNetworkObject.Spawn();
         
-        newUnitGroup.Initialize(unitAmount, playerId, hexagon, _gridData);
+        newUnitGroup.InitializeOnHexCenter(unitAmount, playerId, hexagon);
         
         _gridData.PlaceUnitGroupOnHex(coordinate, newUnitGroup);
     }

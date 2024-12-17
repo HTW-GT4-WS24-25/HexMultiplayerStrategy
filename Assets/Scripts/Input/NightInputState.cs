@@ -21,8 +21,6 @@ namespace Input
             
             if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
             {
-                // _unitPlacement.HandlePlacementCommand(clickedHexagon.Coordinates, 1);
-                Debug.Log("HandleMainPointerDown");
                 ClientEvents.Input.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
         }
