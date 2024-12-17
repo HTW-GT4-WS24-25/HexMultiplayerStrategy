@@ -10,6 +10,7 @@ using Unit.Model;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Unit
 {
@@ -22,10 +23,9 @@ namespace Unit
         [SerializeField] private UnitGroupHealthBar healthBar;
         [SerializeField] private UnitGroupTravelLineDrawer travelLineDrawer;
         [SerializeField] private TextMeshProUGUI unitCountText;
-        [SerializeField] private AnimalMaskTint modelColorTint;
         [SerializeField] private UnitGroupCombatInitiator combatInitiator;
-        [SerializeField] private UnitAnimator unitAnimator;
         [SerializeField] private UnitDeathDummy deathDummyPrefab;
+        [SerializeField] private Transform modelHolder;
 
         public event UnityAction OnUnitHighlightEnabled;
         public event UnityAction OnUnitHighlightDisabled;
@@ -40,12 +40,14 @@ namespace Unit
         public bool IsFighting { get; private set; }
         private bool IsResting { get; set; }
         public bool CanMove => !IsFighting && !IsResting;
+        public UnitAnimator UnitAnimator { get; private set; }
         
         public ulong PlayerId { get; private set; }
         public NetworkVariable<int> UnitCount { get; private set; } = new(0);
 
         private float _combatHealth;
         private PlayerColor _playerColor;
+        private UnitModel.ModelType _modelType;
         
         public override void OnNetworkSpawn()
         {
@@ -127,15 +129,6 @@ namespace Unit
             PlayHitAnimationInSecondsClientRpc(secondsUntilHit);
         }
 
-        public void UpdateFightingState(bool isFighting)
-        {
-            IsFighting = isFighting;
-            _combatHealth = UnitCount.Value;
-            ToggleHealthBarClientRpc(isFighting);
-
-            UpdateMovementPauseState();
-        }
-
         public void StartFighting(CombatIndicator combatIndicator)
         {
             IsFighting = true;
@@ -159,7 +152,7 @@ namespace Unit
 
         public void DieInCombat()
         {
-            SpawnDeathDummyClientRpc(_playerColor.Type);
+            SpawnDeathDummyClientRpc(_playerColor.Type, _modelType);
             ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
             Destroy(gameObject);
         }
@@ -191,7 +184,7 @@ namespace Unit
             PlayerId = playerId;
             
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            InitializeClientRpc(playerId, (int)playerData.PlayerColorType);
+            InitializeClientRpc(playerId, playerData.PlayerColorType, playerData.PlayerUnitModelType);
         }
         
         private void SubtractUnits(int amount)
@@ -215,12 +208,17 @@ namespace Unit
         #region Client
 
         [ClientRpc]
-        private void InitializeClientRpc(ulong playerId, int encodedPlayerColorType)
+        private void InitializeClientRpc(ulong playerId, PlayerColor.ColorType playerColorType, UnitModel.ModelType playerModelType)
         {
             PlayerId = playerId;
             
-            _playerColor = PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedPlayerColorType));
-            modelColorTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
+            _modelType = playerModelType;
+            var model = Instantiate(UnitModel.GetModelPrefabFromType(playerModelType), modelHolder.position, modelHolder.rotation, modelHolder);
+            UnitAnimator = model.Animator;
+            Movement.OnMoveAnimationSpeedChanged += UnitAnimator.SetMoveSpeed;
+            
+            _playerColor = PlayerColor.GetFromColorType(playerColorType);
+            model.MaskTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
 
             travelLineDrawer.InitializeTravelLine(_playerColor);
             healthBar.Initialize(_playerColor.BaseColor);
@@ -273,31 +271,31 @@ namespace Unit
         [ClientRpc]
         private void PlayHitAnimationInSecondsClientRpc(float secondsUntilHit)
         {
-            unitAnimator.PlayHitAnimation(secondsUntilHit);
+            UnitAnimator.PlayHitAnimation(secondsUntilHit);
         }
 
         [ClientRpc]
         private void StopFightingAnimationClientRpc()
         {
-            unitAnimator.StopFightAnimations();
+            UnitAnimator.StopFightAnimations();
         }
 
         [ClientRpc]
-        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType)
+        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType, UnitModel.ModelType _playerModelType)
         {
             var unitDeathDummy = Instantiate(deathDummyPrefab, transform.position, transform.rotation);
-            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType));
+            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType), _playerModelType);
         }
         
         public void EnableHighlight()
         {
-            modelColorTint.ApplyMaterials(_playerColor.HighlightedUnitMaterial);
+            //Todo: apply highlight effect on unit model
             OnUnitHighlightEnabled?.Invoke();
         }
 
         public void DisableHighlight()
         {
-            modelColorTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
+            //Todo: disable highlight effect on unit model
             OnUnitHighlightDisabled?.Invoke();
         }
         

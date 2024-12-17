@@ -9,8 +9,6 @@ namespace Player
     [CreateAssetMenu(fileName = "New PlayerColor", menuName = "Create Player Color")]
     public class PlayerColor : ScriptableObject
     {
-        private static Dictionary<ColorType, PlayerColor> _playerColorStorage = new();
-            
         [field: SerializeField] public ColorType Type { get; private set; }
         [field: SerializeField] public Color BaseColor { get; private set; }
 
@@ -27,6 +25,8 @@ namespace Player
         public static void AddColorToStorage(PlayerColor playerColor) => _playerColorStorage.Add(playerColor.Type, playerColor);
         public static PlayerColor GetFromColorType(ColorType colorType) => _playerColorStorage[colorType];
         public static PlayerColor[] GetAll() => _playerColorStorage.Values.ToArray();
+        
+        private static Dictionary<ColorType, PlayerColor> _playerColorStorage = new();
 
         public static ColorType IntToColorType(int color)
         {

@@ -11,11 +11,11 @@ namespace Unit
     public class UnitGroupMovement : NetworkBehaviour
     {
         [SerializeField] private WaypointQueue waypointQueue;
-        [SerializeField] private UnityEvent<float> onMoveAnimationSpeedChanged;
         [SerializeField] private UnityEvent<Hexagon> onReachedNewHex;
         [SerializeField] private UnityEvent<Hexagon> onReachedHexCenter;
         [SerializeField] private UnityEvent onLeftHexCenter;
         
+        public UnityAction<float> OnMoveAnimationSpeedChanged;
         public bool HasMovementLeft { get; private set; }
         public Hexagon StartHexagon { get; private set; }
         public Hexagon GoalHexagon { get; private set; }
@@ -187,7 +187,7 @@ namespace Unit
         [ClientRpc]
         private void OnMoveAnimationSpeedChangedClientRpc(float value)
         {
-            onMoveAnimationSpeedChanged?.Invoke(value);
+            OnMoveAnimationSpeedChanged?.Invoke(value);
         }
         
         #endregion

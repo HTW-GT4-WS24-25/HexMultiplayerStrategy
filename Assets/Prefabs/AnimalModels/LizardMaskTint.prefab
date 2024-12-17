@@ -128,6 +128,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4279990687824977065, guid: 0fb87f2b3f5c2dd42871e3e41166dfd9, type: 3}
+      propertyPath: <Type>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4341836412499571958, guid: 0fb87f2b3f5c2dd42871e3e41166dfd9, type: 3}
       propertyPath: m_IsActive
       value: 0

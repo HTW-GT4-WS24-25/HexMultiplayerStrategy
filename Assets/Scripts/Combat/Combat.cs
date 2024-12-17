@@ -49,7 +49,8 @@ namespace Combat
                 _attackChargeProgress[unitGroup] += Time.deltaTime / _attackSpeeds[unitGroup];
                 if (_attackChargeProgress[unitGroup] < 1) 
                     continue;
-
+                
+                unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
                 hasDamageToDeal = true;
                 CalculateDamageToOtherUnits(unitGroup);
                 _attackChargeProgress[unitGroup] -= 1;
@@ -64,11 +65,13 @@ namespace Combat
         
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
-            unitGroup.UpdateFightingState(true);
+            unitGroup.StartFighting(CombatIndicator);
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
             _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
             _damageToDealToUnitGroup.Add(unitGroup, 0);
+            
+            unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
         }
         
         private void CalculateDamageToOtherUnits(UnitGroup unitGroup)
@@ -91,22 +94,23 @@ namespace Combat
                 unitGroup.TakeDamage(damage);
                 
                 if (unitGroup.UnitCount.Value <= 0)
-                    DeleteUnitGroup(unitGroup);
+                    KillUnitGroup(unitGroup);
             }
         }
 
-        private void DeleteUnitGroup(UnitGroup unitGroup)
+        private void KillUnitGroup(UnitGroup unitGroup)
         {
             Debug.Assert(_unitGroups.Contains(unitGroup), "The passed unit group is unknown.");
+            
             _unitGroups.Remove(unitGroup);
-            unitGroup.Delete();
+            unitGroup.DieInCombat();
         }
         
         
         private void End()
         {
             foreach (var unitGroup in _unitGroups)
-                unitGroup.UpdateFightingState(false);
+                unitGroup.EndFighting();
 
             OnCombatEnd?.Invoke(this);
         }

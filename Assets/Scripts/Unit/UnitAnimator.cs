@@ -11,6 +11,12 @@ namespace Unit
         [SerializeField] private Animator unitAnimator;
         [SerializeField] private float hitAnimationPercentageUntilHit;
 
+        private const float CrossFadeDuration = 0.3f;
+        private const float LowRelativeMoveSpeed = 0.4f;
+        private const float HighRelativeMoveSpeed = 0.85f;
+        private const float LowRelativeWalkAnimationSpeed = 1.45f;
+        private const float HighRelativeWalkAnimationSpeed = 2.5f;
+
         private int _hitSpeedHash;
         private int _walkSpeedHash;
         private int _idleAnimationHash;
@@ -47,7 +53,7 @@ namespace Unit
         public void StopFightAnimations()
         {
             _hitDelayTween?.Kill();
-            unitAnimator.CrossFade(_idleAnimationHash, 0.3f);
+            unitAnimator.CrossFade(_idleAnimationHash, CrossFadeDuration);
         }
 
         [Button]
@@ -65,14 +71,14 @@ namespace Unit
         {
             if (Equals(moveSpeed, 0f))
             {
-                unitAnimator.CrossFade(_idleAnimationHash, 0.3f);
+                unitAnimator.CrossFade(_idleAnimationHash, CrossFadeDuration);
                 return;
             }
             
-            var relativeMoveSpeed = HelperMethods.InverseLerpUnclamped(0.4f, 0.85f, moveSpeed);
-            var walkAnimationSpeed = Mathf.LerpUnclamped(1.45f, 2.5f, relativeMoveSpeed);
+            var relativeMoveSpeed = HelperMethods.InverseLerpUnclamped(LowRelativeMoveSpeed, HighRelativeMoveSpeed, moveSpeed);
+            var walkAnimationSpeed = Mathf.LerpUnclamped(LowRelativeWalkAnimationSpeed, HighRelativeWalkAnimationSpeed, relativeMoveSpeed);
             unitAnimator.SetFloat(_walkSpeedHash, walkAnimationSpeed);
-            unitAnimator.CrossFade(_walkAnimationHash, 0.3f);
+            unitAnimator.CrossFade(_walkAnimationHash, CrossFadeDuration);
         }
 
         [Button]

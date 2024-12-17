@@ -2,21 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Player;
-using Unity.Collections.LowLevel.Unsafe;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Lobby
 {
-    public class ColorSelectionUI : MonoBehaviour
+    public class PlayerConfigurationUI : MonoBehaviour
     {
         [SerializeField] private LobbyUI lobbyUI;
+        [SerializeField] private TMP_Dropdown factionSelectionDropdown;
         [SerializeField] private ColorSelectionField colorSelectionFieldPrefab;
         [SerializeField] private Transform colorSelectionFieldContainer;
         [SerializeField] private Button continueButton;
 
         private readonly Dictionary<PlayerColor.ColorType, ColorSelectionField> _colorSelectionFieldsByType = new();
         private PlayerColor.ColorType _selectedPlayerColor = PlayerColor.ColorType.None;
+        private Dictionary<string, UnitModel.ModelType> _modelTypesByName = new();
 
         private void OnEnable()
         {
@@ -30,6 +32,14 @@ namespace UI.Lobby
 
         public void Initialize()
         {
+            var factions = Enum.GetValues(typeof(UnitModel.ModelType));
+            foreach (var faction in factions)
+            {
+                _modelTypesByName.Add(faction.ToString(), (UnitModel.ModelType)faction);
+            }
+            var factionOptions = _modelTypesByName.Select(factionData => new TMP_Dropdown.OptionData(factionData.Key)).ToList();
+            factionSelectionDropdown.options = factionOptions;
+            
             var playerColors = PlayerColor.GetAll();
             foreach (var playerColor in playerColors)
             {
@@ -73,9 +83,11 @@ namespace UI.Lobby
             continueButton.interactable = true;
         }
 
-        public void SubmitColorSelection()
+        public void SubmitPlayerSelection()
         {
-            lobbyUI.SubmitPlayerColorSelection(_selectedPlayerColor);
+            var selectedPlayerFactionName = factionSelectionDropdown.options[factionSelectionDropdown.value].text;
+            var selectedPlayerFaction = _modelTypesByName[selectedPlayerFactionName];
+            lobbyUI.SubmitPlayerSelection(_selectedPlayerColor, selectedPlayerFaction);
         }
 
         private void Unselect()

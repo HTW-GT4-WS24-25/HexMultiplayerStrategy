@@ -222,6 +222,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &87718800
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 87718802}
+  - component: {fileID: 87718801}
+  m_Layer: 0
+  m_Name: HexTypeDataProvider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &87718801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87718800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87c7ee79625842be820a10445b333b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hexTypeData:
+  - {fileID: 11400000, guid: 21d588f7d3d631c4b81a15c858fdee4e, type: 2}
+  - {fileID: 11400000, guid: ff6ece3b02077844587826c908e1d298, type: 2}
+  - {fileID: 11400000, guid: 4048beff72dc7d844b74793448103b3e, type: 2}
+--- !u!4 &87718802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87718800}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &373698543
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,6 +854,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 95239fe1abaa2fa409ef99c3fdc18ea6, type: 2}
   - {fileID: 11400000, guid: c5b5427605baf4c4f834d8eb95eb9c6d, type: 2}
   - {fileID: 11400000, guid: 50e51a5f5d5d33949b952af436314199, type: 2}
+  unitModelPrefabs:
+  - {fileID: 2775784481036110402, guid: 024f6ee0c3eee4049a132895d97f69f6, type: 3}
+  - {fileID: 2775784481036110402, guid: 2324292674e4ea147a307539d67d015a, type: 3}
+  - {fileID: 2775784481036110402, guid: 1fff7d92a2467c04295a8a8d506333fa, type: 3}
+  - {fileID: 2775784481036110402, guid: c519111328f33fd449a8452081b05cdd, type: 3}
   sceneNameAfterInitialization: Menu
 --- !u!4 &1964027574
 Transform:
@@ -889,3 +942,4 @@ SceneRoots:
   - {fileID: 473616686}
   - {fileID: 7924851542667318248}
   - {fileID: 1964027574}
+  - {fileID: 87718802}
