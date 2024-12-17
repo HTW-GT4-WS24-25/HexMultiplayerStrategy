@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class HexTypeDataProvider : MonoBehaviour
 {
@@ -16,9 +11,12 @@ public class HexTypeDataProvider : MonoBehaviour
     
     private void Awake()
     {
-        if (Instance != null) Destroy(this);
+        if (Instance != null) 
+            Destroy(this);
         
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+        
         foreach (var typeData in hexTypeData)
         {
             _hexDataByType.Add(typeData.Type, typeData);

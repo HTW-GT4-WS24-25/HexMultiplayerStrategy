@@ -69,7 +69,6 @@ namespace Input
                 
                 _mainPointerPressedPosition = MainPointerPosition;
                 _mainPointerIsDown = true;
-                Debug.Log("OnMainPointer performed");
             }
         }
         
@@ -82,7 +81,6 @@ namespace Input
                 
                 _mainPointerIsDown = false;
                 _isDragging = false;
-                Debug.Log("OnMainPointer released");
             }
         }
 

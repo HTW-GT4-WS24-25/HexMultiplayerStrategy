@@ -9,11 +9,11 @@ namespace Unit.Model
         [SerializeField] private Renderer currentWeapon;
         [SerializeField] private Renderer currentShield;
 
-        public void ApplyMaterials(Material playerMaterial)
+        public void ApplyMaterials(Material coloringMaterial)
         {
-            currentBody.material = playerMaterial;
-            currentShield.material = playerMaterial;
-            currentWeapon.material = playerMaterial;
+            currentBody.material = coloringMaterial;
+            currentShield.material = coloringMaterial;
+            currentWeapon.material = coloringMaterial;
         }
     }
 }

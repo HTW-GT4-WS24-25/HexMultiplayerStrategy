@@ -28,7 +28,7 @@ public class HexBorderLine : MonoBehaviour
     public void HighlightBorderWithColor(PlayerColor playerColor)
     {
         _lineRenderer.colorGradient = new Gradient();
-        _lineRenderer.material = playerColor.hexBorderMaterial;
+        _lineRenderer.material = playerColor.HexBorderMaterial;
         _lineRenderer.widthMultiplier = highlightWidthMultiplier;
         
         ownerColor = playerColor;

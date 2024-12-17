@@ -12,12 +12,14 @@ namespace Networking
         [SerializeField] private HostSingleton hostPrefab;
         [SerializeField] private ClientSingleton clientPrefab;
         [SerializeField] private PlayerColor[] playerColors;
+        [SerializeField] private UnitModel[] unitModelPrefabs;
         [SerializeField] private string sceneNameAfterInitialization = "Menu";
 
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
             SetupPlayerColorsForGame();
+            SetupUnitModelsForGame();
             
             LaunchClient();
         }
@@ -27,6 +29,14 @@ namespace Networking
             foreach (var playerColor in playerColors)
             {
                 PlayerColor.AddColorToStorage(playerColor);
+            }
+        }
+
+        private void SetupUnitModelsForGame()
+        {
+            foreach (var unitModelPrefab in unitModelPrefabs)
+            {
+                UnitModel.AddModelPrefabToStorage(unitModelPrefab);
             }
         }
 

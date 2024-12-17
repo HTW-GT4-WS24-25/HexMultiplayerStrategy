@@ -21,7 +21,6 @@ namespace HexSystem
             {
                 var hexType = (HexType)mapData[dataIndex++];
                 _hexDataByCoordinates.Add(coordinate, new HexagonData(coordinate, hexType));  
-                Debug.Log(hexType);
             }
         }
 
@@ -78,9 +77,9 @@ namespace HexSystem
             
             var copiedUnitGroupId = copiedUnitGroup.NetworkObjectId;
             
-            var hexagonData = _hexDataByCoordinates[originalUnitCoordinates];
-            
             AddUnitToUnitsOnHexClientRpc(originalUnitCoordinates, copiedUnitGroupId);
+            var hexagonData = _hexDataByCoordinates[originalUnitCoordinates];
+            copiedUnitGroup.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(hexagonData); 
             
             if (hexagonData.StationaryUnitGroup == originalUnitGroupId)
                 UpdateStationaryUnitGroupOfHexClientRpc(originalUnitCoordinates, true, copiedUnitGroupId);
