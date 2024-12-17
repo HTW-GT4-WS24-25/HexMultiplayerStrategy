@@ -114,8 +114,8 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HighlightLevel: 0.09
-    - _Highlight_Cutoff: 0.36
-    - _Highlight_Level: 0.13
+    - _Highlight_Cutoff: 0.42
+    - _Highlight_Level: 0.17
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
