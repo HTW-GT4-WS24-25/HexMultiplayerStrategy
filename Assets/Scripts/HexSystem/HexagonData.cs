@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Buildings;
 
 namespace HexSystem
 {
@@ -7,6 +8,7 @@ namespace HexSystem
         public readonly HexType HexType;
         public readonly AxialCoordinates Coordinates;
         
+        public BuildingType BuildingType = BuildingType.None;
         public List<ulong> UnitsOnHex { get; } = new();
         public ulong? StationaryUnitGroup { get; set; }
         public ulong? ControllerPlayerId { get; set; }
