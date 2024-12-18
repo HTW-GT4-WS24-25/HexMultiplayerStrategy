@@ -23,15 +23,13 @@ namespace HexSystem
                 hexBorderLine.Initialize();
         }
 
-        public void SetTopping(GameObject topping)
+        public void SetTopping(GameObject toppingPrefab)
         {
             if (_topping != null)
                 Destroy(_topping.gameObject);
             
-            _topping = topping;
-            
-            if (_topping != null)
-                Instantiate(_topping, transform.position, QuaternionUtils.GetRandomHexRotation());
+            if (toppingPrefab != null)
+                _topping = Instantiate(toppingPrefab, transform.position, QuaternionUtils.GetRandomHexRotation());
         }
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)

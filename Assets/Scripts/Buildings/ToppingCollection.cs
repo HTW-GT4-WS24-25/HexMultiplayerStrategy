@@ -27,7 +27,7 @@ namespace Buildings
                     int, 
                     GameObject>>> _toppingPrefabs = new();
 
-        private void Awake()
+        public void Initialize()
         {
             _toppingPrefabs = new Dictionary<HexType, Dictionary<BuildingType, Dictionary<int, GameObject>>>
             {
