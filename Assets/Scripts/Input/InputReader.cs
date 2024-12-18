@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using GameEvents;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,17 +13,17 @@ namespace Input
     {
         [SerializeField] private float maxDragDistanceForClick;
         
-        public event UnityAction OnMainPointerClicked;
-        public event UnityAction OnRightMouseButtonDown;
-        public event UnityAction<Vector2> OnMainPointerDragged; 
-        public event UnityAction OnSwitchDayNightCycle;
+        public event UnityAction OnLeftMouseClick;
+        public event UnityAction OnRightMouseClick;
+        public event UnityAction<Vector2> OnMouseDragged; 
     
-        public Vector2 MainPointerPosition { get; private set; }
+        public Vector2 MousePosition { get; private set; }
     
         private Controls _controls;
-        private Vector2 _mainPointerPressedPosition;
-        private bool _mainPointerIsDown;
+        private Vector2 _mousePressedPosition;
+        private bool _mouseIsDown;
         private bool _isDragging;
+        private bool _previousUnitShortcutPressed;
     
         private void OnEnable()
         {
@@ -33,80 +35,149 @@ namespace Input
         
             _controls.Player.Enable();
         }
-    
-        public void OnPointerPosition(InputAction.CallbackContext context)
+
+        private void OnDisable()
         {
-            var inputPosition = context.ReadValue<Vector2>();
-            CheckForDragging(inputPosition);
-            
-            MainPointerPosition = context.ReadValue<Vector2>();
+            _controls.Player.Disable();
         }
 
         private void CheckForDragging(Vector2 inputPosition)
         {
             if (_isDragging)
             {
-                var dragChangeToLastInput = inputPosition - MainPointerPosition;
-                OnMainPointerDragged?.Invoke(dragChangeToLastInput);
+                var dragChangeToLastInput = inputPosition - MousePosition;
+                OnMouseDragged?.Invoke(dragChangeToLastInput);
             }
-            else if (_mainPointerIsDown)
+            else if (_mouseIsDown)
             {
-                var dragVector = inputPosition - _mainPointerPressedPosition;
+                var dragVector = inputPosition - _mousePressedPosition;
                 if (dragVector.magnitude > maxDragDistanceForClick)
                 {
-                    OnMainPointerDragged?.Invoke(dragVector);
+                    OnMouseDragged?.Invoke(dragVector);
                     _isDragging = true;
                 }
             }
         }
 
-        public void OnMainPointerDown(InputAction.CallbackContext context)
+        public void OnMousePosition(InputAction.CallbackContext context)
         {
-            if (context.performed)
-            {
-                if (EventSystem.current.IsPointerOverGameObject()) // is over UI
-                    return;
-                
-                _mainPointerPressedPosition = MainPointerPosition;
-                _mainPointerIsDown = true;
-            }
+            var inputPosition = context.ReadValue<Vector2>();
+            CheckForDragging(inputPosition);
+            
+            MousePosition = context.ReadValue<Vector2>();
         }
-        
-        public void OnMainPointerUp(InputAction.CallbackContext context)
+
+        public void OnMouseDown(InputAction.CallbackContext context)
         {
-            if (context.performed)
-            {
-                if(!_isDragging)
-                    OnMainPointerClicked?.Invoke();
+            if (!context.performed) 
+                return;
+            
+            if (EventSystem.current.IsPointerOverGameObject()) // is over UI
+                return;
                 
-                _mainPointerIsDown = false;
-                _isDragging = false;
-            }
+            _mousePressedPosition = MousePosition;
+            _mouseIsDown = true;
+        }
+
+        public void OnMouseUp(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+            
+            if(!_isDragging)
+                OnLeftMouseClick?.Invoke();
+                
+            _mouseIsDown = false;
+            _isDragging = false;
         }
 
         public void OnRightClick(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
-                OnRightMouseButtonDown?.Invoke();
-            }
-        }
-
-        public void OnTestSwitchCycle(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                OnSwitchDayNightCycle?.Invoke();
+                OnRightMouseClick?.Invoke();
             }
         }
 
         public void OnZoomScroll(InputAction.CallbackContext context) // TODO: Refactor this to InputHandler
         {
-            if(context.performed)
-            {
-                var scrollValue = context.ReadValue<float>();
-                ClientEvents.Input.OnZoomInput?.Invoke(scrollValue);
-            }
+            if (!context.performed) 
+                return;
+            
+            var scrollValue = context.ReadValue<float>();
+            ClientEvents.Input.OnZoomInput?.Invoke(scrollValue);
+        }
+
+        public void OnCameraMove(InputAction.CallbackContext context)
+        {
+            var moveInput = context.ReadValue<Vector2>();
+            ClientEvents.Input.OnCameraMoveInput?.Invoke(moveInput);
+        }
+
+        public void OnCameraTurn(InputAction.CallbackContext context)
+        {
+            var rotateInput = context.ReadValue<float>();
+            ClientEvents.Input.OnCameraTurnInput?.Invoke(rotateInput);
+        }
+
+        public void OnNextUnitPressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum1Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum2Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum3Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum4Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum5Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum6Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum7Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum8Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
+        }
+
+        public void OnNum9Pressed(InputAction.CallbackContext context)
+        {
+            if (!context.performed) 
+                return;
         }
     }
 }

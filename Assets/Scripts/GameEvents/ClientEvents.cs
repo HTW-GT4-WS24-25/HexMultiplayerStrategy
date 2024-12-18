@@ -33,6 +33,8 @@ namespace GameEvents
             public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
             public UnityAction<float> OnZoomInput;
             public UnityAction<Vector2> OnDragInput;
+            public UnityAction<Vector2> OnCameraMoveInput;
+            public UnityAction<float> OnCameraTurnInput;
         }
 
         public class DayNightCycleEvents
