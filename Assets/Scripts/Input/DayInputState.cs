@@ -9,19 +9,19 @@ namespace Input
         public DayInputState(InputReader inputReader, LayerMask selectionLayer) : base(inputReader, selectionLayer)
         { }
 
-        public override void HandleMainPointerDown()
+        public override void HandleMouseDown()
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
             
-            if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
+            if (TryGetHexOnScreenPosition(InputReader.MousePosition, out var clickedHexagon))
                 ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement?.Invoke(clickedHexagon);
         }
 
         public override void HandleRightClick()
         {
             ClientEvents.Unit.OnUnitGroupDeselected?.Invoke();
-            HandleMainPointerDown();
+            HandleMouseDown();
         }
     }
 }
