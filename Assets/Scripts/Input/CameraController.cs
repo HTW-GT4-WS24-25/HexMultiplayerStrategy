@@ -1,5 +1,6 @@
 using GameEvents;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Input
 {
@@ -16,7 +17,10 @@ namespace Input
         [SerializeField] private float dragPerInputOnMaxZoom;
         [SerializeField] private float dragPerInputOnMinZoom;
         [SerializeField] private float zoomSpeed;
-        [SerializeField] private float dragSpeed;
+        [SerializeField] private float cameraMoveSpeed = 12;
+        [SerializeField] private float moveAmount;
+        [SerializeField] private float cameraRotationSpeed = 20;
+        [SerializeField] private float rotationAmount;
     
         private float _currentZoom;
         private Vector3 _defaultCameraZoomPosition;
@@ -24,12 +28,16 @@ namespace Input
         private Vector3 _newCameraHandlePosition;
         private Vector3 _newCameraZoomPosition;
         private float _dragPerInput;
+        private Vector2 _currentMoveInput;
+        private float _currentRotationInput;
+        private Quaternion _newCameraHandleRotation;
 
         private void Awake()
         {
             _defaultCameraZoomPosition = cam.transform.localPosition;
             _newCameraZoomPosition = _defaultCameraZoomPosition;
             _newCameraHandlePosition = cameraHandle.localPosition;
+            _newCameraHandleRotation = cameraHandle.rotation;
             _zoomVector = cam.transform.forward * zoomPerInput;
             
             AdjustDragPerInputToCurrentZoom();
@@ -39,17 +47,33 @@ namespace Input
         {
             ClientEvents.Input.OnZoomInput += HandleZoom;
             ClientEvents.Input.OnDragInput += HandleDrag;
+            ClientEvents.Input.OnCameraMoveInput += HandleMoveInput;
+            ClientEvents.Input.OnCameraTurnInput += HandleRotationInput;
         }
 
         private void OnDisable()
         {
             ClientEvents.Input.OnZoomInput -= HandleZoom;
             ClientEvents.Input.OnDragInput -= HandleDrag;
+            ClientEvents.Input.OnCameraMoveInput -= HandleMoveInput;
+            ClientEvents.Input.OnCameraTurnInput -= HandleRotationInput;
         }
 
         private void Update()
         {
-            cameraHandle.localPosition = Vector3.Lerp(cameraHandle.position, _newCameraHandlePosition, Time.deltaTime * dragSpeed);
+            if (_currentMoveInput != Vector2.zero)
+            {
+                var alignedMoveDirection = cameraHandle.rotation * new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y);
+                _newCameraHandlePosition += alignedMoveDirection * moveAmount * Time.deltaTime;
+            }
+
+            if (!_currentRotationInput.Equals(0f))
+            {
+                _newCameraHandleRotation *= Quaternion.Euler(Vector3.up * rotationAmount * _currentRotationInput * Time.deltaTime);
+            }
+                
+            cameraHandle.localPosition = Vector3.Lerp(cameraHandle.position, _newCameraHandlePosition, Time.deltaTime * cameraMoveSpeed);
+            cameraHandle.rotation = Quaternion.Lerp(cameraHandle.rotation, _newCameraHandleRotation, Time.deltaTime * cameraRotationSpeed);
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, _newCameraZoomPosition, Time.deltaTime * zoomSpeed);
         }
 
@@ -87,6 +111,16 @@ namespace Input
             var alignedDragDirection = cameraHandle.rotation * new Vector3(dragVector.x, 0, dragVector.y);
             
             _newCameraHandlePosition += alignedDragDirection * -_dragPerInput;
+        }
+
+        private void HandleMoveInput(Vector2 moveVector)
+        {
+            _currentMoveInput = moveVector;
+        }
+
+        private void HandleRotationInput(float rotateValue)
+        {
+            _currentRotationInput = rotateValue;
         }
     }
 }

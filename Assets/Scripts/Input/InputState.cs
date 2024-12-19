@@ -17,7 +17,7 @@ namespace Input
             _selectionLayer = selectionLayer;
         }
 
-        public abstract void HandleMainPointerDown();
+        public abstract void HandleMouseDown();
         public abstract void HandleRightClick();
 
         public void HandleMainPointerDrag(Vector2 dragValue)

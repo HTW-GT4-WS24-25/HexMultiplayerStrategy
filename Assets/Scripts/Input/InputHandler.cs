@@ -52,16 +52,16 @@ namespace Input
 
         private void SubscribeInputStateToInputEvents(InputState inputState)
         {
-            inputReader.OnMainPointerClicked += inputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown += inputState.HandleRightClick;
-            inputReader.OnMainPointerDragged += inputState.HandleMainPointerDrag;
+            inputReader.OnLeftMouseClick += inputState.HandleMouseDown;
+            inputReader.OnRightMouseClick += inputState.HandleRightClick;
+            inputReader.OnMouseDragged += inputState.HandleMainPointerDrag;
         }
         
         private void UnsubscribeInputStateToInputEvents(InputState inputState)
         {
-            inputReader.OnMainPointerClicked -= inputState.HandleMainPointerDown;
-            inputReader.OnRightMouseButtonDown -= inputState.HandleRightClick;
-            inputReader.OnMainPointerDragged -= inputState.HandleMainPointerDrag;
+            inputReader.OnLeftMouseClick -= inputState.HandleMouseDown;
+            inputReader.OnRightMouseClick -= inputState.HandleRightClick;
+            inputReader.OnMouseDragged -= inputState.HandleMainPointerDrag;
         }
     }
 }
