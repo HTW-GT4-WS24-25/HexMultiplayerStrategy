@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using GameEvents;
 using HexSystem;
 using NightShop.NightShopStates;
+using TMPro;
 using UI.NightShop;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace NightShop
 {
@@ -17,11 +16,27 @@ namespace NightShop
         [SerializeField] private MoneyController moneyController;
         [SerializeField] private GridData gridData;
         [SerializeField] private List<Card> cards;
+        [SerializeField] private TextMeshProUGUI readyPlayersText;
+        [SerializeField] private TextMeshProUGUI readyButtonText;
         
         private Card _selectedCard;
         private Hexagon _selectedHexagon;
+        private bool _readyForDawn;
     
         private readonly NightShopStateManager _stateManager = new();
+
+        private const string ReadyButtonTextReady = "Waiting...";
+        private const string ReadyButtonTextUnready = "Ready for Dawn?";
+
+        private void OnEnable()
+        {
+            ClientEvents.NightShop.OnReadyPlayersChanged += HandleReadyPlayersChanged;
+        }
+
+        private void OnDisable()
+        {
+            ClientEvents.NightShop.OnReadyPlayersChanged -= HandleReadyPlayersChanged;
+        }
 
         private void Start()
         {
@@ -41,6 +56,8 @@ namespace NightShop
             {
                 nightShopUI.transform.gameObject.SetActive(true);
                 _stateManager.ChangeState(new ChoosingCardState(this));
+                _readyForDawn = false;
+                UpdateReadyButtonText();
             }
         }
     
@@ -102,6 +119,23 @@ namespace NightShop
         public void OnFailedPurchase()
         {
             _stateManager.ChangeState(new ChoosingHexagonState(this));
+        }
+
+        public void OnReadyForDawnToggled()
+        {
+            _readyForDawn = !_readyForDawn;
+            UpdateReadyButtonText();
+            ClientEvents.NightShop.OnLocalPlayerChangedReadyForDawnState(_readyForDawn);
+        }
+
+        private void UpdateReadyButtonText()
+        {
+            readyButtonText.text = _readyForDawn ? ReadyButtonTextReady : ReadyButtonTextUnready;
+        }
+        
+        private void HandleReadyPlayersChanged(int readyPlayers, int maxPlayers)
+        {
+            readyPlayersText.text = $"{readyPlayers}/{maxPlayers} Players ready";
         }
     }
 }

@@ -9,29 +9,36 @@ namespace Score
 {
         public class ScoreUpdater: NetworkBehaviour
         {
-                [SerializeField] ScoreWindow nightScoreWindow;
-                [SerializeField] EndOfGameScoreWindow endOfGameScoreWindow;
+                [SerializeField] VictoryPointDisplay victoryPointDisplay;
+                [SerializeField] VictoryBanner victoryBanner;
         
                 private ScoreCalculator _scoreCalculator;
 
-                public void Initialize(ScoreCalculator scoreCalculator)
-                {
-                        _scoreCalculator = scoreCalculator;
-                }
-
                 public override void OnNetworkSpawn()
                 {
+                        if(!IsServer) 
+                                return;
+                        
                         ServerEvents.DayNightCycle.OnTurnEnded += DistributeScoresAtNight;
                         ServerEvents.DayNightCycle.OnGameEnded += HandleEndOfGame;
                 }
 
                 public override void OnNetworkDespawn()
                 {
+                        if(!IsServer)
+                                return;
+                        
                         ServerEvents.DayNightCycle.OnTurnEnded -= DistributeScoresAtNight;
                         ServerEvents.DayNightCycle.OnGameEnded -= HandleEndOfGame;
                 }
 
                 #region Server
+                
+                public void Initialize(ScoreCalculator scoreCalculator)
+                {
+                        _scoreCalculator = scoreCalculator;
+                        InitializeVictoryPointDisplayClientRpc(GetPlayerDataSortedByScore());
+                }
 
                 private void DistributeScoresAtNight()
                 {
@@ -73,17 +80,25 @@ namespace Score
                 #region Client
 
                 [ClientRpc]
+                private void InitializeVictoryPointDisplayClientRpc(PlayerDataStorage.PlayerData[] playerData)
+                {
+                        victoryPointDisplay.Initialize(playerData);
+                }
+
+                [ClientRpc]
                 private void DistributeScoresAtNightClientRpc(PlayerDataStorage.PlayerData[] playerData)
                 {
-                        nightScoreWindow.UpdateScores(playerData);
-                        nightScoreWindow.gameObject.SetActive(true);
+                        victoryPointDisplay.UpdateScoresFromData(playerData);
                 }
 
                 [ClientRpc]
                 private void DistributeScoresAtEndOfGameClientRpc(PlayerDataStorage.PlayerData[] playerData)
                 {
-                        endOfGameScoreWindow.UpdateScores(playerData);
-                        endOfGameScoreWindow.gameObject.SetActive(true);
+                        var winner = playerData[0];
+                        victoryPointDisplay.UpdateScoresForGameEnd(playerData, () =>
+                        {
+                               victoryBanner.ShowFor(winner); 
+                        });
                 }
                 
                 #endregion
