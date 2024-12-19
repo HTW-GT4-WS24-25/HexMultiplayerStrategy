@@ -25,17 +25,24 @@ public class DayNightCycle : NetworkBehaviour
     private readonly NetworkVariable<float> _turnTime = new();
     private Tween _cycleSwitchTween;
     private int _nightsThisGame;
+    private bool _skipCurrentNight;
 
     public override void OnNetworkSpawn()
     {
         if (IsClient)
             _turnTime.OnValueChanged += HandleTurnTimeChanged;
+
+        if (IsServer)
+            ServerEvents.NightShop.OnAllPlayersReadyForDawn += SkipRestOfNight;
     }
 
     public override void OnNetworkDespawn()
     {
         if (IsClient)
             _turnTime.OnValueChanged -= HandleTurnTimeChanged;
+        
+        if(IsServer)
+            ServerEvents.NightShop.OnAllPlayersReadyForDawn -= SkipRestOfNight;
     }
     
     #region Server
@@ -57,6 +64,7 @@ public class DayNightCycle : NetworkBehaviour
             {
                 SwitchToNightTimeClientRpc();
                 _turnTime.Value = 0;
+                _skipCurrentNight = false;
 
                 if (++_nightsThisGame == NightsPerMatch)
                 {
@@ -67,7 +75,7 @@ public class DayNightCycle : NetworkBehaviour
                 ServerEvents.DayNightCycle.OnTurnEnded?.Invoke();
             }
 
-            if (cycleState == CycleState.Night && _turnTime.Value >= NightDuration)
+            if (cycleState == CycleState.Night && (_turnTime.Value >= NightDuration || _skipCurrentNight))
             {
                 SwitchToDayTimeClientRpc();
                 _turnTime.Value = 0;
@@ -76,6 +84,12 @@ public class DayNightCycle : NetworkBehaviour
             yield return null;
         }
     }
+
+    private void SkipRestOfNight()
+    {
+        _skipCurrentNight = true;
+    }
+    
     #endregion
 
     #region Client
