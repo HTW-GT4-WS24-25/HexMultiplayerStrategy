@@ -25,6 +25,8 @@ namespace GameEvents
             public UnityAction<Card> OnCardSelected;
             public UnityAction OnCardDeselected;
             public UnityAction<int> OnMoneyAmountChanged;
+            public UnityAction<bool> OnLocalPlayerChangedReadyForDawnState;
+            public UnityAction<int, int> OnReadyPlayersChanged;
         }
     
         public class InputEvents
