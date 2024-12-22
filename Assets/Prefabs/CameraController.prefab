@@ -222,4 +222,7 @@ MonoBehaviour:
   dragPerInputOnMaxZoom: 0.0015
   dragPerInputOnMinZoom: 0.0035
   zoomSpeed: 4
-  dragSpeed: 12
+  cameraMoveSpeed: 8
+  moveAmount: 8
+  cameraRotationSpeed: 8
+  rotationAmount: 140

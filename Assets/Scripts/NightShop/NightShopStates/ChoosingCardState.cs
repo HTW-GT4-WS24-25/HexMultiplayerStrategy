@@ -13,7 +13,6 @@ namespace NightShop.NightShopStates
             }
             public void EnterState()
             {
-                ClientEvents.NightShop.OnCardDeselected?.Invoke();
                 ClientEvents.NightShop.OnCardSelected += OnCardSelected;
                 ClientEvents.NightShop.OnCardDeselected += OnCardDeselected;
                 

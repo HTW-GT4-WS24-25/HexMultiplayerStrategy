@@ -1,6 +1,6 @@
-﻿using Player;
+﻿using GameEvents;
+using Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace HexSystem
@@ -8,12 +8,23 @@ namespace HexSystem
     public class Hexagon : MonoBehaviour
     {
         [SerializeField] private HexBorderLine hexBorderLine;
+        [SerializeField] private HexHighlighting hexHighlighting;
         
         public AxialCoordinates Coordinates { get; private set; }
         
         private GameObject _topping;
         
         public bool isTraversable;
+
+        private void OnEnable()
+        {
+            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement += UnmarkAsValidForPlacement;
+        }
+        
+        private void OnDisable()
+        {
+            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement -= UnmarkAsValidForPlacement;
+        }
 
         public void Initialize(AxialCoordinates coordinate)
         {
@@ -35,6 +46,16 @@ namespace HexSystem
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)
         {
             hexBorderLine.HighlightBorderWithColor(playerColor);
+        }
+
+        public void MarkAsValidForPlacement()
+        {
+            hexHighlighting.gameObject.SetActive(true);
+        }
+
+        public void UnmarkAsValidForPlacement()
+        {
+            hexHighlighting.gameObject.SetActive(false);
         }
     }
 }

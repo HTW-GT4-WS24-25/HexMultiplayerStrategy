@@ -14,12 +14,12 @@ namespace Input
             _unitPlacement = unitPlacement;
         }
 
-        public override void HandleMainPointerDown()
+        public override void HandleMouseDown()
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
             
-            if (TryGetHexOnScreenPosition(InputReader.MainPointerPosition, out var clickedHexagon))
+            if (TryGetHexOnScreenPosition(InputReader.MousePosition, out var clickedHexagon))
             {
                 ClientEvents.Input.OnHexSelectedDuringNightShop?.Invoke(clickedHexagon);
             }
@@ -27,7 +27,7 @@ namespace Input
 
         public override void HandleRightClick()
         {
-            Debug.Log("Right Click functionality not implemented.");
+            ClientEvents.NightShop.OnCardDeselected?.Invoke();
         }
     }
 }

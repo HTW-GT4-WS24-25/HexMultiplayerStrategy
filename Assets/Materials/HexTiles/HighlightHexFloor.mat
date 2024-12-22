@@ -51,11 +51,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Circle_Diameter: 0.4
-    - _Circle_Softness: 0.29
+    - _Circle_Diameter: 0.41
+    - _Circle_Softness: 0.42
     - _Float: 0.5
     - _Float_1: 0.46
-    - _Inner_Circle_Transparency: 0.26
+    - _Inner_Circle_Transparency: 0.15
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:

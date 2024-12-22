@@ -315,6 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexBorderLine: {fileID: 705385829547447668}
+  hexHighlighting: {fileID: 1880711956876125055}
   isTraversable: 1
 --- !u!1 &7215505191323519224
 GameObject:
@@ -478,6 +479,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42ea02b7fe3e103429a12712d444558d, type: 3}
+--- !u!114 &1880711956876125055 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4704898736710355007, guid: 42ea02b7fe3e103429a12712d444558d, type: 3}
+  m_PrefabInstance: {fileID: 6580473696331262784}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f427749a22af4c0eace32a6a6fbc962a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6345196550273470822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 242107317929507366, guid: 42ea02b7fe3e103429a12712d444558d, type: 3}

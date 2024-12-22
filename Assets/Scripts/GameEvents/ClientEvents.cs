@@ -16,7 +16,6 @@ namespace GameEvents
     
         public class HexagonEvents
         {
-            public UnityAction OnShowValidHexagonsForPlacement;
             public UnityAction OnHideValidHexagonsForPlacement;
         }
 
@@ -25,6 +24,9 @@ namespace GameEvents
             public UnityAction<Card> OnCardSelected;
             public UnityAction OnCardDeselected;
             public UnityAction<int> OnMoneyAmountChanged;
+            public UnityAction<bool> OnLocalPlayerChangedReadyForDawnState;
+            public UnityAction<int, int> OnReadyPlayersChanged;
+            public UnityAction<AxialCoordinates, int> OnUnitPlacementCommand;
         }
     
         public class InputEvents
@@ -33,6 +35,8 @@ namespace GameEvents
             public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
             public UnityAction<float> OnZoomInput;
             public UnityAction<Vector2> OnDragInput;
+            public UnityAction<Vector2> OnCameraMoveInput;
+            public UnityAction<float> OnCameraTurnInput;
         }
 
         public class DayNightCycleEvents
