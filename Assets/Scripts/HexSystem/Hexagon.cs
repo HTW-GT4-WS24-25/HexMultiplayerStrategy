@@ -1,4 +1,5 @@
-﻿using GameEvents;
+﻿using System;
+using GameEvents;
 using Player;
 using UnityEngine;
 using Utils;
@@ -10,20 +11,20 @@ namespace HexSystem
         [SerializeField] private HexBorderLine hexBorderLine;
         [SerializeField] private HexHighlighting hexHighlighting;
         
+        public bool isTraversable;
         public AxialCoordinates Coordinates { get; private set; }
         
         private GameObject _topping;
-        
-        public bool isTraversable;
+        private DayNightCycle.CycleState _currentCycleState;
 
         private void OnEnable()
         {
-            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement += UnmarkAsValidForPlacement;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightCycleSwitch;
         }
-        
+
         private void OnDisable()
         {
-            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement -= UnmarkAsValidForPlacement;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightCycleSwitch;
         }
 
         public void Initialize(AxialCoordinates coordinate)
@@ -50,14 +51,38 @@ namespace HexSystem
             hexBorderLine.HighlightBorderWithColor(playerColor);
         }
 
-        public void MarkAsValidForPlacement()
+        public void HighlightAsValidForPlacement()
         {
-            hexHighlighting.gameObject.SetActive(true);
+            hexHighlighting.ApplyAvailabilityHighlightNight();
         }
 
-        public void UnmarkAsValidForPlacement()
+        public void UnhighlightAsValidForPlacement()
         {
-            hexHighlighting.gameObject.SetActive(false);
+            hexHighlighting.DisableAvailabilityHighlight();
+        }
+
+        public void HighlightOnMouseOver()
+        {
+            if (_currentCycleState == DayNightCycle.CycleState.Day)
+            {
+                hexHighlighting.ApplyMouseOverHighlightDay(); 
+            }
+            else
+            {
+                hexHighlighting.ApplyMouseOverHighlightNight();
+            }
+        }
+
+        public void DisableMouseOverHighlight()
+        {
+            hexHighlighting.DisableMouseOverHighlight();
+        }
+        
+        private void HandleDayNightCycleSwitch(DayNightCycle.CycleState cycleState)
+        {
+            _currentCycleState = cycleState;
+            if(_currentCycleState == DayNightCycle.CycleState.Day)
+                UnhighlightAsValidForPlacement();
         }
     }
 }

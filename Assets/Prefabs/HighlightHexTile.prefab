@@ -121,3 +121,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f427749a22af4c0eace32a6a6fbc962a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floorHighlightMaterialDay: {fileID: 2100000, guid: 9adf4c3eaac44304d91af42a60d9efa3, type: 2}
+  wallHighlightMaterialDay: {fileID: 2100000, guid: 8d27f13bbebe7d04388faadfc362270c, type: 2}
+  floorHighlightMaterialNight: {fileID: 2100000, guid: b3b9d8a551a2cf447a0d1650a6eb079e, type: 2}
+  wallHighlightMaterialNight: {fileID: 2100000, guid: ff38d90be7c7a89429cda6040e69bb79, type: 2}
+  floorRenderer: {fileID: 4954159222545115227}
+  wallRenderer: {fileID: 918028886848258125}
+  floorCircleDiameterOnMouseOver: 0.45
+  wallHighlightLevelOnMouseOver: 0.1
+  floorCircleDiameterOnMouseOverAndAvailability: 0.37
+  wallHighlightLevelOnMouseOverAndAvailability: 0.19
+--- !u!23 &918028886848258125 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 606829569649663360, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+  m_PrefabInstance: {fileID: 348635551379267021}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4954159222545115227 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4605441070068763242, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+  m_PrefabInstance: {fileID: 348635551379267021}
+  m_PrefabAsset: {fileID: 0}

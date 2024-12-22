@@ -92,7 +92,7 @@ namespace NightShop
                 var hexagonData = gridData.GetHexagonDataOnCoordinate(coordinate);
                 
                 if(_selectedCard.placeable.IsHexValidForPlacement(hexagonData))
-                    mapBuilder.Grid.Get(coordinate).MarkAsValidForPlacement();
+                    mapBuilder.Grid.Get(coordinate).HighlightAsValidForPlacement();
             }
         }
 
