@@ -27,7 +27,7 @@ namespace Input
 
         public override void HandleRightClick()
         {
-            Debug.Log("Right Click functionality not implemented.");
+            ClientEvents.NightShop.OnCardDeselected?.Invoke();
         }
     }
 }

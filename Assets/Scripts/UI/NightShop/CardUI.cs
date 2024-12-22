@@ -32,11 +32,6 @@ namespace UI.NightShop
         {
             isDisabled = currentMoney < card.cost;
             GetComponent<Button>().interactable = currentMoney >= card.cost;
-
-            if (isSelected && isDisabled)
-            {
-                ClientEvents.NightShop.OnCardDeselected?.Invoke();
-            }
         }
 
         public void Initialize(Card card)
@@ -50,7 +45,7 @@ namespace UI.NightShop
         {
             if (isSelected)
             {
-                ClientEvents.NightShop.OnCardDeselected();
+                ClientEvents.NightShop ?.OnCardDeselected();
                 return;
             }
             ClientEvents.NightShop.OnCardSelected(card);

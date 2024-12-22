@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Unit
   cost: 2
+  placeable: {fileID: 11400000, guid: cc92fee79aa9345459b5b29aa787d6e2, type: 2}

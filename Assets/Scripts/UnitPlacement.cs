@@ -1,5 +1,9 @@
-﻿using HexSystem;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using GameEvents;
+using HexSystem;
 using Networking.Host;
+using NightShop;
 using Unit;
 using Unity.Netcode;
 using UnityEngine;
@@ -12,16 +16,30 @@ public class UnitPlacement : NetworkBehaviour
     private HexagonGrid _hexagonGrid;
     private GridData _gridData;
 
+    private const int UnitPlacementRequestPollDelayInMs = 25;
+
     public void Initialize(HexagonGrid hexagonGrid, GridData hexGridData)
     {
         _hexagonGrid = hexagonGrid;
         _gridData = hexGridData;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsClient)
+            ClientEvents.NightShop.OnUnitPlacementCommand += HandlePlacementCommand;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsClient)
+            ClientEvents.NightShop.OnUnitPlacementCommand -= HandlePlacementCommand;
+    }
+    
     #region Server
 
     [Rpc(SendTo.Server)]
-    private void RequestUnitPlacementRpc(AxialCoordinates coordinate, int unitAmount, ulong playerId)
+    private void RequestUnitPlacementRpc(AxialCoordinates coordinate, int unitAmount,  ulong playerId)
     {
         var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
         TryAddUnitsToHex(coordinate, playerData, unitAmount);
@@ -66,7 +84,7 @@ public class UnitPlacement : NetworkBehaviour
 
     #region Client
 
-    public void HandlePlacementCommand(AxialCoordinates coordinate, int unitAmount)
+    private void HandlePlacementCommand(AxialCoordinates coordinate, int unitAmount)
     {
         RequestUnitPlacementRpc(coordinate, unitAmount, NetworkManager.Singleton.LocalClientId);
     }

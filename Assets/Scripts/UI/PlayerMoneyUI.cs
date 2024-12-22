@@ -13,6 +13,11 @@ namespace UI
             ClientEvents.NightShop.OnMoneyAmountChanged += DisplayMoneyAmount;
         }
 
+        private void OnDisable()
+        {
+            ClientEvents.NightShop.OnMoneyAmountChanged -= DisplayMoneyAmount;
+        }
+
         void DisplayMoneyAmount(int amount)
         {
             playerMoneyText.text = "Gold: " + amount;

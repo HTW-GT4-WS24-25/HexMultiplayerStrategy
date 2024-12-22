@@ -9,6 +9,7 @@ namespace GameEvents
     {
         public static readonly PlayerEvents Player = new ();
         public static readonly DayNightCycleEvents DayNightCycle = new();
+        public static readonly NightShopEvents NightShop = new();
         public static readonly UnitEvents Unit = new();
 
         public class PlayerEvents
@@ -22,6 +23,11 @@ namespace GameEvents
         {
             public UnityAction OnTurnEnded;
             public UnityAction OnGameEnded;
+        }
+
+        public class NightShopEvents
+        {
+            public UnityAction OnAllPlayersReadyForDawn;
         }
 
         public class UnitEvents

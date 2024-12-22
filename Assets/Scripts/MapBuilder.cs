@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Codice.Client.BaseCommands;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using HexSystem;
@@ -15,6 +16,8 @@ public class MapBuilder : NetworkBehaviour
     [SerializeField] private Hexagon defaultHexagon;
     [SerializeField] private float spacing;
 
+    public int MapRings { get; private set; }
+    
     public const float TileWidth = 1;
     
     private float _horizontalSpacing;
@@ -39,6 +42,8 @@ public class MapBuilder : NetworkBehaviour
     {
         if(!_initialized)
             Initialize();
+
+        MapRings = nRings;
         
         Grid = new HexagonGrid();
         var dataIndex = 0;
