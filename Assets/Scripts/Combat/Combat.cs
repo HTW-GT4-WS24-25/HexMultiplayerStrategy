@@ -90,7 +90,7 @@ namespace Combat
         {
             foreach (var (unitGroup, damage) in _damageToDealToUnitGroup)
             {
-                if (damage <= 0)
+                if (damage <= float.Epsilon)
                     continue;
                 unitGroup.TakeDamage(damage);
                 
