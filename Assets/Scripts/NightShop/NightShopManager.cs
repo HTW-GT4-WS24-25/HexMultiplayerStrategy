@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GameEvents;
 using HexSystem;
+using Networking.Host;
 using NightShop.NightShopStates;
+using NightShop.Placeables;
 using TMPro;
 using UI.NightShop;
 using Unity.Netcode;
@@ -12,16 +15,18 @@ namespace NightShop
     public class NightShopManager : MonoBehaviour
     {
         [SerializeField] private NightShopUI nightShopUI;
-        [SerializeField] private UnitPlacement unitPlacement;
         [SerializeField] private MoneyController moneyController;
         [SerializeField] private GridData gridData;
+        [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private List<Card> cards;
         [SerializeField] private TextMeshProUGUI readyPlayersText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
         
         private Card _selectedCard;
-        private Hexagon _selectedHexagon;
+        private Placeable _placeableOnSuccessfulPurchase;
+        private HexagonData _selectedHexagon;
         private bool _readyForDawn;
+        private int _localPlayerMoneyAmount;
     
         private readonly NightShopStateManager _stateManager = new();
 
@@ -31,16 +36,24 @@ namespace NightShop
         private void OnEnable()
         {
             ClientEvents.NightShop.OnReadyPlayersChanged += HandleReadyPlayersChanged;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState += ToggleNightShop;
+            ClientEvents.NightShop.OnMoneyAmountChanged += HandlePlayerMoneyChanged;
         }
 
         private void OnDisable()
         {
             ClientEvents.NightShop.OnReadyPlayersChanged -= HandleReadyPlayersChanged;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState -= ToggleNightShop;
+            ClientEvents.NightShop.OnMoneyAmountChanged -= HandlePlayerMoneyChanged;
+        }
+
+        private void HandlePlayerMoneyChanged(int newMoney)
+        {
+            _localPlayerMoneyAmount = newMoney;
         }
 
         private void Start()
         {
-            ClientEvents.DayNightCycle.OnSwitchedCycleState += ToggleNightShop;
             nightShopUI.Initialize(cards);
             _stateManager.ChangeState(new ChoosingCardState(this));
         }
@@ -64,7 +77,23 @@ namespace NightShop
         public void HandleSelectedCard(Card card)
         {
             _selectedCard = card;
+            _placeableOnSuccessfulPurchase = null;
+            _selectedCard.placeable.Initialize(NetworkManager.Singleton.LocalClientId);
+            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement?.Invoke();
+            
             _stateManager.ChangeState(new ChoosingHexagonState(this));
+            HighlightHexagonsValidForSelectedCard();
+        }
+
+        private void HighlightHexagonsValidForSelectedCard()
+        {
+            foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(new AxialCoordinates(0, 0), mapBuilder.MapRings))
+            {
+                var hexagonData = gridData.GetHexagonDataOnCoordinate(coordinate);
+                
+                if(_selectedCard.placeable.IsHexValidForPlacement(hexagonData))
+                    mapBuilder.Grid.Get(coordinate).MarkAsValidForPlacement();
+            }
         }
 
         public void HandleDeselectedCard()
@@ -75,27 +104,28 @@ namespace NightShop
 
         public void HandleSelectHexagon(Hexagon hexagon)
         {
-            if (!CheckIfHexagonValidForPlacement(hexagon)) return;
-
-            _selectedHexagon = hexagon;
-            moneyController.HandlePurchaseCommand(_selectedCard.cost);
-        }
-
-        bool CheckIfHexagonValidForPlacement(Hexagon hexagon)
-        {
-            var playerId = NetworkManager.Singleton.LocalClientId;
             var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
-    
-            if (hexagonData.ControllerPlayerId != playerId)
-                return false;
-
-            return true;
+            if (!_selectedCard.placeable.IsHexValidForPlacement(hexagonData)) 
+                return;
+            
+            _selectedHexagon = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
+            
+            PlaceCurrentSelectionOnSelectedHexAsync();
         }
-    
-        public void OnSuccessfulPurchase()
+        
+        private async Task PlaceCurrentSelectionOnSelectedHexAsync()
         {
-            unitPlacement.HandlePlacementCommand(_selectedHexagon.Coordinates, 1);
-
+            if (_localPlayerMoneyAmount < _selectedCard.cost)
+                return;
+            
+            _placeableOnSuccessfulPurchase = _selectedCard.placeable;
+            var purchaseSucceeded = await moneyController.RequestPurchaseAsync(_selectedCard.cost);
+            if(!purchaseSucceeded)
+                return;
+            
+            _placeableOnSuccessfulPurchase?.Place(_selectedHexagon);
+            _placeableOnSuccessfulPurchase = null;
+            
             if (!_selectedCard)
             {
                 _stateManager.ChangeState(new ChoosingCardState(this));
@@ -118,6 +148,7 @@ namespace NightShop
     
         public void OnFailedPurchase()
         {
+            _placeableOnSuccessfulPurchase = null;
             _stateManager.ChangeState(new ChoosingHexagonState(this));
         }
 

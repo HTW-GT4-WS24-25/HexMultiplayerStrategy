@@ -16,7 +16,6 @@ namespace GameEvents
     
         public class HexagonEvents
         {
-            public UnityAction OnShowValidHexagonsForPlacement;
             public UnityAction OnHideValidHexagonsForPlacement;
         }
 
@@ -27,6 +26,7 @@ namespace GameEvents
             public UnityAction<int> OnMoneyAmountChanged;
             public UnityAction<bool> OnLocalPlayerChangedReadyForDawnState;
             public UnityAction<int, int> OnReadyPlayersChanged;
+            public UnityAction<AxialCoordinates, int> OnUnitPlacementCommand;
         }
     
         public class InputEvents

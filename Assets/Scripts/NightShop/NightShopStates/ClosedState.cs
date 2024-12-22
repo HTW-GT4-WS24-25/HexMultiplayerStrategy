@@ -7,6 +7,7 @@ namespace NightShop.NightShopStates
             public void EnterState()
             {
                 ClientEvents.NightShop.OnCardDeselected?.Invoke();
+                ClientEvents.Hexagon.OnHideValidHexagonsForPlacement?.Invoke();
             }
 
             public void ExitState()

@@ -8,41 +8,40 @@ namespace NightShop.NightShopStates
     {
         private NightShopManager _nightShopManager;
 
-            public ChoosingHexagonState(NightShopManager nightShopManager)
-            {
-                _nightShopManager = nightShopManager;
-            }
-            public void EnterState()
-            {
-                ClientEvents.NightShop.OnCardSelected += OnCardSelected;
-                ClientEvents.NightShop.OnCardDeselected += OnCardDeselected;
-                
-                ClientEvents.Input.OnHexSelectedDuringNightShop += OnHexSelectedDuringNightShop;
-                ClientEvents.Hexagon.OnShowValidHexagonsForPlacement?.Invoke(); // should be some type / requirement
-            }
+        public ChoosingHexagonState(NightShopManager nightShopManager)
+        {
+            _nightShopManager = nightShopManager;
+        }
+        
+        public void EnterState()
+        {
+            ClientEvents.NightShop.OnCardSelected += OnCardSelected;
+            ClientEvents.NightShop.OnCardDeselected += OnCardDeselected;
             
-            public void ExitState()
-            {
-                ClientEvents.NightShop.OnCardSelected -= OnCardSelected;
-                ClientEvents.NightShop.OnCardDeselected -= OnCardDeselected;
-                
-                ClientEvents.Input.OnHexSelectedDuringNightShop -= OnHexSelectedDuringNightShop;
-                ClientEvents.Hexagon.OnHideValidHexagonsForPlacement?.Invoke();
-            }
+            ClientEvents.Input.OnHexSelectedDuringNightShop += OnHexSelectedDuringNightShop;
+        }
+        
+        public void ExitState()
+        {
+            ClientEvents.NightShop.OnCardSelected -= OnCardSelected;
+            ClientEvents.NightShop.OnCardDeselected -= OnCardDeselected;
+            
+            ClientEvents.Input.OnHexSelectedDuringNightShop -= OnHexSelectedDuringNightShop;
+        }
 
-            private void OnHexSelectedDuringNightShop(Hexagon hexagon)
-            {
-                _nightShopManager.HandleSelectHexagon(hexagon);
-            }
-            
-            private void OnCardSelected(Card card)
-            {
-                _nightShopManager.HandleSelectedCard(card);
-            }
-            
-            private void OnCardDeselected()
-            {
-                _nightShopManager.HandleDeselectedCard();
-            }
+        private void OnHexSelectedDuringNightShop(Hexagon hexagon)
+        {
+            _nightShopManager.HandleSelectHexagon(hexagon);
+        }
+        
+        private void OnCardSelected(Card card)
+        {
+            _nightShopManager.HandleSelectedCard(card);
+        }
+        
+        private void OnCardDeselected()
+        {
+            _nightShopManager.HandleDeselectedCard();
         }
     }
+}
