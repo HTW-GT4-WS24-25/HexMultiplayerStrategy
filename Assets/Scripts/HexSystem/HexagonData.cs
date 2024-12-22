@@ -8,7 +8,7 @@ namespace HexSystem
         public readonly HexType HexType;
         public readonly AxialCoordinates Coordinates;
         
-        public BuildingType BuildingType = BuildingType.None;
+        public Building Building;
         public List<ulong> UnitsOnHex { get; } = new();
         public ulong? StationaryUnitGroup { get; set; }
         public ulong? ControllerPlayerId { get; set; }

@@ -9,8 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 814fab9c0c3e10b4589f546638d15dbb, type: 3}
-  m_Name: Test 2
+  m_Script: {fileID: 11500000, guid: f5578941d9cf40189eb51f73b3918cd3, type: 3}
+  m_Name: BarrackBuildingPlaceable
   m_EditorClassIdentifier: 
-  cardName: Test2
-  cost: 5

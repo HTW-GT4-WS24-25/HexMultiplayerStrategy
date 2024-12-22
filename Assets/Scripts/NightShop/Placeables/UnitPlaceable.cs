@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NightShop.Placeables
 {
-    [CreateAssetMenu(fileName = "UnitPlaceable", menuName = "Placeables/UnitPlaceable", order = 0)]
+    [CreateAssetMenu(fileName = "UnitPlaceable", menuName = "Placeables/Units/UnitPlaceable", order = 0)]
     public class UnitPlaceable : Placeable
     {
         private ulong _playerId;

@@ -11,17 +11,13 @@ public class DeleteMe : MonoBehaviour
     [SerializeField] private MapBuilder mapBuilder;
     [SerializeField] private ToppingCollection toppingCollection;
 
-    private void Start()
-    {
-        toppingCollection.Initialize();
-    }
 
     [Button]
     public void SetHexTopping(Vector2Int hexCoordinates, BuildingType buildingType, int level)
     {
         var axials = hexCoordinates.ToAxialCoordinates();
         var hexData = gridData.GetHexagonDataOnCoordinate(axials);
-        hexData.BuildingType = buildingType; // do this on Server
+        //hexData.Building.Type = buildingType; // do this on Server
         var prefab = toppingCollection.GetToppingPrefab(hexData.HexType, buildingType, level);
         mapBuilder.Grid.Get(axials).SetTopping(prefab); // do this on Client
     }

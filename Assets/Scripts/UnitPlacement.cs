@@ -16,8 +16,6 @@ public class UnitPlacement : NetworkBehaviour
     private HexagonGrid _hexagonGrid;
     private GridData _gridData;
 
-    private const int UnitPlacementRequestPollDelayInMs = 25;
-
     public void Initialize(HexagonGrid hexagonGrid, GridData hexGridData)
     {
         _hexagonGrid = hexagonGrid;
@@ -39,7 +37,7 @@ public class UnitPlacement : NetworkBehaviour
     #region Server
 
     [Rpc(SendTo.Server)]
-    private void RequestUnitPlacementRpc(AxialCoordinates coordinate, int unitAmount,  ulong playerId)
+    private void RequestPlacementRpc(AxialCoordinates coordinate, int unitAmount,  ulong playerId)
     {
         var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
         TryAddUnitsToHex(coordinate, playerData, unitAmount);
@@ -86,7 +84,7 @@ public class UnitPlacement : NetworkBehaviour
 
     private void HandlePlacementCommand(AxialCoordinates coordinate, int unitAmount)
     {
-        RequestUnitPlacementRpc(coordinate, unitAmount, NetworkManager.Singleton.LocalClientId);
+        RequestPlacementRpc(coordinate, unitAmount, NetworkManager.Singleton.LocalClientId);
     }
 
     #endregion
