@@ -66,6 +66,7 @@ namespace Combat
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
             unitGroup.StartFighting(CombatIndicator);
+            
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
             _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
@@ -89,7 +90,7 @@ namespace Combat
         {
             foreach (var (unitGroup, damage) in _damageToDealToUnitGroup)
             {
-                if (damage == 0)
+                if (damage <= 0)
                     continue;
                 unitGroup.TakeDamage(damage);
                 
@@ -103,6 +104,10 @@ namespace Combat
             Debug.Assert(_unitGroups.Contains(unitGroup), "The passed unit group is unknown.");
             
             _unitGroups.Remove(unitGroup);
+            _damageToDealToUnitGroup.Remove(unitGroup);
+            _attackSpeeds.Remove(unitGroup);
+            _attackChargeProgress.Remove(unitGroup);
+            
             unitGroup.DieInCombat();
         }
         
