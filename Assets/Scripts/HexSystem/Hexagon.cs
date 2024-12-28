@@ -12,7 +12,7 @@ namespace HexSystem
         
         public AxialCoordinates Coordinates { get; private set; }
         
-        private GameObject _topping;
+        private Topping _topping;
         
         public bool isTraversable;
 
@@ -34,13 +34,18 @@ namespace HexSystem
                 hexBorderLine.Initialize();
         }
 
-        public void SetTopping(GameObject toppingPrefab)
+        public void SetTopping(Topping toppingPrefab)
         {
             if (_topping != null)
                 Destroy(_topping.gameObject);
             
             if (toppingPrefab != null)
                 _topping = Instantiate(toppingPrefab, transform.position, QuaternionUtils.GetRandomHexRotation());
+        }
+
+        public void SetToppingLevel(int level)
+        {
+            _topping.SetLevel(level);
         }
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)

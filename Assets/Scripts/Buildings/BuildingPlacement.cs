@@ -41,7 +41,7 @@ namespace Buildings
             var newBuilding = BuildingFactory.Create(type);
             
             hexData.Building = newBuilding;
-            SetBuildingToppingClientRpc(coordinate, hexData.HexType, newBuilding.Type, newBuilding.Level);
+            SetBuildingToppingClientRpc(coordinate, hexData.HexType, newBuilding.Type);
         }
         
         [Rpc(SendTo.Server)]
@@ -54,7 +54,7 @@ namespace Buildings
             
             hexData.Building.Upgrade();
             
-            SetBuildingToppingClientRpc(coordinate, hexData.HexType, existingBuilding.Type, existingBuilding.Level);
+            UpgradeBuildingToppingClientRpc(coordinate, existingBuilding.Level);
         }
 
         #endregion
@@ -75,16 +75,21 @@ namespace Buildings
         private void SetBuildingToppingClientRpc(
             AxialCoordinates coordinate, 
             HexType hexType,
-            BuildingType buildingType, 
-            int buildingLevel)
+            BuildingType buildingType)
         {
-            var buildingPrefab = toppingCollection.GetToppingPrefab(
+            var toppingPrefab = toppingCollection.GetToppingPrefab(
                 hexType, 
-                buildingType, 
-                buildingLevel);
+                buildingType);
          
             var hex = _hexagonGrid.Get(coordinate);
-            hex.SetTopping(buildingPrefab);
+            hex.SetTopping(toppingPrefab);
+        }
+
+        [ClientRpc]
+        private void UpgradeBuildingToppingClientRpc(AxialCoordinates coordinate, int newLevel)
+        {
+            var hex = _hexagonGrid.Get(coordinate);
+            hex.SetToppingLevel(newLevel);
         }
 
         #endregion

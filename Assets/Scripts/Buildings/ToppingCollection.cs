@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HexSystem;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Buildings
 {
-    [CreateAssetMenu(fileName = "ToppingCollection", menuName = "ToppingCollection", order = 0)]
+    [CreateAssetMenu(fileName = "ToppingCollection", menuName = "ToppingCollection", order = 1)]
     public class ToppingCollection : SerializedScriptableObject
     {
         [SerializeField]
-        private Dictionary<
-            HexType, 
-            Dictionary<
-                BuildingType, 
-                Dictionary<
-                    int, 
-                    GameObject>>> _toppingPrefabs = new();
+        private Dictionary<HexType, Dictionary<BuildingType, Topping>> _toppingPrefabs = new();
 
-        public GameObject GetToppingPrefab(
+        public Topping GetToppingPrefab(
             HexType hexType, 
-            BuildingType buildingType = BuildingType.None, 
-            int buildingLevel = 1)
+            BuildingType buildingType = BuildingType.None)
         {
-            return _toppingPrefabs[hexType][buildingType][buildingLevel];
+            return _toppingPrefabs[hexType][buildingType];
         }
     }
 }
