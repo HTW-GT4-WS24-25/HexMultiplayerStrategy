@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Core.Player;
 using Networking.Shared;
-using Player;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;

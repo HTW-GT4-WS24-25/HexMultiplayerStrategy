@@ -1,4 +1,4 @@
-﻿using HexSystem;
+﻿using Core.HexSystem;
 using UnityEngine;
 
 namespace ExtensionMethods

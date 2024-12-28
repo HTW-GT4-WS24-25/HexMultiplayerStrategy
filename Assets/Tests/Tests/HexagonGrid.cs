@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using HexSystem;
+using Core.HexSystem;
 using NUnit.Framework;
 
 namespace Tests.Tests
@@ -13,7 +13,7 @@ namespace Tests.Tests
             var testCoordinates = new AxialCoordinates(0, 0);
             var expectedList = new List<AxialCoordinates>() { testCoordinates };
             
-            var resultList = HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 0).ToList();
+            var resultList = Core.HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 0).ToList();
             
             Assert.IsTrue(resultList.Count == expectedList.Count && !expectedList.Except(resultList).Any());
         }
@@ -33,7 +33,7 @@ namespace Tests.Tests
                 new (-1, 0),
             };
             
-            var resultList = HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 1).ToList();
+            var resultList = Core.HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 1).ToList();
             
             Assert.IsTrue(resultList.Count == expectedList.Count && !expectedList.Except(resultList).Any());
         }
@@ -53,7 +53,7 @@ namespace Tests.Tests
                 new (0, +1),
             };
             
-            var resultList = HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 1).ToList();
+            var resultList = Core.HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 1).ToList();
             
             Assert.IsTrue(resultList.Count == expectedList.Count && !expectedList.Except(resultList).Any());
         }
@@ -85,7 +85,7 @@ namespace Tests.Tests
                 new (-1, -1),
             };
             
-            var resultList = HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 2).ToList();
+            var resultList = Core.HexSystem.HexagonGrid.GetHexRingsAroundCoordinates(testCoordinates, 2).ToList();
             
             Assert.IsTrue(resultList.Count == expectedList.Count && !expectedList.Except(resultList).Any());
         }

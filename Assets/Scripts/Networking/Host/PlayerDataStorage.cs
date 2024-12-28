@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GameEvents;
+using Core.GameEvents;
+using Core.Player;
+using Core.Unit.Model;
 using Networking.Server;
-using Player;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -55,7 +56,7 @@ namespace Networking.Host
             _playersByClientId[playerClientId].PlayerScore += points;
         }
 
-        public void RegisterNewPlayer(Player.Player newPlayer)
+        public void RegisterNewPlayer(Player newPlayer)
         {
             var playerClientId = newPlayer.OwnerClientId;
             var newPlayerData = new PlayerData
