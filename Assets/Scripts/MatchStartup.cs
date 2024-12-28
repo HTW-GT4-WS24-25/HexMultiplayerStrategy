@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Buildings;
 using Combat;
 using ExtensionMethods;
 using GameEvents;
@@ -19,6 +20,7 @@ public class MatchStartup : NetworkBehaviour
     [Header("References")] 
     [SerializeField] private MapBuilder mapBuilder;
     [SerializeField] private UnitPlacement unitPlacement;
+    [SerializeField] private BuildingPlacement buildingPlacement;
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GridData hexGridData;
     [SerializeField] private ScoreUpdater scoreUpdater;
@@ -87,6 +89,7 @@ public class MatchStartup : NetworkBehaviour
     private void SetPlayerStartPositions()
     {
         unitPlacement.Initialize(mapBuilder.Grid, hexGridData);
+        buildingPlacement.Initialize(mapBuilder.Grid, hexGridData);
         
         var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
         foreach (var playerData in players)

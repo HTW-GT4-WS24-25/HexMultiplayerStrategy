@@ -1704,6 +1704,78 @@ MonoBehaviour:
   combatIndicatorPrefab: {fileID: 9163288217558705451, guid: 6c69749628d31f64cb5560a3a8b42243, type: 3}
   combatAreaPrefab: {fileID: 7634974111960138292, guid: 45e42b38ca95f6f419cd2574bd1bcb22, type: 3}
   gridData: {fileID: 1533390224}
+--- !u!1 &1930513150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1930513153}
+  - component: {fileID: 1930513152}
+  - component: {fileID: 1930513154}
+  m_Layer: 0
+  m_Name: BuildingPlacement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1930513152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930513150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1921804261
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!4 &1930513153
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930513150}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1930513154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930513150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d259e96de8f457f9ff76c18e11cd312, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  toppingCollection: {fileID: 11400000, guid: 62f913e8f36609c42b895661bee73348, type: 2}
 --- !u!1001 &1977128412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1817,6 +1889,10 @@ PrefabInstance:
       propertyPath: numberOfMapRings
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
+      propertyPath: buildingPlacement
+      value: 
+      objectReference: {fileID: 1930513154}
     - target: {fileID: 243996737620647544, guid: f2950277ec2e91048a5cbb94becd333f, type: 3}
       propertyPath: hexControlObserver
       value: 
@@ -2322,6 +2398,7 @@ SceneRoots:
   - {fileID: 195500089}
   - {fileID: 694091048}
   - {fileID: 121099229}
+  - {fileID: 1930513153}
   - {fileID: 1819706679}
   - {fileID: 1872226298}
   - {fileID: 1977128412}

@@ -16,4 +16,4 @@ MonoBehaviour:
   <IsTraversable>k__BackingField: 0
   <MovementSpeedFactor>k__BackingField: 0
   <HexagonPrefab>k__BackingField: {fileID: 8503581652947059578, guid: 409484dbbab38ce46b9c174687edebcd, type: 3}
-  <DefaultToppingPrefab>k__BackingField: {fileID: 6923356670172397768, guid: ee05ffa41f77d2848bd32a919e0ff8fa, type: 3}
+  <DefaultToppingPrefab>k__BackingField: {fileID: 8035284933023990484, guid: 081d23818607df742bdf84217ec3b85f, type: 3}

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &901731281185226255
+--- !u!1001 &5689091330564389547
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7435695733794947614, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: m_Name
-      value: ToppingForest
+      value: ToppingBarrack
       objectReference: {fileID: 0}
     - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: isTraversable
@@ -58,12 +58,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: prefabsByLevel.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: 'prefabsByLevel.Array.data[0]'
       value: 
-      objectReference: {fileID: 2327945249183411835, guid: 1ca7002833161664c8c71f0df846bc20, type: 3}
+      objectReference: {fileID: 4920536454010664490, guid: 3016ba4f3572a3e4081cc8d4ef890f97, type: 3}
+    - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
+      propertyPath: 'prefabsByLevel.Array.data[1]'
+      value: 
+      objectReference: {fileID: 833862617032494333, guid: 03cd2600da424c14fb64c0117bd22d6c, type: 3}
+    - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
+      propertyPath: 'prefabsByLevel.Array.data[2]'
+      value: 
+      objectReference: {fileID: 7370670609631840714, guid: bf4b76ed39b27554fa3daa789fbf44c4, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

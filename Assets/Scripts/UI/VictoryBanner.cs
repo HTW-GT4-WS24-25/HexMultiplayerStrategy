@@ -16,7 +16,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI victoryText;
         [SerializeField] private CanvasGroup alphaGroup;
 
-        [Header("Setings")] 
+        [Header("Settings")] 
         [SerializeField] private float fadeInDuration;
         [SerializeField] private float fadeEndScale;
         
