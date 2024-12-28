@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.HexSystem;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 
 namespace ExtensionMethods
 {

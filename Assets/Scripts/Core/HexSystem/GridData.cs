@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.GameEvents;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.Unit;
 using Core.Unit.Group;
 using Unity.Netcode;

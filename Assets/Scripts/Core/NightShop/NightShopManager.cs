@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Core.GameEvents;
 using Core.HexSystem;
 using Core.HexSystem.Generation;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.HexSystem.VFX;
 using Core.NightShop.NightShopStates;
 using Core.NightShop.Placeables;
@@ -11,6 +11,7 @@ using Core.UI.InGame.NightShop;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Core.NightShop
 {
@@ -23,7 +24,7 @@ namespace Core.NightShop
         [SerializeField] private List<Card> cards;
         [SerializeField] private TextMeshProUGUI readyPlayersText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
-        [SerializeField] private MouseOverHighlighter mouseOverHighlighter;
+        [FormerlySerializedAs("mouseOverHighlighter")] [SerializeField] private MouseOverHexHighlighter mouseOverHexHighlighter;
         
         private Card _selectedCard;
         private Placeable _placeableOnSuccessfulPurchase;
@@ -103,15 +104,15 @@ namespace Core.NightShop
                 }
             }
             
-            mouseOverHighlighter.Enable();
-            mouseOverHighlighter.ValidHexagons = validHexesForPlacement;
+            mouseOverHexHighlighter.Enable();
+            mouseOverHexHighlighter.ValidHexagons = validHexesForPlacement;
         }
 
         public void HandleDeselectedCard()
         {
             _selectedCard = null;
             _stateManager.ChangeState(new ChoosingCardState(this));
-            mouseOverHighlighter.Disable();
+            mouseOverHexHighlighter.Disable();
         }
 
         public void HandleSelectHexagon(Hexagon hexagon)

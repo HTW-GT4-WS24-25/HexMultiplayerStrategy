@@ -1,6 +1,6 @@
 using Core.Buildings;
 using Core.HexSystem;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.UI.InGame.NightShop;
 using Core.Unit.Group;
 using UnityEngine;
@@ -35,7 +35,8 @@ namespace Core.GameEvents
     
         public class InputEvents
         {
-            public UnityAction<Hexagon> OnHexSelectedForUnitSelectionOrMovement;
+            public UnityAction<Hexagon> OnHexSelectedForUnitMovement;
+            public UnityAction<UnitGroup> OnUnitGroupSelected;
             public UnityAction<Hexagon> OnHexSelectedDuringNightShop;
             public UnityAction<float> OnZoomInput;
             public UnityAction<Vector2> OnDragInput;
@@ -50,7 +51,6 @@ namespace Core.GameEvents
 
         public class UnitEvents
         {
-            public UnityAction<UnitGroup> OnUnitGroupSelected;
             public UnityAction OnUnitGroupDeselected;
             public UnityAction<int> OnUnitSelectionSliderUpdate;
             public UnityAction<int> OnUnitCountOfSelectedChanged;

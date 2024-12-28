@@ -1,6 +1,6 @@
 ﻿using Core.GameEvents;
 using Core.HexSystem;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Unity.Netcode;
 using UnityEngine;
 

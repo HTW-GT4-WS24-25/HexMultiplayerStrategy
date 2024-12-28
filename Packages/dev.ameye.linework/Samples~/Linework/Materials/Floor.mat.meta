@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ca0600d85d20845efa1c0040211e7889
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Easy Outlines, Edges and Fills'
+  packageVersion: 1.3.1
+  assetPath: Packages/dev.ameye.linework/Samples~/Linework/Materials/Floor.mat
+  uploadId: 718955

@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 1290127345392176325}
   - component: {fileID: 1290127345392176324}
   - component: {fileID: 7953814318956325427}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: FillArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 1290127345549838660}
   - component: {fileID: 1290127345549838661}
   - component: {fileID: 1289277842567817989}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1290127346189850164}
   - component: {fileID: 1290127346189850170}
   - component: {fileID: 1290127346189850165}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 6745291026779848398}
   - component: {fileID: 3361080389853121897}
   - component: {fileID: 3974635320394208294}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 3566702838450430754}
   - component: {fileID: 5177876522862172326}
   - component: {fileID: 6807101379018602620}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: BgShade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -507,8 +507,8 @@ GameObject:
   - component: {fileID: 8054224872995845267}
   - component: {fileID: 1149143926588088232}
   - component: {fileID: 8385034254330814535}
-  m_Layer: 0
-  m_Name: UI
+  m_Layer: 8
+  m_Name: Displays
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -641,7 +641,7 @@ GameObject:
   - component: {fileID: 4679020199164109524}
   - component: {fileID: 8072151556570626517}
   - component: {fileID: -6189825913930052847}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UnitGroup
   m_TagString: UnitGroup
   m_Icon: {fileID: 0}
@@ -756,21 +756,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   waypointQueue: {fileID: 4679020199164109524}
-  onMoveAnimationSpeedChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Unit.UnitAnimator, Scripts
-        m_MethodName: SetMoveSpeed
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   onReachedNewHex:
     m_PersistentCalls:
       m_Calls:
@@ -891,7 +876,7 @@ GameObject:
   - component: {fileID: 5283523412383355327}
   - component: {fileID: 9054555995260444589}
   - component: {fileID: 4551166243816071142}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1027,7 +1012,7 @@ GameObject:
   - component: {fileID: 9136070468851665428}
   - component: {fileID: 2741796128344045120}
   - component: {fileID: 7718877220928940155}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1103,7 +1088,7 @@ GameObject:
   - component: {fileID: 8627644739946248447}
   - component: {fileID: 8072350823064885810}
   - component: {fileID: 3853965594639891082}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ModelHolder
   m_TagString: UnitGroup
   m_Icon: {fileID: 0}
@@ -1194,7 +1179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6656847901836523573}
   - component: {fileID: 1320076233414398359}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DamageNumberSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

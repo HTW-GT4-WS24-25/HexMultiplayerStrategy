@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using UnityEngine;
 
 namespace Core.HexSystem

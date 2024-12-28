@@ -12,13 +12,13 @@ namespace Core.UI.InGame
 
         private void OnEnable()
         {
-            ClientEvents.Unit.OnUnitGroupSelected += HandleGroupSelected;
+            ClientEvents.Input.OnUnitGroupSelected += HandleGroupSelected;
             ClientEvents.Unit.OnUnitGroupDeselected += HandleGroupDeselected;
         }
         
         private void OnDisable()
         {
-            ClientEvents.Unit.OnUnitGroupSelected -= HandleGroupSelected;
+            ClientEvents.Input.OnUnitGroupSelected -= HandleGroupSelected;
             ClientEvents.Unit.OnUnitGroupDeselected -= HandleGroupDeselected;
         }
 

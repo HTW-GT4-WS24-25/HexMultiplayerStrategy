@@ -1,4 +1,4 @@
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ namespace Core.HexSystem.Generation
         public HexagonGrid Grid;
 
         [Header("Settings")]
-        [SerializeField] private Hexagon.Hexagon defaultHexagon;
+        [SerializeField] private Hex.Hexagon defaultHexagon;
         [SerializeField] private float spacing;
 
         public int MapRings { get; private set; }
