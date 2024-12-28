@@ -36,6 +36,7 @@ public class MouseOverHighlighter : MonoBehaviour
     {
         enabled = false;
         lastHexagonObjectHighlighted?.GetComponent<Hexagon>().DisableMouseOverHighlight();
+        lastHexagonObjectHighlighted = null;
     }
 
     private void ProcessGroundHit(RaycastHit hit)

@@ -33,13 +33,8 @@ namespace HexSystem
         public void ApplyMouseOverHighlightNight()
         {
             Debug.Assert(gameObject.activeSelf, "Tried to set mouseOver highlight on a non-active hex highlight object.");
-            var floorMouseOverNightMaterial = new Material(floorHighlightMaterialNight);
-            floorMouseOverNightMaterial.SetColor(HighlightColorId, floorMouseOverColorNight);
-            floorRenderer.material = floorMouseOverNightMaterial;
-            
-            var wallMouseOverNightMaterial =new Material(wallHighlightMaterialNight);
-            wallMouseOverNightMaterial.SetColor(HighlightColorId, wallMouseOverColorNight);
-            wallRenderer.material = wallMouseOverNightMaterial;
+            floorRenderer.material = GetColoredMaterial(floorHighlightMaterialNight, floorMouseOverColorNight);
+            wallRenderer.material = GetColoredMaterial(wallHighlightMaterialNight, wallMouseOverColorNight);
         }
 
         [Button]
@@ -60,6 +55,13 @@ namespace HexSystem
         public void DisableHighlight()
         {
             gameObject.SetActive(false);
+        }
+
+        private Material GetColoredMaterial(Material material, Color highlightColor)
+        {
+            var customMaterial = new Material(material);
+            customMaterial.SetColor(HighlightColorId, highlightColor);
+            return customMaterial;
         }
     }
 }

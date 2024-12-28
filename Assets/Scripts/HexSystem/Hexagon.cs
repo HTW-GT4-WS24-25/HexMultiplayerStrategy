@@ -22,11 +22,13 @@ namespace HexSystem
         private void OnEnable()
         {
             ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightCycleSwitch;
+            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement += DisableHighlight;
         }
 
         private void OnDisable()
         {
-            ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightCycleSwitch;
+            ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleDayNightCycleSwitch;
+            ClientEvents.Hexagon.OnHideValidHexagonsForPlacement -= DisableHighlight;
         }
 
         public void Initialize(AxialCoordinates coordinate)
@@ -62,11 +64,6 @@ namespace HexSystem
             highlighting.ApplyAvailabilityHighlightNight();
         }
 
-        public void UnhighlightAsValidForPlacement()
-        {
-            highlighting.DisableHighlight();
-        }
-
         public void HighlightOnMouseOver()
         {
             if (_currentCycleState == DayNightCycle.CycleState.Day)
@@ -94,8 +91,12 @@ namespace HexSystem
         private void HandleDayNightCycleSwitch(DayNightCycle.CycleState cycleState)
         {
             _currentCycleState = cycleState;
-            if(_currentCycleState == DayNightCycle.CycleState.Day)
-                UnhighlightAsValidForPlacement();
+            DisableHighlight();
+        }
+
+        private void DisableHighlight()
+        {
+            highlighting.DisableHighlight();
         }
     }
 }
