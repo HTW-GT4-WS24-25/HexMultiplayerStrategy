@@ -6,13 +6,8 @@ namespace Input
 {
     public class NightInputState : InputState
     {
-        private readonly UnitPlacement _unitPlacement;
-
-        public NightInputState(InputReader inputReader, LayerMask selectionLayer, UnitPlacement unitPlacement) : base(
-            inputReader, selectionLayer)
-        {
-            _unitPlacement = unitPlacement;
-        }
+        public NightInputState(InputReader inputReader, LayerMask selectionLayer) : base(inputReader, selectionLayer)
+        { }
 
         public override void HandleMouseDown()
         {

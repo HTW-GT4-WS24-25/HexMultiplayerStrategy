@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HighlightHexWalls
+  m_Name: HighlightHexWallsNight
   m_Shader: {fileID: -6465566751694194690, guid: 968ed66f7546aae48a9c5dc4d1fbd85d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -134,7 +134,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.84, g: 2.5684028, b: 2.6390157, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Highlight_Color: {r: 0.026775973, g: 1.123606, b: 1.1353015, a: 1}
+    - _Highlight_Color: {r: 0, g: 0.69803923, b: 0.7019608, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

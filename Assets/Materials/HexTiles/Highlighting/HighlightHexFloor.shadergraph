@@ -1136,10 +1136,10 @@
     "m_Guid": {
         "m_GuidSerialized": "58aee3e9-b51e-40b8-8628-fcde5379042f"
     },
-    "m_Name": "Highlight Color (HDR)",
+    "m_Name": "Highlight Color",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Highlight Color (HDR)",
-    "m_DefaultReferenceName": "_Highlight_Color_HDR",
+    "m_RefNameGeneratedByDisplayName": "Highlight Color",
+    "m_DefaultReferenceName": "_Highlight_Color",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -1164,7 +1164,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "87d9c753aafa4ce0b377cce3d1b4bd9f",
     "m_Id": 0,
-    "m_DisplayName": "Highlight Color (HDR)",
+    "m_DisplayName": "Highlight Color",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",

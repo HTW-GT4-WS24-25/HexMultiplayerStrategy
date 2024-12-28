@@ -49,9 +49,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4605441070068763242, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4605441070068763242, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: b3b9d8a551a2cf447a0d1650a6eb079e, type: 2}
+      objectReference: {fileID: 2100000, guid: 9adf4c3eaac44304d91af42a60d9efa3, type: 2}
     - target: {fileID: -3101522543934218448, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
@@ -89,12 +93,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 606829569649663360, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 606829569649663360, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: ff38d90be7c7a89429cda6040e69bb79, type: 2}
+      objectReference: {fileID: 2100000, guid: 8d27f13bbebe7d04388faadfc362270c, type: 2}
     - target: {fileID: 919132149155446097, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
       propertyPath: m_Name
       value: HighlightHexTile
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -121,3 +133,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f427749a22af4c0eace32a6a6fbc962a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floorHighlightMaterialDay: {fileID: 2100000, guid: 9adf4c3eaac44304d91af42a60d9efa3, type: 2}
+  wallHighlightMaterialDay: {fileID: 2100000, guid: 8d27f13bbebe7d04388faadfc362270c, type: 2}
+  floorHighlightMaterialNight: {fileID: 2100000, guid: b3b9d8a551a2cf447a0d1650a6eb079e, type: 2}
+  wallHighlightMaterialNight: {fileID: 2100000, guid: ff38d90be7c7a89429cda6040e69bb79, type: 2}
+  floorRenderer: {fileID: 4954159222545115227}
+  wallRenderer: {fileID: 918028886848258125}
+  floorMouseOverColorNight: {r: 0.13679248, g: 0.8780253, b: 1, a: 1}
+  wallMouseOverColorNight: {r: 0.13679248, g: 0.8780253, b: 1, a: 1}
+--- !u!23 &918028886848258125 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 606829569649663360, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+  m_PrefabInstance: {fileID: 348635551379267021}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4954159222545115227 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4605441070068763242, guid: 542adbbbd8677844bbeaab3cdf0a4c81, type: 3}
+  m_PrefabInstance: {fileID: 348635551379267021}
+  m_PrefabAsset: {fileID: 0}

@@ -12,6 +12,7 @@ namespace Unit
         [SerializeField] private GridData gridData;
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private UnitGroup unitGroupPrefab;
+        [SerializeField] private MouseOverHighlighter mouseOverHighlighter;
 
         private UnitGroup _selectedUnitGroup;
         private int _clientSelectionUnitCount;
@@ -118,6 +119,7 @@ namespace Unit
             _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
             _selectedUnitGroup.EnableHighlight();
             _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
+            mouseOverHighlighter.Enable();
                 
             ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
         }
@@ -135,6 +137,7 @@ namespace Unit
             _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
             _selectedUnitGroup.DisableHighlight();
             _selectedUnitGroup = null;
+            mouseOverHighlighter.Disable();
         }
 
         private void UpdateSelectedUnitCount(int count)
