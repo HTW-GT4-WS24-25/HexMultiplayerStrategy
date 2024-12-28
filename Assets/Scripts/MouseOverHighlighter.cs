@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using HexSystem;
 using Input;
 using UnityEngine;
@@ -7,7 +9,9 @@ public class MouseOverHighlighter : MonoBehaviour
     [SerializeField] InputReader inputReader;
     [SerializeField] LayerMask groundLayer;
 
-    private GameObject lastHexagonObjectHit;
+    public List<Hexagon> ValidHexagons { get; set; }
+    
+    private GameObject lastHexagonObjectHighlighted;
     
     void Update()
     {
@@ -16,25 +20,43 @@ public class MouseOverHighlighter : MonoBehaviour
         {
             ProcessGroundHit(hit);   
         }
-        else if (lastHexagonObjectHit is not null)
+        else
         {
-            lastHexagonObjectHit.GetComponent<Hexagon>().DisableMouseOverHighlight();
+            lastHexagonObjectHighlighted?.GetComponent<Hexagon>().DisableMouseOverHighlight();
         }
+    }
+
+    public void Enable()
+    {
+        ValidHexagons = null;
+        enabled = true;
+    }
+
+    public void Disable()
+    {
+        enabled = false;
+        lastHexagonObjectHighlighted?.GetComponent<Hexagon>().DisableMouseOverHighlight();
     }
 
     private void ProcessGroundHit(RaycastHit hit)
     {
-        if(hit.collider.gameObject == lastHexagonObjectHit)
+        if(hit.collider.gameObject == lastHexagonObjectHighlighted)
+            return;
+
+        lastHexagonObjectHighlighted?.GetComponent<Hexagon>().DisableMouseOverHighlight();
+
+        if (!hit.collider.transform.parent.TryGetComponent<Hexagon>(out var hexagon)) 
             return;
         
-        if(lastHexagonObjectHit is not null)
-            lastHexagonObjectHit.GetComponent<Hexagon>().DisableMouseOverHighlight();
+        Debug.Log("Hexagon hit!");
+
+        if (ValidHexagons != null && !ValidHexagons.Contains(hexagon))
+            return;
+
+        if (!hexagon.isTraversable)
+            return;
         
-        if (hit.collider.transform.parent.TryGetComponent<Hexagon>(out var hexagon))
-        {
-            Debug.Log("Hexagon hit!");
-            hexagon.HighlightOnMouseOver();
-            lastHexagonObjectHit = hexagon.gameObject;
-        }
+        hexagon.HighlightOnMouseOver();
+        lastHexagonObjectHighlighted = hexagon.gameObject;
     }
 }

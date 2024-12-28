@@ -314,8 +314,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d32e09385a97459ecf679481bdc94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hexBorderLine: {fileID: 705385829547447668}
-  hexHighlighting: {fileID: 5267793117259002649}
+  borderLine: {fileID: 705385829547447668}
+  highlighting: {fileID: 5267793117259002649}
+  conqueringEffect: {fileID: 0}
   isTraversable: 0
 --- !u!1 &7215505191323519224
 GameObject:

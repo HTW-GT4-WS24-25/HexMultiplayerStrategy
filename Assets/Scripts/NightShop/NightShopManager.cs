@@ -21,6 +21,7 @@ namespace NightShop
         [SerializeField] private List<Card> cards;
         [SerializeField] private TextMeshProUGUI readyPlayersText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
+        [SerializeField] private MouseOverHighlighter mouseOverHighlighter;
         
         private Card _selectedCard;
         private Placeable _placeableOnSuccessfulPurchase;
@@ -87,19 +88,28 @@ namespace NightShop
 
         private void HighlightHexagonsValidForSelectedCard()
         {
+            var validHexesForPlacement = new List<Hexagon>();
             foreach (var coordinate in HexagonGrid.GetHexRingsAroundCoordinates(new AxialCoordinates(0, 0), mapBuilder.MapRings))
             {
                 var hexagonData = gridData.GetHexagonDataOnCoordinate(coordinate);
                 
                 if(_selectedCard.placeable.IsHexValidForPlacement(hexagonData))
-                    mapBuilder.Grid.Get(coordinate).HighlightAsValidForPlacement();
+                {
+                    var hex = mapBuilder.Grid.Get(coordinate); 
+                    hex.HighlightAsValidForPlacement();
+                    validHexesForPlacement.Add(hex);
+                }
             }
+            
+            mouseOverHighlighter.Enable();
+            mouseOverHighlighter.ValidHexagons = validHexesForPlacement;
         }
 
         public void HandleDeselectedCard()
         {
             _selectedCard = null;
             _stateManager.ChangeState(new ChoosingCardState(this));
+            mouseOverHighlighter.Disable();
         }
 
         public void HandleSelectHexagon(Hexagon hexagon)

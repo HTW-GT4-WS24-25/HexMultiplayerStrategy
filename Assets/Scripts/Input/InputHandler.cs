@@ -17,7 +17,7 @@ namespace Input
         private void Awake()
         {
             _dayInputState = new DayInputState(inputReader, selectionLayer);
-            _nightInputState = new NightInputState(inputReader, selectionLayer, unitPlacement);
+            _nightInputState = new NightInputState(inputReader, selectionLayer);
             
             _currentInputState = _dayInputState;
         }

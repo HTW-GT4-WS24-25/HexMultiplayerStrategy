@@ -2,14 +2,16 @@
 using GameEvents;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace HexSystem
 {
     public class Hexagon : MonoBehaviour
     {
-        [SerializeField] private HexBorderLine hexBorderLine;
-        [SerializeField] private HexHighlighting hexHighlighting;
+        [SerializeField] private HexBorderLine borderLine;
+        [SerializeField] private HexHighlighting highlighting;
+        [SerializeField] private HexConqueringEffect conqueringEffect;
         
         public bool isTraversable;
         public AxialCoordinates Coordinates { get; private set; }
@@ -31,8 +33,8 @@ namespace HexSystem
         {
             Coordinates = coordinate;
             
-            if (hexBorderLine != null)
-                hexBorderLine.Initialize();
+            if (borderLine != null)
+                borderLine.Initialize();
         }
 
         public void SetTopping(GameObject topping)
@@ -48,34 +50,42 @@ namespace HexSystem
 
         public void AdaptBorderToPlayerColor(PlayerColor playerColor)
         {
-            hexBorderLine.HighlightBorderWithColor(playerColor);
+            borderLine.HighlightBorderWithColor(playerColor);
+            conqueringEffect.PlayConqueringEffect(playerColor.BaseColor);
         }
 
         public void HighlightAsValidForPlacement()
         {
-            hexHighlighting.ApplyAvailabilityHighlightNight();
+            highlighting.ApplyAvailabilityHighlightNight();
         }
 
         public void UnhighlightAsValidForPlacement()
         {
-            hexHighlighting.DisableAvailabilityHighlight();
+            highlighting.DisableHighlight();
         }
 
         public void HighlightOnMouseOver()
         {
             if (_currentCycleState == DayNightCycle.CycleState.Day)
             {
-                hexHighlighting.ApplyMouseOverHighlightDay(); 
+                highlighting.ApplyMouseOverHighlightDay(); 
             }
             else
             {
-                hexHighlighting.ApplyMouseOverHighlightNight();
+                highlighting.ApplyMouseOverHighlightNight();
             }
         }
 
         public void DisableMouseOverHighlight()
         {
-            hexHighlighting.DisableMouseOverHighlight();
+            if (_currentCycleState == DayNightCycle.CycleState.Day)
+            {
+                highlighting.DisableHighlight(); 
+            }
+            else
+            {
+                highlighting.DisableMouseOverNightHighlight();
+            }
         }
         
         private void HandleDayNightCycleSwitch(DayNightCycle.CycleState cycleState)

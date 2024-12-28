@@ -366,6 +366,7 @@ MonoBehaviour:
   gridData: {fileID: 1533390224}
   mapBuilder: {fileID: 1588253353}
   unitGroupPrefab: {fileID: 7360500778174264170, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
+  mouseOverHighlighter: {fileID: 1031177966}
 --- !u!4 &694091048
 Transform:
   m_ObjectHideFlags: 0
@@ -863,7 +864,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031177964}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87b8b000985aec44c815e10e29c49d7b, type: 3}
   m_Name: 
@@ -920,6 +921,10 @@ PrefabInstance:
       propertyPath: readyPlayersText
       value: 
       objectReference: {fileID: 999929399}
+    - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: mouseOverHighlighter
+      value: 
+      objectReference: {fileID: 1031177966}
     - target: {fileID: 3168967069251171779, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_Pivot.x
       value: 0

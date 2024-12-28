@@ -60,6 +60,7 @@ Material:
     - _QueueOffset: 0
     m_Colors:
     - _Emission_Color_HDR: {r: 0.273865, g: 0.83737576, b: 0.8603977, a: 1}
+    - _Highlight_Color: {r: 1, g: 0.9744027, b: 0.08018869, a: 0.3882353}
     - _Highlight_Color_HDR: {r: 1.7411013, g: 1.7127311, b: 0.7473595, a: 1}
     - _Vector3: {r: 0, g: 0.2, b: 0, a: 0}
   m_BuildTextureStacks: []

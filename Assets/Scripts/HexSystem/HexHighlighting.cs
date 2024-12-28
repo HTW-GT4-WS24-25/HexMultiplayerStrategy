@@ -13,18 +13,13 @@ namespace HexSystem
         [SerializeField] private MeshRenderer floorRenderer;
         [SerializeField] private MeshRenderer wallRenderer;
 
-        [Header("Settings")] 
-        [SerializeField] private float floorCircleDiameterOnMouseOver;
-        [SerializeField] private float wallHighlightLevelOnMouseOver;
-        [SerializeField] private float floorCircleDiameterOnMouseOverAndAvailability;
-        [SerializeField] private float wallHighlightLevelOnMouseOverAndAvailability;
+        [Header("Settings")]
+        [ColorUsage(true, true)]
+        [SerializeField] private Color floorMouseOverColorNight;
+        [ColorUsage(true, true)]
+        [SerializeField] private Color wallMouseOverColorNight;
         
-        private bool _isDayHighlight;
-        private bool _mouseOverHighlightActive;
-        private bool _availableHighlightActive;
-        
-        private static readonly int CircleDiameter = Shader.PropertyToID("_Circle_Diameter");
-        private static readonly int HighlightLevel = Shader.PropertyToID("_Highlight_Level");
+        private static readonly int HighlightColorId = Shader.PropertyToID("_Highlight_Color");
 
         [Button]
         public void ApplyMouseOverHighlightDay()
@@ -32,85 +27,39 @@ namespace HexSystem
             floorRenderer.material = floorHighlightMaterialDay;
             wallRenderer.material = wallHighlightMaterialDay;
             gameObject.SetActive(true);
-
-            _mouseOverHighlightActive = true;
-            _isDayHighlight = true;
         }
         
         [Button]
         public void ApplyMouseOverHighlightNight()
         {
-            if (!_availableHighlightActive)
-            {
-                SetHighlightingToMouseOverNight();
-                
-                gameObject.SetActive(true);
-            }
-            else
-            {
-                var customFloorMaterial = floorRenderer.material;
-                customFloorMaterial.SetFloat(CircleDiameter, floorCircleDiameterOnMouseOverAndAvailability);
-                var customWallMaterial = wallRenderer.material;
-                customWallMaterial.SetFloat(HighlightLevel, wallHighlightLevelOnMouseOverAndAvailability);
-            }
+            Debug.Assert(gameObject.activeSelf, "Tried to set mouseOver highlight on a non-active hex highlight object.");
+            var floorMouseOverNightMaterial = new Material(floorHighlightMaterialNight);
+            floorMouseOverNightMaterial.SetColor(HighlightColorId, floorMouseOverColorNight);
+            floorRenderer.material = floorMouseOverNightMaterial;
             
-            _mouseOverHighlightActive = true;
-            _isDayHighlight = false;
+            var wallMouseOverNightMaterial =new Material(wallHighlightMaterialNight);
+            wallMouseOverNightMaterial.SetColor(HighlightColorId, wallMouseOverColorNight);
+            wallRenderer.material = wallMouseOverNightMaterial;
         }
 
         [Button]
         public void ApplyAvailabilityHighlightNight()
         {
-            SetHighlightingToAvailabilityDefault();
-
-            if (_mouseOverHighlightActive)
-            {
-                var customFloorMaterial = floorRenderer.material;
-                customFloorMaterial.SetFloat(CircleDiameter, floorCircleDiameterOnMouseOverAndAvailability);
-                var customWallMaterial = wallRenderer.material;
-                customWallMaterial.SetFloat(HighlightLevel, wallHighlightLevelOnMouseOverAndAvailability);
-            }
-
-            gameObject.SetActive(true);
-            _availableHighlightActive = true;
-            _isDayHighlight = false;
-        }
-
-        [Button]
-        public void DisableMouseOverHighlight()
-        {
-            _mouseOverHighlightActive = false;
-            if(_isDayHighlight || !_availableHighlightActive)
-                gameObject.SetActive(false);
-            
-            SetHighlightingToAvailabilityDefault();
-        }
-
-        [Button]
-        public void DisableAvailabilityHighlight()
-        {
-            _availableHighlightActive = false;
-            if(!_mouseOverHighlightActive)
-                gameObject.SetActive(false);
-            
-            SetHighlightingToMouseOverNight();
-        }
-
-        private void SetHighlightingToAvailabilityDefault()
-        {
             floorRenderer.material = floorHighlightMaterialNight;
             wallRenderer.material = wallHighlightMaterialNight;
+            gameObject.SetActive(true);
         }
 
-        private void SetHighlightingToMouseOverNight()
+        [Button]
+        public void DisableMouseOverNightHighlight()
         {
-            var customFloorMaterial = new Material(floorHighlightMaterialNight);
-            customFloorMaterial.SetFloat(CircleDiameter, floorCircleDiameterOnMouseOver);
-            floorRenderer.material = customFloorMaterial;
+            ApplyAvailabilityHighlightNight();
+        }
 
-            var customWallMaterial = new Material(wallHighlightMaterialNight);
-            customWallMaterial.SetFloat(HighlightLevel, wallHighlightLevelOnMouseOver);
-            wallRenderer.material = wallHighlightMaterialNight;
+        [Button]
+        public void DisableHighlight()
+        {
+            gameObject.SetActive(false);
         }
     }
 }
