@@ -9,7 +9,7 @@ namespace HexSystem
         [SerializeField] private GameObject[] prefabsByLevel;
         [SerializeField] private bool isTraversable;
 
-        private GameObject _currentTopping;
+        private GameObject _currentToppingModel;
 
         private void Start()
         {
@@ -23,10 +23,10 @@ namespace HexSystem
 
         public void SetLevel(int level)
         {
-            if(_currentTopping != null)
-                Destroy(_currentTopping);
+            if(_currentToppingModel != null)
+                Destroy(_currentToppingModel);
             
-            _currentTopping = Instantiate(prefabsByLevel[level - 1], transform.position, Quaternion.identity, transform);
+            _currentToppingModel = Instantiate(prefabsByLevel[level - 1], transform.position, Quaternion.identity, transform);
         }
     }
 }
