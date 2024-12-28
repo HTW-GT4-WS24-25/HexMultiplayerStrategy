@@ -26,7 +26,7 @@ namespace HexSystem
             if(_currentToppingModel != null)
                 Destroy(_currentToppingModel);
             
-            _currentToppingModel = Instantiate(prefabsByLevel[level - 1], transform.position, Quaternion.identity, transform);
+            _currentToppingModel = Instantiate(prefabsByLevel[level - 1], transform.position, transform.rotation, transform);
         }
     }
 }
