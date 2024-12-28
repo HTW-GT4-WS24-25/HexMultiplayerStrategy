@@ -1,3 +1,4 @@
+using Buildings;
 using HexSystem;
 using UI.NightShop;
 using Unit;
@@ -27,6 +28,8 @@ namespace GameEvents
             public UnityAction<bool> OnLocalPlayerChangedReadyForDawnState;
             public UnityAction<int, int> OnReadyPlayersChanged;
             public UnityAction<AxialCoordinates, int> OnUnitPlacementCommand;
+            public UnityAction<AxialCoordinates, BuildingType> OnBuildingPlacementCommand;
+            public UnityAction<AxialCoordinates> OnBuildingUpgradeCommand;
         }
     
         public class InputEvents

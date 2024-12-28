@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 814fab9c0c3e10b4589f546638d15dbb, type: 3}
-  m_Name: Test
+  m_Name: Lumberjack
   m_EditorClassIdentifier: 
-  cardName: test
-  cost: 3
+  cardName: Lumberjack
+  cost: 1
+  placeable: {fileID: 11400000, guid: 988ababc864a928419223bec07a2bf9d, type: 2}

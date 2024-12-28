@@ -8,5 +8,5 @@ public class HexTypeData : ScriptableObject
     [field: SerializeField] public bool IsTraversable { get; private set; }
     [field: SerializeField] public float MovementSpeedFactor { get; private set; }
     [field: SerializeField] public Hexagon HexagonPrefab { get; private set; }
-    [field: SerializeField] public GameObject DefaultToppingPrefab { get; private set; }
+    [field: SerializeField] public Topping DefaultToppingPrefab { get; private set; }
 }

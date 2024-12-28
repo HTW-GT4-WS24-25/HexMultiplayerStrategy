@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &901731281185226255
+--- !u!1001 &2846496057142929785
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7435695733794947614, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: m_Name
-      value: ToppingForest
+      value: ToppingLumberjack
       objectReference: {fileID: 0}
     - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: isTraversable
@@ -63,7 +63,7 @@ PrefabInstance:
     - target: {fileID: 8587398380053102877, guid: 898b8fe99bc48a34fbada956bebd440d, type: 3}
       propertyPath: 'prefabsByLevel.Array.data[0]'
       value: 
-      objectReference: {fileID: 2327945249183411835, guid: 1ca7002833161664c8c71f0df846bc20, type: 3}
+      objectReference: {fileID: 990290926402274083, guid: d48db5652290c8f40a5d91c248ce34d7, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
