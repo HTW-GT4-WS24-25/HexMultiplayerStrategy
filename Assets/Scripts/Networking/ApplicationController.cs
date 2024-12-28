@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
+using Core.Player;
+using Core.Unit.Model;
 using Networking.Client;
 using Networking.Host;
-using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

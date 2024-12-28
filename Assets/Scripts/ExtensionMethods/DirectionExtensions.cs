@@ -1,5 +1,5 @@
 ﻿using System;
-using HexSystem;
+using Core.HexSystem;
 
 namespace ExtensionMethods
 {

@@ -1,6 +1,6 @@
-﻿using System;
-using HexSystem;
-using Unity.Netcode;
+﻿using Core.HexSystem;
+using Core.HexSystem.Generation;
+using Core.HexSystem.Hexagon;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

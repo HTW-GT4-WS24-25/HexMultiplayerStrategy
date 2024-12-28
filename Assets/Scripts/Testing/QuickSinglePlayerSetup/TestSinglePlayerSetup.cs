@@ -1,6 +1,5 @@
+using Core.Player;
 using Networking.Host;
-using Player;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Testing.QuickSinglePlayerSetup
