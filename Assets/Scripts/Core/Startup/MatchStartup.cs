@@ -92,7 +92,7 @@ namespace Core.Startup
         private void SetPlayerStartPositions()
         {
             unitPlacement.Initialize(mapBuilder.Grid, hexGridData);
-            buildingPlacement.Initialize(mapBuilder.Grid, hexGridData);
+            buildingPlacement.Initialize(hexGridData);
         
             var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
             foreach (var playerData in players)

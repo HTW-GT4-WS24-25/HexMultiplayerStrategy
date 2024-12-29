@@ -1556,6 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  mapBuilder: {fileID: 1588253353}
   toppingCollection: {fileID: 11400000, guid: 62f913e8f36609c42b895661bee73348, type: 2}
 --- !u!1001 &1977128412
 PrefabInstance:

@@ -1,5 +1,6 @@
 ﻿using Core.GameEvents;
 using Core.HexSystem;
+using Core.HexSystem.Generation;
 using Core.HexSystem.Hex;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,14 +9,13 @@ namespace Core.Buildings
 {
     public class BuildingPlacement : NetworkBehaviour
     {
+        [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private ToppingCollection toppingCollection;
-
-        private HexagonGrid _hexagonGrid;
+        
         private GridData _gridData;
         
-        public void Initialize(HexagonGrid hexagonGrid, GridData hexGridData)
+        public void Initialize(GridData hexGridData)
         {
-            _hexagonGrid = hexagonGrid; 
             _gridData = hexGridData;
         }
 
@@ -81,14 +81,14 @@ namespace Core.Buildings
                 hexType, 
                 buildingType);
          
-            var hex = _hexagonGrid.Get(coordinate);
+            var hex = mapBuilder.Grid.Get(coordinate);
             hex.SetTopping(toppingPrefab);
         }
 
         [ClientRpc]
         private void UpgradeBuildingToppingClientRpc(AxialCoordinates coordinate, int newLevel)
         {
-            var hex = _hexagonGrid.Get(coordinate);
+            var hex = mapBuilder.Grid.Get(coordinate);
             hex.SetToppingLevel(newLevel);
         }
 
