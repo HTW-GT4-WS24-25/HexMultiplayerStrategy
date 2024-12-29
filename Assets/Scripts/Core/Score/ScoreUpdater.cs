@@ -73,7 +73,7 @@ namespace Core.Score
                 private PlayerDataStorage.PlayerData[] GetPlayerDataSortedByScore()
                 {
                         var playerScoreList = HostSingleton.Instance.GameManager.PlayerData.GetAllPlayerData();
-                        return playerScoreList.OrderByDescending(data => data.PlayerScore).ToArray();
+                        return playerScoreList.OrderByDescending(data => data.Score).ToArray();
                 }
 
                 #endregion

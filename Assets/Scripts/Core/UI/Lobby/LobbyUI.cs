@@ -75,7 +75,7 @@ namespace Core.UI.Lobby
             
             foreach (var playerData in playerList)
             {
-                AddPlayerDataToLobbyListClientRPC(playerData.ClientId, playerData.PlayerName, (int)playerData.PlayerColorType, clientRpcParams);    
+                AddPlayerDataToLobbyListClientRPC(playerData.ClientId, playerData.Name, (int)playerData.PlayerColorType, clientRpcParams);    
             }
         }
 
