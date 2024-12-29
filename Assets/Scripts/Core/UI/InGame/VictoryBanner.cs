@@ -1,9 +1,7 @@
-using Core.Player;
+using Core.PlayerData;
 using DG.Tweening;
-using Networking.Host;
 using Sirenix.OdinInspector;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,11 +19,10 @@ namespace Core.UI.InGame
         [SerializeField] private float fadeEndScale;
         
         [Button]
-        public void ShowFor(PlayerDataStorage.PlayerData player)
+        public void ShowFor(string winnerIdentifier, PlayerColor.ColorType playerColorType)
         {
-            var winnerIdentifier = player.ClientId == NetworkManager.Singleton.LocalClientId ? "You" : player.Name;
             victoryText.text = $"{winnerIdentifier} won!";
-            var playerColorValue = PlayerColor.GetFromColorType(player.PlayerColorType).BaseColor;
+            var playerColorValue = PlayerColor.GetFromColorType(playerColorType).BaseColor;
             
             gameObject.SetActive(true);
             var fadeInSequence = DOTween.Sequence();

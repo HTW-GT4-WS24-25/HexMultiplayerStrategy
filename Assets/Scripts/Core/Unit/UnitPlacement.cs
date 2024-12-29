@@ -37,16 +37,16 @@ namespace Core.Unit
         [Rpc(SendTo.Server)]
         private void RequestPlacementRpc(AxialCoordinates coordinate, int unitAmount,  ulong playerId)
         {
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            TryAddUnitsToHex(coordinate, playerData, unitAmount);
+            var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
+            TryAddUnitsToHex(coordinate, player, unitAmount);
         }
 
-        public bool TryAddUnitsToHex(AxialCoordinates coordinate, PlayerDataStorage.PlayerData playerData, int addAmount)
+        public bool TryAddUnitsToHex(AxialCoordinates coordinate, Player player, int addAmount)
         {
             // TODO: Check if hex is owned by player and not at war
             var hexagonData = _gridData.GetHexagonDataOnCoordinate(coordinate);
 
-            if (hexagonData.ControllerPlayerId != playerData.ClientId)
+            if (hexagonData.ControllerPlayerId != player.ClientId)
                 return false;
         
             if (hexagonData.StationaryUnitGroup != null)
@@ -57,7 +57,7 @@ namespace Core.Unit
             }
             else
             {
-                PlaceUnitGroupOnHex(coordinate, playerData.ClientId, addAmount);
+                PlaceUnitGroupOnHex(coordinate, player.ClientId, addAmount);
             }
 
             return true;

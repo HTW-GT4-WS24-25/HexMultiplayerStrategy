@@ -4,9 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Core.UI.InGame.VictoryPoints
+namespace Core.UI.InGame.Score
 {
-    public class VictoryPointFlag : MonoBehaviour
+    public class ScoreFlag : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private Image background;

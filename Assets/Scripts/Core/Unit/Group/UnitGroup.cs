@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.Combat;
 using Core.GameEvents;
 using Core.HexSystem.Hex;
-using Core.Player;
+using Core.PlayerData;
 using Core.Unit.Group.Display;
 using Core.Unit.Model;
 using Networking.Host;
@@ -183,9 +183,9 @@ namespace Core.Unit.Group
         {
             UnitCount.Value = unitCount;
             PlayerId = playerId;
-            
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            InitializeClientRpc(playerId, playerData.PlayerColorType, playerData.UnitModelType);
+
+            var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
+            InitializeClientRpc(playerId, player.PlayerColorType, player.UnitModelType);
         }
         
         private void SubtractUnits(int amount)

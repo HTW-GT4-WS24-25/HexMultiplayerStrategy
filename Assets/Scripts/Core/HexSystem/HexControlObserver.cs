@@ -1,6 +1,6 @@
 ﻿using Core.GameEvents;
 using Core.HexSystem.Generation;
-using Core.Player;
+using Core.PlayerData;
 using Core.Unit.Group;
 using Networking.Host;
 using Unity.Netcode;
@@ -47,8 +47,8 @@ namespace Core.HexSystem
 
         private void HandleHexControllerChanged(AxialCoordinates hexagonCoordinates, ulong playerId)
         {
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            ChangeHexColorOnControlChangeClientRpc(hexagonCoordinates, (int)playerData.PlayerColorType);
+            var playerData = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
+            ChangeHexColorOnControlChangeClientRpc(hexagonCoordinates, playerData.PlayerColorType);
         
             gridData.UpdateControllingPlayerOfHex(hexagonCoordinates, playerId);
         }
@@ -58,10 +58,10 @@ namespace Core.HexSystem
         #region Client
 
         [ClientRpc]
-        private void ChangeHexColorOnControlChangeClientRpc(AxialCoordinates coordinates, int encodedColorType)
+        private void ChangeHexColorOnControlChangeClientRpc(AxialCoordinates coordinates, PlayerColor.ColorType playerColorType)
         {
             mapBuilder.Grid.Get(coordinates)
-                .AdaptBorderToPlayerColor(PlayerColor.GetFromColorType(PlayerColor.IntToColorType(encodedColorType)));
+                .AdaptBorderToPlayerColor(PlayerColor.GetFromColorType(playerColorType));
         }
 
         #endregion

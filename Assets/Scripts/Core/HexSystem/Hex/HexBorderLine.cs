@@ -1,5 +1,5 @@
 using System.Linq;
-using Core.Player;
+using Core.PlayerData;
 using UnityEngine;
 
 namespace Core.HexSystem.Hex

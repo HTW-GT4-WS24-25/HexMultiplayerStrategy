@@ -1,4 +1,4 @@
-using Core.Player;
+using Core.PlayerData;
 using DG.Tweening;
 using UnityEngine;
 

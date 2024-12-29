@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Core.GameEvents;
-using Core.Player;
+using Core.PlayerData;
 using Core.Unit.Model;
 using Helper;
 using Networking.Host;
@@ -8,7 +8,6 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Core.UI.Lobby
@@ -18,7 +17,7 @@ namespace Core.UI.Lobby
         [SerializeField] private Transform playerEntryContainer;
         [SerializeField] private LobbyUIPlayerEntry playerEntryPrefab;
         [SerializeField] private JoinCodeText joinCodeText;
-        [FormerlySerializedAs("colorSelectionUI")] [SerializeField] private PlayerConfigurationUI playerConfigurationUI;
+        [SerializeField] private PlayerConfigurationUI playerConfigurationUI;
         [SerializeField] private Button startGameButton;
 
         private const string MatchSceneName = "MatchScene";
@@ -70,12 +69,12 @@ namespace Core.UI.Lobby
         [Rpc(SendTo.Server)]
         private void RequestAllPlayerDataServerRPC(ulong requestClientId)
         {
-            var playerList = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
+            var players = HostSingleton.Instance.GameManager.GetPlayers();
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
             
-            foreach (var playerData in playerList)
+            foreach (var player in players)
             {
-                AddPlayerDataToLobbyListClientRPC(playerData.ClientId, playerData.Name, (int)playerData.PlayerColorType, clientRpcParams);    
+                AddPlayerDataToLobbyListClientRPC(player.ClientId, player.Name, player.PlayerColorType, clientRpcParams);    
             }
         }
 
@@ -85,8 +84,9 @@ namespace Core.UI.Lobby
             if (!_unavailableColors.Contains(playerColorType))
             {
                 var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
-                HostSingleton.Instance.GameManager.PlayerData.SetPlayerColorType(requestClientId, playerColorType);
-                HostSingleton.Instance.GameManager.PlayerData.SetPlayerFaction(requestClientId, playerModelType);
+                var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(requestClientId);
+                player.PlayerColorType = playerColorType;
+                player.UnitModelType = playerModelType;
                 
                 OnPlayerConfigurationSuccessfulClientRPC(clientRpcParams);
             }
@@ -113,12 +113,11 @@ namespace Core.UI.Lobby
         }
 
         [ClientRpc]
-        private void AddPlayerDataToLobbyListClientRPC(ulong playerClientId, FixedString32Bytes playerName, int encodedColorType, ClientRpcParams clientRpcParams = default)
+        private void AddPlayerDataToLobbyListClientRPC(ulong playerClientId, FixedString32Bytes playerName, PlayerColor.ColorType colorType, ClientRpcParams clientRpcParams = default)
         {
             if (_lobbyList.Exists(entry => entry.ClientId == playerClientId))
                 return;
             
-            var colorType = PlayerColor.IntToColorType(encodedColorType);
             RegisterNewUnavailableColor(colorType);
             
             var playerColor = PlayerColor.GetFromColorType(colorType);

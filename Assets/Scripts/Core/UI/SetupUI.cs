@@ -1,4 +1,4 @@
-using Core.Player;
+using Core.PlayerData;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -1,6 +1,6 @@
 ﻿using Core.GameEvents;
 using Core.HexSystem.VFX;
-using Core.Player;
+using Core.PlayerData;
 using UnityEngine;
 
 namespace Core.HexSystem.Hex

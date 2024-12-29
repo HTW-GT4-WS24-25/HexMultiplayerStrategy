@@ -55,9 +55,11 @@ namespace Core.DayNightCycle
         
             playerReadyStates.Clear();
             playersReadyForDawn = 0;
-            var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
-            players.ForEach(player => playerReadyStates.Add(player.ClientId, false));
-            UpdateReadyForDawnPlayersClientRpc(playersReadyForDawn, players.Count);
+            var players = HostSingleton.Instance.GameManager.GetPlayers();
+            foreach (var player in players)
+                playerReadyStates.Add(player.ClientId, false);
+            
+            UpdateReadyForDawnPlayersClientRpc(playersReadyForDawn, players.Length);
         }
 
         #endregion

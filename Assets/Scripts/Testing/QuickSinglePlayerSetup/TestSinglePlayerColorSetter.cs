@@ -1,4 +1,4 @@
-using Core.Player;
+using Core.PlayerData;
 using Core.Unit.Model;
 using Networking.Host;
 using Unity.Netcode;
@@ -16,8 +16,11 @@ namespace Testing.QuickSinglePlayerSetup
         
         void Start()
         {
-            HostSingleton.Instance.GameManager.PlayerData.SetPlayerColorType(NetworkManager.Singleton.LocalClientId, playerColorType);
-            HostSingleton.Instance.GameManager.PlayerData.SetPlayerFaction(NetworkManager.Singleton.LocalClientId, modelType);
+            var localPlayer =
+                HostSingleton.Instance.GameManager.GetPlayerByClientId(NetworkManager.Singleton.LocalClientId);
+            localPlayer.PlayerColorType = playerColorType;
+            localPlayer.UnitModelType = modelType;
+            
             NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
         }
     }

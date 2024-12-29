@@ -1,4 +1,4 @@
-using Core.Player;
+using Core.PlayerData;
 using Networking.Host;
 using UnityEngine;
 

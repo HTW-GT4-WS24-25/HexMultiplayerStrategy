@@ -1,4 +1,4 @@
-namespace Core.Player
+namespace Core.PlayerData
 {
     public class PlayerMoney
     {

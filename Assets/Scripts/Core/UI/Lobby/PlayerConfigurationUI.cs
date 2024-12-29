@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Player;
+using Core.PlayerData;
 using Core.Unit.Model;
 using TMPro;
 using UnityEngine;

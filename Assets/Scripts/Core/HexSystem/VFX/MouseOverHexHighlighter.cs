@@ -49,8 +49,6 @@ namespace Core.HexSystem.VFX
 
             if (!hit.collider.transform.parent.TryGetComponent<Hexagon>(out var hexagon)) 
                 return;
-        
-            Debug.Log("Hexagon hit!");
 
             if (ValidHexagons != null && !ValidHexagons.Contains(hexagon))
                 return;

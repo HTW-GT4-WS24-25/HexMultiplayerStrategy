@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Core.Player
+namespace Core.PlayerData
 {
     [CreateAssetMenu(fileName = "New PlayerColor", menuName = "Create Player Color")]
     public class PlayerColor : ScriptableObject

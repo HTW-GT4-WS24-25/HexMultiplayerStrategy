@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Networking.Host;
 using Networking.Shared;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Networking.Server
     {
         private readonly NetworkManager _networkManager;
         private readonly Dictionary<ulong, string> _authIdsByClientIds = new();
-        private readonly Dictionary<string, PlayerIdentificationData> _playersByAuthIds = new();
+        private readonly Dictionary<string, PlayerIdentificationData> _playerIdDataByAuthIds = new();
     
         public NetworkServer(NetworkManager networkManager)
         {
@@ -37,7 +38,7 @@ namespace Networking.Server
         {
             if (_authIdsByClientIds.TryGetValue(clientId, out var authId))
             {
-                if (_playersByAuthIds.TryGetValue(authId, out var playerData))
+                if (_playerIdDataByAuthIds.TryGetValue(authId, out var playerData))
                 {
                     return playerData;
                 }
@@ -49,15 +50,15 @@ namespace Networking.Server
         private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
             var payload = System.Text.Encoding.UTF8.GetString(request.Payload);
-            var playerData = JsonUtility.FromJson<PlayerIdentificationData>(payload);
+            var playerIdData = JsonUtility.FromJson<PlayerIdentificationData>(payload);
         
-            _authIdsByClientIds[request.ClientNetworkId] = playerData.playerAuthId;
-            _playersByAuthIds[playerData.playerAuthId] = playerData;
+            _authIdsByClientIds[request.ClientNetworkId] = playerIdData.playerAuthId;
+            _playerIdDataByAuthIds[playerIdData.playerAuthId] = playerIdData;
 
             response.Approved = true;
-            response.CreatePlayerObject = true;
-            response.Position = Vector3.zero;
-            response.Rotation = Quaternion.identity;
+            response.CreatePlayerObject = false;
+            
+            HostSingleton.Instance.GameManager.AddNewPlayer(request.ClientNetworkId, playerIdData.playerName);
         }
     
         private void OnNetworkReady()
@@ -70,7 +71,7 @@ namespace Networking.Server
             if (_authIdsByClientIds.TryGetValue(clientId, out var authId))
             {
                 _authIdsByClientIds.Remove(clientId);
-                _playersByAuthIds.Remove(authId);
+                _playerIdDataByAuthIds.Remove(authId);
             }
         }
     }

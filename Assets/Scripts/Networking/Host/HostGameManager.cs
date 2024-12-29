@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Core.Player;
+using Core;
+using Core.GameEvents;
+using Core.PlayerData;
 using Networking.Server;
 using Networking.Shared;
 using Unity.Netcode;
@@ -18,13 +22,13 @@ namespace Networking.Host
     public class HostGameManager : IDisposable
     {
         public NetworkServer NetworkServer { get; private set; }
-        public PlayerDataStorage PlayerData { get; private set; }
         public string JoinCode { get; private set; }
     
         private const int MaxConnections = 20;
         private const string LobbySceneName = "Lobby";
     
         private Allocation _allocation;
+        private Dictionary<ulong, Player> _playersByClientId;
     
         public void Dispose()
         {
@@ -59,7 +63,7 @@ namespace Networking.Host
             transport.SetRelayServerData(relayServerData);
 
             NetworkServer = new NetworkServer(NetworkManager.Singleton);
-            PlayerData = new PlayerDataStorage(NetworkServer);
+            _playersByClientId = new Dictionary<ulong, Player>();
 
             var playerData = new PlayerIdentificationData
             {
@@ -74,6 +78,25 @@ namespace Networking.Host
             NetworkManager.Singleton.StartHost();
 
             NetworkManager.Singleton.SceneManager.LoadScene(hostSceneName, LoadSceneMode.Single);
+        }
+
+        public void AddNewPlayer(ulong clientId, string playerName)
+        {
+            var newPlayer = new Player(clientId, playerName);
+            _playersByClientId.Add(clientId, newPlayer);
+            Debug.Log($"Player {playerName} registered!");
+            
+            ServerEvents.Player.OnPlayerConnected?.Invoke(clientId, playerName);
+        }
+
+        public Player GetPlayerByClientId(ulong clientId)
+        {
+            return _playersByClientId[clientId];
+        }
+
+        public Player[] GetPlayers()
+        {
+            return _playersByClientId.Values.ToArray();
         }
     }
 }

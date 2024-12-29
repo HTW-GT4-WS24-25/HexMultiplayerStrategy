@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core.Player;
+using Core.PlayerData;
 using Unity.Netcode;
 using UnityEngine;
 

@@ -2771,7 +2771,7 @@ GameObject:
   - component: {fileID: 6160817501094593080}
   - component: {fileID: 5031657181697832050}
   m_Layer: 5
-  m_Name: VictoryPointDisplay
+  m_Name: ScoreDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2834,11 +2834,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498abdbff7824c86aa573da4331182bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  victoryPointFlagPrefab: {fileID: 5915712287484238492, guid: 70d56474aa3a0bf4d91343360e046c6c, type: 3}
+  scoreFlagPrefab: {fileID: 5915712287484238492, guid: 70d56474aa3a0bf4d91343360e046c6c, type: 3}
   victoryPointFlagContainer: {fileID: 9201305689675608646}
   scoreAnimationTime: 2
-  victoryFlagContainerGrowSize: 1.8
-  victoryFlagContainerGrowTime: 1
+  scoreFlagContainerGrowSize: 1.5
+  scoreFlagContainerGrowTime: 1
   delayBetweenContainerAndScoreAnimations: 0.5
 --- !u!1001 &1696191142105418030
 PrefabInstance:
@@ -2848,6 +2848,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3168967069251171779}
     m_Modifications:
+    - target: {fileID: 3986100800400668199, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3986100801002719340, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3986100802002216169, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3183,6 +3191,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3168967069251171779}
     m_Modifications:
+    - target: {fileID: 3986100800400668199, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3986100801002719340, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3986100802002216169, guid: 0eea6464c052b4314aecd3ff0a42177c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

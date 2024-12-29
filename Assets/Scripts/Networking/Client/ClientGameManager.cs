@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Core.Player;
+using Core.PlayerData;
 using Networking.Shared;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;

@@ -1,67 +1,66 @@
 using System.Collections.Generic;
 using System.Linq;
-using Core.Player;
+using Core.PlayerData;
 using DG.Tweening;
-using Networking.Host;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Core.UI.InGame.VictoryPoints
+namespace Core.UI.InGame.Score
 {
-    public class VictoryPointDisplay : MonoBehaviour
+    public class ScoreDisplay : MonoBehaviour
     {
+        [FormerlySerializedAs("victoryPointFlagPrefab")]
         [Header("References")]
-        [SerializeField] private VictoryPointFlag victoryPointFlagPrefab;
+        [SerializeField] private ScoreFlag scoreFlagPrefab;
         [SerializeField] private Transform victoryPointFlagContainer;
         
         [Header("Settings")]
         [SerializeField] private float scoreAnimationTime = 2;
-        [SerializeField] private float victoryFlagContainerGrowSize = 1.5f;
-        [SerializeField] private float victoryFlagContainerGrowTime = 1f;
+        [SerializeField] private float scoreFlagContainerGrowSize = 1.5f;
+        [SerializeField] private float scoreFlagContainerGrowTime = 1f;
         [SerializeField] private float delayBetweenContainerAndScoreAnimations = 0.5f;
         
-        private readonly Dictionary<ulong, VictoryPointFlag> _victoryPointFlagsByPlayerId = new();
+        private readonly Dictionary<ulong, ScoreFlag> _scoreFlagsByPlayerId = new();
         private readonly Dictionary<ulong, int> _lastScoresByPlayer = new();
-        private Tween _scoreAnimation;
 
-        public void Initialize(PlayerDataStorage.PlayerData[] playerData)
+        public void Initialize(PlayerScoreDisplayData[] playerData)
         {
             var firstPlacementValue = 1;
             foreach (var data in playerData)
             {
-                var newFlag = Instantiate(victoryPointFlagPrefab, victoryPointFlagContainer);
+                var newFlag = Instantiate(scoreFlagPrefab, victoryPointFlagContainer);
                 newFlag.SetColor(PlayerColor.GetFromColorType(data.PlayerColorType).BaseColor);
                 newFlag.SetPlacement(firstPlacementValue++);
-                _victoryPointFlagsByPlayerId.Add(data.ClientId, newFlag);
+                _scoreFlagsByPlayerId.Add(data.ClientId, newFlag);
                 _lastScoresByPlayer.Add(data.ClientId, data.Score);
             }
         }
 
-        public void UpdateScoresFromData(PlayerDataStorage.PlayerData[] playerData)
+        public void UpdateScoresFromData(PlayerScoreDisplayData[] playerData)
         {
             var scoreAnimationSequence = CreateScoringSequence(playerData);
             
             scoreAnimationSequence.AppendInterval(delayBetweenContainerAndScoreAnimations);
-            scoreAnimationSequence.Append(victoryPointFlagContainer.DOScale(1f, victoryFlagContainerGrowTime).SetEase(Ease.InCirc));
-            _scoreAnimation = scoreAnimationSequence;
+            scoreAnimationSequence.Append(victoryPointFlagContainer.DOScale(1f, scoreFlagContainerGrowTime).SetEase(Ease.InCirc));
         }
 
-        public void UpdateScoresForGameEnd(PlayerDataStorage.PlayerData[] playerData, TweenCallback onFinished)
+        public void UpdateScoresForGameEnd(PlayerScoreDisplayData[] playerData, TweenCallback onFinished)
         {
             var scoreAnimationSequence = CreateScoringSequence(playerData);
             scoreAnimationSequence.OnComplete(onFinished.Invoke);
-            _scoreAnimation = scoreAnimationSequence;
         }
 
-        private Sequence CreateScoringSequence(PlayerDataStorage.PlayerData[] playerData)
+        private Sequence CreateScoringSequence(PlayerScoreDisplayData[] playerData)
         {
             var scoringSequence = DOTween.Sequence();
-            scoringSequence.Append(victoryPointFlagContainer.DOScale(victoryFlagContainerGrowSize, victoryFlagContainerGrowTime).SetEase(Ease.OutCirc));
+            scoringSequence.Append(victoryPointFlagContainer.DOScale(scoreFlagContainerGrowSize, scoreFlagContainerGrowTime).SetEase(Ease.OutCirc));
             scoringSequence.AppendInterval(delayBetweenContainerAndScoreAnimations);
             foreach (var data in playerData)
             {
                 var oldScore = _lastScoresByPlayer[data.ClientId];
                 scoringSequence.Join(DOVirtual.Int(oldScore, data.Score, scoreAnimationTime,
-                    value => _victoryPointFlagsByPlayerId[data.ClientId].SetScore(value)).SetEase(Ease.InOutSine));
+                    value => _scoreFlagsByPlayerId[data.ClientId].SetScore(value)).SetEase(Ease.InOutSine));
                 _lastScoresByPlayer[data.ClientId] = data.Score;
             }
             scoringSequence.AppendCallback(DeterminePlayerPlacement);
@@ -77,9 +76,23 @@ namespace Core.UI.InGame.VictoryPoints
             var placement = 1;
             foreach (var (playerId, _) in sortedScoresByPlayerId)
             {
-                var flag = _victoryPointFlagsByPlayerId[playerId];
+                var flag = _scoreFlagsByPlayerId[playerId];
                 flag.transform.SetSiblingIndex(placement - 1);
                 flag.SetPlacement(placement++);
+            }
+        }
+        
+        public struct PlayerScoreDisplayData : INetworkSerializable
+        {
+            public ulong ClientId;
+            public int Score;
+            public PlayerColor.ColorType PlayerColorType;
+            
+            public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+            {
+                serializer.SerializeValue(ref ClientId);
+                serializer.SerializeValue(ref Score);
+                serializer.SerializeValue(ref PlayerColorType);
             }
         }
     }

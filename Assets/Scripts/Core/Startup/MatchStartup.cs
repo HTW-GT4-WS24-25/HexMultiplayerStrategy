@@ -93,8 +93,8 @@ namespace Core.Startup
         {
             unitPlacement.Initialize(mapBuilder.Grid, hexGridData);
             buildingPlacement.Initialize(hexGridData);
-        
-            var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
+
+            var players = HostSingleton.Instance.GameManager.GetPlayers();
             foreach (var playerData in players)
             {
                 var playerStartCoordinate = _remainingStartCoordinates[Random.Range(0, _remainingStartCoordinates.Count)];

@@ -36,20 +36,20 @@ namespace Core.NightShop
 
         private void GrantPlayersRoundMoney()
         {
-            var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
-            foreach (var playerData in players)
+            var players = HostSingleton.Instance.GameManager.GetPlayers();
+            foreach (var player in players)
             {
-                playerData.Money.Increase(moneyPerRound);
+                player.Money.Increase(moneyPerRound);
                 
-                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);
-                OnMoneyChangedClientRpc(playerData.Money.Get(), clientRpcParams);
+                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(player.ClientId);
+                OnMoneyChangedClientRpc(player.Money.Get(), clientRpcParams);
             }
         }
         
         [Rpc(SendTo.Server)]
         private void RequestPurchaseRpc(int cost, long requestId, ulong playerId)
         {
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
+            var playerData = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
             var succeeded = playerData.Money.AttemptToPurchase(cost);
             
             var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerId);
