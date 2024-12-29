@@ -42,6 +42,7 @@ namespace Core.GameEvents
             public UnityAction<Vector2> OnDragInput;
             public UnityAction<Vector2> OnCameraMoveInput;
             public UnityAction<float> OnCameraTurnInput;
+            public UnityAction PauseTogglePressed;
         }
 
         public class DayNightCycleEvents
