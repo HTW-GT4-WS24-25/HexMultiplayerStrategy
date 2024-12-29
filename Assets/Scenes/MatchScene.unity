@@ -223,10 +223,10 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: 9cd7b7d599d5a7e41ab9ca5fc2da1614, type: 2}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   unitLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   unitPlacement: {fileID: 121099228}
 --- !u!4 &195500089
 Transform:
@@ -347,7 +347,7 @@ MonoBehaviour:
   gridData: {fileID: 1533390224}
   mapBuilder: {fileID: 1588253353}
   unitGroupPrefab: {fileID: 7360500778174264170, guid: 1f6c468b41e2e0147b0aef64fbb13eae, type: 3}
-  mouseOverHexHighlighter: {fileID: 0}
+  mouseOverHexHighlighter: {fileID: 1031177966}
 --- !u!4 &694091048
 Transform:
   m_ObjectHideFlags: 0
@@ -692,6 +692,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2367606237915332930, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2367606238378966793, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2740399969464054150, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: gridData
       value: 
@@ -798,7 +806,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4423819880621845921, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0012817383
+      value: -0.0013427734
       objectReference: {fileID: 0}
     - target: {fileID: 4618406031398327923, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -830,6 +838,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4964568190415156180, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6248596430369398768, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6248596431101485499, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6548401546078417604, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
