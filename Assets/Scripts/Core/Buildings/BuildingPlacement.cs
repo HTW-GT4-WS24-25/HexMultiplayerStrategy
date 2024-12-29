@@ -40,7 +40,7 @@ namespace Core.Buildings
             
             var newBuilding = BuildingFactory.Create(type);
             
-            hexData.Building = newBuilding;
+            _gridData.SetBuildingOnHex(coordinate, newBuilding);
             SetBuildingToppingClientRpc(coordinate, hexData.HexType, newBuilding.Type);
         }
         
@@ -52,8 +52,7 @@ namespace Core.Buildings
             
             Debug.Assert(existingBuilding != null && existingBuilding.CanBeUpgraded);
             
-            hexData.Building.Upgrade();
-            
+            _gridData.UpgradeBuildingOnHex(coordinate);
             UpgradeBuildingToppingClientRpc(coordinate, existingBuilding.Level);
         }
 
