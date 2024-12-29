@@ -12,13 +12,11 @@ namespace Core.Input
 
         public override void HandleMouseDown()
         {
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
-
             if (TryGetUnitOnScreenPosition(InputReader.MousePosition, out var clickedUnit) &&
                 clickedUnit.PlayerId == NetworkManager.Singleton.LocalClientId)
             {
                 ClientEvents.Input.OnUnitGroupSelected?.Invoke(clickedUnit);
+                return;
             }
             
             if (TryGetHexOnScreenPosition(InputReader.MousePosition, out var clickedHexagon))
