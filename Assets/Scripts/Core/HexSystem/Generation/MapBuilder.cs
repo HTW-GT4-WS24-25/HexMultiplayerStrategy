@@ -9,7 +9,7 @@ namespace Core.HexSystem.Generation
         public HexagonGrid Grid;
 
         [Header("Settings")]
-        [SerializeField] private Hex.Hexagon defaultHexagon;
+        [SerializeField] private Hexagon defaultHexagon;
         [SerializeField] private float spacing;
 
         public int MapRings { get; private set; }

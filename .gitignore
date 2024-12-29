@@ -156,3 +156,6 @@ sysinfo.txt
 Assets/Scenes/DayNightCycleTest.unity
 Assets/Scenes/DayNightCycleTest.unity.meta
 /.idea
+
+# Generated file by the polaris package
+/[Aa]ssets/JSkyProfile*
