@@ -47,9 +47,17 @@ namespace Core.HexSystem
 
         private void HandleHexControllerChanged(AxialCoordinates hexagonCoordinates, ulong playerId)
         {
-            var playerData = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
-            ChangeHexColorOnControlChangeClientRpc(hexagonCoordinates, playerData.PlayerColorType);
-        
+            var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
+            ChangeHexColorOnControlChangeClientRpc(hexagonCoordinates, player.PlayerColorType);
+            
+            var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagonCoordinates);
+            if (hexagonData.ControllerPlayerId.HasValue)
+            {
+                var previousControllingPlayer = HostSingleton.Instance.GameManager.GetPlayerByClientId(hexagonData.ControllerPlayerId.Value);
+                previousControllingPlayer.OnLostControlOfHex(hexagonData);
+            }
+            player.OnGainedControlOfHex(hexagonData);
+            
             gridData.UpdateControllingPlayerOfHex(hexagonCoordinates, playerId);
         }
 

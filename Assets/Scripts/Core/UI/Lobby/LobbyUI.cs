@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Factions;
 using Core.GameEvents;
 using Core.PlayerData;
 using Core.Unit.Model;
@@ -19,6 +20,7 @@ namespace Core.UI.Lobby
         [SerializeField] private JoinCodeText joinCodeText;
         [SerializeField] private PlayerConfigurationUI playerConfigurationUI;
         [SerializeField] private Button startGameButton;
+        [SerializeField] private FactionCollection factionCollection;
 
         private const string MatchSceneName = "MatchScene";
         private const int MinimumPlayerCount = 1;
@@ -79,14 +81,14 @@ namespace Core.UI.Lobby
         }
 
         [Rpc(SendTo.Server)]
-        private void RequestPlayerColorSelectionServerRPC(ulong requestClientId, PlayerColor.ColorType playerColorType, UnitModel.ModelType playerModelType)
+        private void RequestPlayerColorSelectionServerRPC(ulong requestClientId, PlayerColor.ColorType playerColorType, FactionType factionType)
         {
             if (!_unavailableColors.Contains(playerColorType))
             {
                 var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(requestClientId);
                 var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(requestClientId);
                 player.PlayerColorType = playerColorType;
-                player.UnitModelType = playerModelType;
+                player.Faction = factionCollection.GetFaction(factionType);
                 
                 OnPlayerConfigurationSuccessfulClientRPC(clientRpcParams);
             }
@@ -157,9 +159,9 @@ namespace Core.UI.Lobby
             playerConfigurationUI.SetUnavailableColors(_unavailableColors);
         }
 
-        public void SubmitPlayerSelection(PlayerColor.ColorType colorType, UnitModel.ModelType modelType)
+        public void SubmitPlayerSelection(PlayerColor.ColorType colorType, FactionType factionType)
         {
-            RequestPlayerColorSelectionServerRPC(NetworkManager.Singleton.LocalClientId, colorType, modelType);
+            RequestPlayerColorSelectionServerRPC(NetworkManager.Singleton.LocalClientId, colorType, factionType);
         }
 
         #endregion

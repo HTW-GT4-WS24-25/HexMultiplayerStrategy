@@ -25,7 +25,6 @@ namespace Core.NightShop
                 return;
             
             ClientEvents.DayNightCycle.OnSwitchedCycleState += OnSwitchedCycleState;
-            GrantPlayersRoundMoney();
         }
 
         private void OnSwitchedCycleState(DayNightCycle.DayNightCycle.CycleState cycleState)

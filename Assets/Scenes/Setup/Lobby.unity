@@ -1068,6 +1068,7 @@ MonoBehaviour:
   joinCodeText: {fileID: 52888260}
   playerConfigurationUI: {fileID: 330286726}
   startGameButton: {fileID: 1556417957}
+  factionCollection: {fileID: 11400000, guid: 21fce1b65d5b48645bc42f37cd37ed37, type: 2}
 --- !u!1 &529373539
 GameObject:
   m_ObjectHideFlags: 0

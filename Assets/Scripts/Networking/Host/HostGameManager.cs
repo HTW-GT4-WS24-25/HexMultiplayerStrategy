@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Core;
 using Core.GameEvents;
 using Core.PlayerData;
+using Core.Startup;
 using Networking.Server;
 using Networking.Shared;
 using Unity.Netcode;
@@ -21,7 +22,7 @@ namespace Networking.Host
 {
     public class HostGameManager : IDisposable
     {
-        public NetworkServer NetworkServer { get; private set; }
+        public MatchConfiguration MatchConfig { get; set; }
         public string JoinCode { get; private set; }
     
         private const int MaxConnections = 20;
@@ -29,10 +30,11 @@ namespace Networking.Host
     
         private Allocation _allocation;
         private Dictionary<ulong, Player> _playersByClientId;
+        private NetworkServer _networkServer;
     
         public void Dispose()
         {
-            NetworkServer?.Dispose();   
+            _networkServer?.Dispose();   
         }
 
         public async Task StartHostAsync(string hostSceneName = LobbySceneName)
@@ -62,7 +64,7 @@ namespace Networking.Host
             var relayServerData = new RelayServerData(_allocation, "dtls");
             transport.SetRelayServerData(relayServerData);
 
-            NetworkServer = new NetworkServer(NetworkManager.Singleton);
+            _networkServer = new NetworkServer(NetworkManager.Singleton);
             _playersByClientId = new Dictionary<ulong, Player>();
 
             var playerData = new PlayerIdentificationData

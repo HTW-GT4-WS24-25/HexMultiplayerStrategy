@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace Core.Unit.Group.Display
 {
-    public class DamageNumberSpawn : MonoBehaviour
+    public class PopupNumberSpawn : MonoBehaviour
     {
         [SerializeField] private DamageNumber damageNumberPrefab;
+        [SerializeField] private DamageNumber healNumberPrefab;
         
         [Button]
         public void SpawnDamageNumber(float damage)
@@ -14,5 +15,11 @@ namespace Core.Unit.Group.Display
             damageNumberPrefab.Spawn(transform.position, damage);
         }
 
+        [Button]
+        public void SpawnHealNumber(float healAmount)
+        {
+            healNumberPrefab.Spawn(transform.position, healAmount);
+        }
+        
     }
 }

@@ -5,6 +5,7 @@ using Core.GameEvents;
 using Core.HexSystem.Hex;
 using Core.Unit;
 using Core.Unit.Group;
+using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -39,6 +40,12 @@ namespace Core.HexSystem
             return _hexDataByCoordinates.Values;
         }
 
+        public HexagonData GetCurrentHexFromUnitGroup(UnitGroup unitGroup)
+        {
+            var coordinates = _coordinatesByUnitGroups[unitGroup.NetworkObjectId];
+            return _hexDataByCoordinates[coordinates];
+        }
+
         #region Server
 
         public override void OnNetworkSpawn()
@@ -55,13 +62,13 @@ namespace Core.HexSystem
             ServerEvents.Unit.OnUnitGroupLeftHexCenter -= RemoveStationaryUnitGroupFromHex;
         }
 
-        public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd) 
+        public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd)
         {
             var unitGroupToAddId = unitGroupToAdd.NetworkObjectId;
-            unitGroupToAdd.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[coordinate]);
-            
             AddUnitToUnitsOnHexClientRpc(coordinate, unitGroupToAddId);
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, true, unitGroupToAddId);
+            
+            ServerEvents.Unit.OnUnitGroupShouldReceiveMoveSpeedUpdate?.Invoke(unitGroupToAdd);
         }
 
         public void CopyUnitGroupOnHex(UnitGroup originalUnitGroup, UnitGroup copiedUnitGroup)
@@ -70,10 +77,11 @@ namespace Core.HexSystem
             var originalUnitCoordinates = _coordinatesByUnitGroups[originalUnitGroupId];
             
             var copiedUnitGroupId = copiedUnitGroup.NetworkObjectId;
-            
+           
             AddUnitToUnitsOnHexClientRpc(originalUnitCoordinates, copiedUnitGroupId);
             var hexagonData = _hexDataByCoordinates[originalUnitCoordinates];
-            copiedUnitGroup.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(hexagonData); 
+            
+            ServerEvents.Unit.OnUnitGroupShouldReceiveMoveSpeedUpdate?.Invoke(copiedUnitGroup);
             
             if (hexagonData.StationaryUnitGroup == originalUnitGroupId)
                 UpdateStationaryUnitGroupOfHexClientRpc(originalUnitCoordinates, true, copiedUnitGroupId);
@@ -90,12 +98,12 @@ namespace Core.HexSystem
         public void MoveUnitGroupToHex(UnitGroup unitGroupToMove, AxialCoordinates newCoordinate)
         {
             var unitGroupId = unitGroupToMove.NetworkObjectId;
-            unitGroupToMove.Movement.MoveSpeed = UnitSpeedCalculator.Calculate(_hexDataByCoordinates[newCoordinate]);
-            
             if (_coordinatesByUnitGroups.TryGetValue(unitGroupId, out var oldCoordinate))
                 MoveUnitGroupToHexClientRpc(oldCoordinate, newCoordinate, unitGroupId);
             else
                 AddUnitToUnitsOnHexClientRpc(newCoordinate, unitGroupId);
+            
+            ServerEvents.Unit.OnUnitGroupShouldReceiveMoveSpeedUpdate?.Invoke(unitGroupToMove);
         }
 
         public void UpdateControllingPlayerOfHex(AxialCoordinates coordinate, ulong playerId)

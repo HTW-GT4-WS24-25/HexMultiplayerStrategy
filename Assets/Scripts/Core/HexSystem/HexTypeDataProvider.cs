@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core.HexSystem
 {
-    public class HexTypeDataProvider : MonoBehaviour
+    public class HexTypeDataProvider : MonoBehaviour // Todo: make this a SO collection like the other cases in our project
     {
         public static HexTypeDataProvider Instance;
     

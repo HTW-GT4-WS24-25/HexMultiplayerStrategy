@@ -742,6 +742,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onHealthHealed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1320076233414398359}
+        m_TargetAssemblyTypeName: Core.Unit.Group.Display.PopupNumberSpawn, Scripts
+        m_MethodName: SpawnHealNumber
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1155326024646559241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1180,7 +1195,7 @@ GameObject:
   - component: {fileID: 6656847901836523573}
   - component: {fileID: 1320076233414398359}
   m_Layer: 8
-  m_Name: DamageNumberSpawn
+  m_Name: PopupNumberSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1214,3 +1229,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageNumberPrefab: {fileID: 2290664591783212681, guid: fa01d66f9b21f344d94e3211b53c2ceb, type: 3}
+  healNumberPrefab: {fileID: 2290664591783212681, guid: 915fb32b8a1138c489488d4450ea7be6, type: 3}

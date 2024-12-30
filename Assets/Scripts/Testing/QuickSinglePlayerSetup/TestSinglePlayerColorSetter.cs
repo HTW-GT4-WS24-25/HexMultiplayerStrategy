@@ -1,3 +1,4 @@
+using Core.Factions;
 using Core.PlayerData;
 using Core.Unit.Model;
 using Networking.Host;
@@ -10,7 +11,7 @@ namespace Testing.QuickSinglePlayerSetup
     public class TestSinglePlayerColorSetter : MonoBehaviour
     {
         [SerializeField] PlayerColor.ColorType playerColorType = PlayerColor.ColorType.Red;
-        [SerializeField] UnitModel.ModelType modelType = UnitModel.ModelType.Rabbit;
+        [SerializeField] private Faction faction;
         
         private const string GameSceneName = "MatchScene";
         
@@ -19,7 +20,7 @@ namespace Testing.QuickSinglePlayerSetup
             var localPlayer =
                 HostSingleton.Instance.GameManager.GetPlayerByClientId(NetworkManager.Singleton.LocalClientId);
             localPlayer.PlayerColorType = playerColorType;
-            localPlayer.UnitModelType = modelType;
+            localPlayer.Faction = faction;
             
             NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
         }

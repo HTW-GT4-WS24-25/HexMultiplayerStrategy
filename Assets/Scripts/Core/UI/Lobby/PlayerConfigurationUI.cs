@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Factions;
 using Core.PlayerData;
 using Core.Unit.Model;
 using TMPro;
@@ -19,7 +20,7 @@ namespace Core.UI.Lobby
 
         private readonly Dictionary<PlayerColor.ColorType, ColorSelectionField> _colorSelectionFieldsByType = new();
         private PlayerColor.ColorType _selectedPlayerColor = PlayerColor.ColorType.None;
-        private Dictionary<string, UnitModel.ModelType> _modelTypesByName = new();
+        private Dictionary<string, FactionType> _factionTypesByName = new();
 
         private void OnEnable()
         {
@@ -33,12 +34,12 @@ namespace Core.UI.Lobby
 
         public void Initialize()
         {
-            var factions = Enum.GetValues(typeof(UnitModel.ModelType));
+            var factions = Enum.GetValues(typeof(FactionType));
             foreach (var faction in factions)
             {
-                _modelTypesByName.Add(faction.ToString(), (UnitModel.ModelType)faction);
+                _factionTypesByName.Add(faction.ToString(), (FactionType)faction);
             }
-            var factionOptions = _modelTypesByName.Select(factionData => new TMP_Dropdown.OptionData(factionData.Key)).ToList();
+            var factionOptions = _factionTypesByName.Select(factionData => new TMP_Dropdown.OptionData(factionData.Key)).ToList();
             factionSelectionDropdown.options = factionOptions;
             
             var playerColors = PlayerColor.GetAll();
@@ -87,7 +88,7 @@ namespace Core.UI.Lobby
         public void SubmitPlayerSelection()
         {
             var selectedPlayerFactionName = factionSelectionDropdown.options[factionSelectionDropdown.value].text;
-            var selectedPlayerFaction = _modelTypesByName[selectedPlayerFactionName];
+            var selectedPlayerFaction = _factionTypesByName[selectedPlayerFactionName];
             lobbyUI.SubmitPlayerSelection(_selectedPlayerColor, selectedPlayerFaction);
         }
 

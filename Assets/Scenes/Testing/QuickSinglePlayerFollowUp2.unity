@@ -422,7 +422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerColorType: 2
-  modelType: 0
+  faction: {fileID: 11400000, guid: 4c162f9d818e1c34b9b2da801364bff9, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

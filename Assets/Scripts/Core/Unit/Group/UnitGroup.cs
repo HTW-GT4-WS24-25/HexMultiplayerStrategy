@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Combat;
+using Core.Factions;
 using Core.GameEvents;
 using Core.HexSystem.Hex;
 using Core.PlayerData;
@@ -32,6 +33,7 @@ namespace Core.Unit.Group
 
         public UnityEvent onUnitLost;
         public UnityEvent<float> onDamageTaken;
+        public UnityEvent<float> onHealthHealed;
 
         public Action<int> OnUnitCountUpdated;
 
@@ -43,11 +45,12 @@ namespace Core.Unit.Group
         public UnitAnimator UnitAnimator { get; private set; }
         
         public ulong PlayerId { get; private set; }
-        public NetworkVariable<int> UnitCount { get; private set; } = new(0);
+        public NetworkVariable<int> UnitCount { get; private set; } = new();
 
+        private float _combatMaxHealth;
         private float _combatHealth;
         private PlayerColor _playerColor;
-        private UnitModel.ModelType _modelType;
+        private FactionType _factionType;
         private UnitModel _model;
         
         public override void OnNetworkSpawn()
@@ -118,11 +121,26 @@ namespace Core.Unit.Group
             while (_combatHealth < UnitCount.Value - 1)
             {
                 unitLost = true;
-                SubtractUnits(1);
+                UnitCount.Value--;
             }
 
             if(unitLost)
                 TriggerOnUnitLostClientRpc();
+        }
+
+        public void Heal(float healAmount)
+        {
+            var effectiveAmount = Mathf.Min(healAmount, _combatMaxHealth - _combatHealth);
+            if (!(effectiveAmount > float.Epsilon)) 
+                return;
+            
+            _combatHealth += effectiveAmount;
+            ApplyHealClientRpc(_combatHealth, effectiveAmount);
+            
+            while (_combatHealth > UnitCount.Value)
+            {
+                UnitCount.Value++;
+            }
         }
 
         public void PlayHitAnimationInSeconds(float secondsUntilHit)
@@ -135,7 +153,8 @@ namespace Core.Unit.Group
             IsFighting = true;
             ToggleHealthBarClientRpc(true);
             UpdateMovementPauseState();
-            _combatHealth = UnitCount.Value;
+            _combatMaxHealth = UnitCount.Value; // Todo: this probably needs to be updated when a reinforcement Unit joins the fight
+            _combatHealth = _combatMaxHealth;
             
             var combatPosition = combatIndicator.transform.position;
             combatPosition.y = transform.position.y;
@@ -153,7 +172,7 @@ namespace Core.Unit.Group
 
         public void DieInCombat()
         {
-            SpawnDeathDummyClientRpc(_playerColor.Type, _modelType);
+            SpawnDeathDummyClientRpc(_playerColor.Type, _factionType);
             ServerEvents.Unit.OnUnitGroupWithIdDeleted.Invoke(NetworkObjectId);
             Destroy(gameObject);
         }
@@ -185,12 +204,7 @@ namespace Core.Unit.Group
             PlayerId = playerId;
 
             var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(playerId);
-            InitializeClientRpc(playerId, player.PlayerColorType, player.UnitModelType);
-        }
-        
-        private void SubtractUnits(int amount)
-        {
-            UnitCount.Value -= amount;
+            InitializeClientRpc(playerId, player.PlayerColorType, player.Faction.Type);
         }
         
         private void HandleSwitchedDayNightCycle(DayNightCycle.DayNightCycle.CycleState newDayNightCycle)
@@ -209,12 +223,12 @@ namespace Core.Unit.Group
         #region Client
 
         [ClientRpc]
-        private void InitializeClientRpc(ulong playerId, PlayerColor.ColorType playerColorType, UnitModel.ModelType playerModelType)
+        private void InitializeClientRpc(ulong playerId, PlayerColor.ColorType playerColorType, FactionType factionType)
         {
             PlayerId = playerId;
             
-            _modelType = playerModelType;
-            _model = Instantiate(UnitModel.GetModelPrefabFromType(playerModelType), modelHolder.position, modelHolder.rotation, modelHolder);
+            _factionType = factionType;
+            _model = Instantiate(UnitModel.GetModelPrefabFromFactionType(factionType), modelHolder.position, modelHolder.rotation, modelHolder);
             UnitAnimator = _model.Animator;
             Movement.OnMoveAnimationSpeedChanged += UnitAnimator.SetMoveSpeed;
             
@@ -230,6 +244,13 @@ namespace Core.Unit.Group
         {
             healthBar.SetHealth(newHealth);
             onDamageTaken?.Invoke(damageAmount);
+        }
+
+        [ClientRpc]
+        private void ApplyHealClientRpc(float newHealth, float healAmount)
+        {
+            healthBar.SetHealth(newHealth);
+            onHealthHealed?.Invoke(healAmount);
         }
 
         [ClientRpc]
@@ -268,10 +289,10 @@ namespace Core.Unit.Group
         }
 
         [ClientRpc]
-        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType, UnitModel.ModelType _playerModelType)
+        private void SpawnDeathDummyClientRpc(PlayerColor.ColorType playerColorType, FactionType factionType)
         {
             var unitDeathDummy = Instantiate(deathDummyPrefab, transform.position, transform.rotation);
-            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType), _playerModelType);
+            unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType), factionType);
         }
         
         public void EnableSelectionHighlight()

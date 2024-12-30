@@ -52,6 +52,7 @@ namespace Core.Startup
             hexControlObserver.InitializeOnServer();
             combatController.InitializeOnServer();
         
+            HostSingleton.Instance.GameManager.MatchConfig = matchConfiguration;
             ApplyMatchConfigurationClientRpc(matchConfiguration);
         
             _numberOfConnectedPlayers = NetworkManager.Singleton.ConnectedClients.Count;
@@ -123,6 +124,14 @@ namespace Core.Startup
         private void SetupHexGridDataClientRpc(int[] mapData)
         {
             hexGridData.SetupNewData(mapData, numberOfMapRings);
+
+            if (!IsHost) 
+                return;
+            
+            foreach (var player in HostSingleton.Instance.GameManager.GetPlayers())
+            {
+                player.GridData = hexGridData;
+            }
         }
     
         [ClientRpc]

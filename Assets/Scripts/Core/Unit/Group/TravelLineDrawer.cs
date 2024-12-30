@@ -66,7 +66,7 @@ namespace Core.Unit.Group
         
         public void Update()
         {
-            if (_travelLine.gameObject.activeSelf)
+            if (_travelLine is not null && _travelLine.gameObject.activeSelf)
                 SyncFirstTravelLinePosition();
         }
 

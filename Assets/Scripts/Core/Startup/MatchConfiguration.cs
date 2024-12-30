@@ -9,6 +9,8 @@ namespace Core.Startup
         public int nightsPerMatch;
         public float dayDuration;
         public float nightDuration;
+        public int baseIncomePerNight;
+        
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref nightsPerMatch);

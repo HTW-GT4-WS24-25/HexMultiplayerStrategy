@@ -37,6 +37,7 @@ namespace Core.GameEvents
             public UnityAction<UnitGroup, AxialCoordinates> OnUnitGroupReachedNewHex;
             public UnityAction<UnitGroup> OnUnitGroupLeftHexCenter;
             public UnityAction<UnitGroup, UnitGroup> OnCombatTriggered;
+            public UnityAction<UnitGroup> OnUnitGroupShouldReceiveMoveSpeedUpdate;
         }
     }
 }

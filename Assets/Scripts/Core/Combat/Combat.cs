@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Unit.Group;
+using Networking.Host;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -50,10 +51,8 @@ namespace Core.Combat
                 if (_attackChargeProgress[unitGroup] < 1) 
                     continue;
                 
-                unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
+                ProcessHit(unitGroup);
                 hasDamageToDeal = true;
-                CalculateDamageToOtherUnits(unitGroup);
-                _attackChargeProgress[unitGroup] -= 1;
             }
             
             if (hasDamageToDeal)
@@ -62,6 +61,15 @@ namespace Core.Combat
             if (_unitGroups.Count <= 1)
                 End();
         }
+
+        private void ProcessHit(UnitGroup unitGroup)
+        {
+            _attackSpeeds[unitGroup] = CalculateUnitGroupAttackSpeed(unitGroup);
+            
+            unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
+            CalculateDamageToOtherUnits(unitGroup);
+            _attackChargeProgress[unitGroup] -= 1;
+        }
         
         private void AddNewUnitGroupToCombat(UnitGroup unitGroup)
         {
@@ -69,20 +77,32 @@ namespace Core.Combat
             
             _unitGroups.Add(unitGroup);
             _attackChargeProgress.Add(unitGroup, 0);
-            _attackSpeeds.Add(unitGroup, AttackSpeedCalculator.Calculate(unitGroup));
+            _attackSpeeds.Add(unitGroup, CalculateUnitGroupAttackSpeed(unitGroup)); // Todo: we have to think of a solution for units getting different attackSpeeds because they were added in different order
             _damageToDealToUnitGroup.Add(unitGroup, 0);
             
             unitGroup.PlayHitAnimationInSeconds(_attackSpeeds[unitGroup]);
+        }
+
+        private float CalculateUnitGroupAttackSpeed(UnitGroup unitGroup)
+        {
+            var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(unitGroup.PlayerId);
+            var otherUnitGroups = _unitGroups.Where(u => u != unitGroup);
+            
+            return player.CalculateAttackSpeed(unitGroup, otherUnitGroups.ToArray()); 
         }
         
         private void CalculateDamageToOtherUnits(UnitGroup unitGroup)
         {
             var otherUnitGroups = _unitGroups.Where(u => u != unitGroup);
-
+            
+            var player = HostSingleton.Instance.GameManager.GetPlayerByClientId(unitGroup.PlayerId);
             foreach (var otherUnitGroup in otherUnitGroups)
             {
-                var damage = AttackDamageCalculator.Calculate(unitGroup, otherUnitGroup);
-                _damageToDealToUnitGroup[otherUnitGroup] += damage;
+                var damage = player.CalculateDamageToDeal(unitGroup, otherUnitGroup);
+                
+                var otherPlayer = HostSingleton.Instance.GameManager.GetPlayerByClientId(otherUnitGroup.PlayerId);
+                var receivedDamage = otherPlayer.CalculateDamageToReceive(damage, otherUnitGroup, unitGroup);
+                _damageToDealToUnitGroup[otherUnitGroup] += receivedDamage;
             }
         }
         
@@ -92,6 +112,7 @@ namespace Core.Combat
             {
                 if (damage <= float.Epsilon)
                     continue;
+                
                 unitGroup.TakeDamage(damage);
                 
                 if (unitGroup.UnitCount.Value <= 0)
