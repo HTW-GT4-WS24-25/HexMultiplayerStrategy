@@ -138,6 +138,7 @@ namespace Core
             }
             
             Score += CalculateScoreToGainAtNightfall(yields);
+            Money.Increase(GetGoldFromBuildingYields(yields));
         }
 
         private int GetGoldFromBuildingYields(List<BuildingYield> yields)
