@@ -6,8 +6,8 @@ namespace Core.NightShop
     {
         public void GrantMoneyToPlayerById(int amount, ulong playerId)
         {
-            var playerMoney = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId)?.PlayerMoney;
-            playerMoney?.SetMoney(amount);
+            var playerMoney = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId)?.Money;
+            playerMoney?.Set(amount);
         }
 
         public void GrantMoneyToAllPlayers(int amount)
@@ -16,7 +16,7 @@ namespace Core.NightShop
             
             foreach (var player in playerList)
             {
-                player.PlayerMoney.SetMoney(amount);
+                player.Money.Set(amount);
             }
         }
     }

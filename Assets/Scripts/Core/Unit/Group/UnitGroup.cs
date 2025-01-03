@@ -185,7 +185,7 @@ namespace Core.Unit.Group
             PlayerId = playerId;
             
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            InitializeClientRpc(playerId, playerData.PlayerColorType, playerData.PlayerUnitModelType);
+            InitializeClientRpc(playerId, playerData.PlayerColorType, playerData.UnitModelType);
         }
         
         private void SubtractUnits(int amount)

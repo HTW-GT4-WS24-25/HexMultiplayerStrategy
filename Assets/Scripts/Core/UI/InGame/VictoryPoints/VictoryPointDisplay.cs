@@ -32,7 +32,7 @@ namespace Core.UI.InGame.VictoryPoints
                 newFlag.SetColor(PlayerColor.GetFromColorType(data.PlayerColorType).BaseColor);
                 newFlag.SetPlacement(firstPlacementValue++);
                 _victoryPointFlagsByPlayerId.Add(data.ClientId, newFlag);
-                _lastScoresByPlayer.Add(data.ClientId, data.PlayerScore);
+                _lastScoresByPlayer.Add(data.ClientId, data.Score);
             }
         }
 
@@ -60,9 +60,9 @@ namespace Core.UI.InGame.VictoryPoints
             foreach (var data in playerData)
             {
                 var oldScore = _lastScoresByPlayer[data.ClientId];
-                scoringSequence.Join(DOVirtual.Int(oldScore, data.PlayerScore, scoreAnimationTime,
+                scoringSequence.Join(DOVirtual.Int(oldScore, data.Score, scoreAnimationTime,
                     value => _victoryPointFlagsByPlayerId[data.ClientId].SetScore(value)).SetEase(Ease.InOutSine));
-                _lastScoresByPlayer[data.ClientId] = data.PlayerScore;
+                _lastScoresByPlayer[data.ClientId] = data.Score;
             }
             scoringSequence.AppendCallback(DeterminePlayerPlacement);
 

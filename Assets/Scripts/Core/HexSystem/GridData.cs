@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.Buildings;
 using Core.GameEvents;
 using Core.HexSystem.Hex;
 using Core.Unit;
@@ -52,15 +53,6 @@ namespace Core.HexSystem
             ServerEvents.Unit.OnUnitGroupWithIdDeleted -= DeleteUnitGroup;
             ServerEvents.Unit.OnUnitGroupReachedNewHex -= MoveUnitGroupToHex;
             ServerEvents.Unit.OnUnitGroupLeftHexCenter -= RemoveStationaryUnitGroupFromHex;
-        }
-
-        public ulong? FirstPlayerUnitOnHexOrNull(AxialCoordinates coordinate, ulong playerId)
-        {
-            var hexagonData = _hexDataByCoordinates[coordinate];
-            if (hexagonData.UnitsOnHex.All(unitId => UnitGroup.UnitGroupsInGame[unitId].PlayerId != playerId))
-                return null;
-            
-            return hexagonData.UnitsOnHex.First(unitId => UnitGroup.UnitGroupsInGame[unitId].PlayerId == playerId);
         }
 
         public void PlaceUnitGroupOnHex(AxialCoordinates coordinate, UnitGroup unitGroupToAdd) 
@@ -117,8 +109,21 @@ namespace Core.HexSystem
             
             UpdateStationaryUnitGroupOfHexClientRpc(coordinate, newStationaryUnitGroup, newStationaryUnitGroup.NetworkObjectId);   
         }
+        
+        public void SetBuildingOnHex(AxialCoordinates coordinate, Building building)
+        {
+            var hexagonData = _hexDataByCoordinates[coordinate];
+            hexagonData.Building = building;
+            
+            SetBuildingOnHexClientRpc(coordinate, building.Type);
+        }
 
-        public void RemoveStationaryUnitGroupFromHex(UnitGroup unitGroupToRemove)
+        public void UpgradeBuildingOnHex(AxialCoordinates coordinate)
+        {
+            UpgradeBuildingOnHexClientRpc(coordinate);
+        }
+
+        private void RemoveStationaryUnitGroupFromHex(UnitGroup unitGroupToRemove)
         {
             var unitGroupId = unitGroupToRemove.NetworkObjectId;
             var coordinate = _coordinatesByUnitGroups[unitGroupId];
@@ -196,6 +201,22 @@ namespace Core.HexSystem
                 Debug.Assert(hexagonData.UnitsOnHex.Contains(newStationaryUnitGroup),
                     "Tried to add stationary unit group that does not exist on hexagon!");
             }
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void SetBuildingOnHexClientRpc(AxialCoordinates coordinate, BuildingType buildingType)
+        {
+            var hexagonData = _hexDataByCoordinates[coordinate];
+            
+            var newBuilding = BuildingFactory.Create(buildingType);
+            hexagonData.Building = newBuilding;
+        }
+
+        [ClientRpc]
+        private void UpgradeBuildingOnHexClientRpc(AxialCoordinates coordinate)
+        {
+            var hexagonData = _hexDataByCoordinates[coordinate];
+            hexagonData.Building.Upgrade();
         }
 
         #endregion

@@ -23,7 +23,7 @@ namespace Core.UI.InGame
         [Button]
         public void ShowFor(PlayerDataStorage.PlayerData player)
         {
-            var winnerIdentifier = player.ClientId == NetworkManager.Singleton.LocalClientId ? "You" : player.PlayerName;
+            var winnerIdentifier = player.ClientId == NetworkManager.Singleton.LocalClientId ? "You" : player.Name;
             victoryText.text = $"{winnerIdentifier} won!";
             var playerColorValue = PlayerColor.GetFromColorType(player.PlayerColorType).BaseColor;
             

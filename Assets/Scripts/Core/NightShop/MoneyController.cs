@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.GameEvents;
+using Helper;
 using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,8 +12,6 @@ namespace Core.NightShop
     {
         [SerializeField] private NightShopManager nightShopManager;
         [SerializeField] private int moneyPerRound;
-        
-        private IncomeHandler _incomeHandler;
 
         private readonly Dictionary<long, PurchaseRequestResponseResult> _clientPurchaseRequestResultsById = new();
 
@@ -26,9 +25,6 @@ namespace Core.NightShop
                 return;
             
             ClientEvents.DayNightCycle.OnSwitchedCycleState += OnSwitchedCycleState;
-
-            _incomeHandler = new IncomeHandler();
-                
             GrantPlayersRoundMoney();
         }
 
@@ -40,44 +36,25 @@ namespace Core.NightShop
 
         private void GrantPlayersRoundMoney()
         {
-            _incomeHandler.GrantMoneyToAllPlayers(moneyPerRound);
-            OnReceivedRoundMoneyClientRpc(moneyPerRound);
+            var players = HostSingleton.Instance.GameManager.PlayerData.GetPlayerList();
+            foreach (var playerData in players)
+            {
+                playerData.Money.Increase(moneyPerRound);
+                
+                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);
+                OnMoneyChangedClientRpc(playerData.Money.Get(), clientRpcParams);
+            }
         }
         
         [Rpc(SendTo.Server)]
         private void RequestPurchaseRpc(int cost, long requestId, ulong playerId)
         {
             var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId);
-            var succeeded = playerData.PlayerMoney.AttemptToPurchase(cost);
+            var succeeded = playerData.Money.AttemptToPurchase(cost);
             
-            var clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { playerId }
-                }
-            };
-            
+            var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerId);
+            OnMoneyChangedClientRpc(playerData.Money.Get(), clientRpcParams);
             HandlePurchaseRequestResponseClientRpc(requestId, succeeded, clientRpcParams);
-        }
-        
-        [Rpc(SendTo.Server)]
-        private void RequestMoneyComparisonRpc(int cost, ulong playerId)
-        {
-            var playerData = HostSingleton.Instance.GameManager.PlayerData.GetPlayerById(playerId); 
-            var playerMoney = playerData.PlayerMoney;
-                
-            bool success = playerMoney.CanSpendMoney(cost);
-                
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { playerId }
-                }
-            };
-                
-            OnMoneyComparisonClientRpc(success, clientRpcParams);
         }
 
         #endregion
@@ -109,15 +86,9 @@ namespace Core.NightShop
         }
         
         [ClientRpc]
-        private void OnReceivedRoundMoneyClientRpc(int money)
+        private void OnMoneyChangedClientRpc(int money, ClientRpcParams clientRpcParams)
         {
             ClientEvents.NightShop.OnMoneyAmountChanged?.Invoke(money);
-        }
-        
-        [ClientRpc]
-        private void OnMoneyComparisonClientRpc(bool success, ClientRpcParams clientRpcParams = default)
-        {
-            nightShopManager.OnMoneyComparison(success);
         }
 
         private class PurchaseRequestResponseResult

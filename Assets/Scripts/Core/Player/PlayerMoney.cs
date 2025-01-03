@@ -13,21 +13,26 @@ namespace Core.Player
         {
             if (CanSpendMoney(amount))
             {
-                SetMoney(_currentMoney -= amount);
+                Set(_currentMoney -= amount);
                 return true;
             };
 
             return false;
         }
 
-        public int GetMoney()
+        public int Get()
         {
             return _currentMoney;
         }
 
-        public void SetMoney(int amount)
+        public void Set(int amount)
         {
             _currentMoney = amount;
+        }
+
+        public void Increase(int amount)
+        {
+            _currentMoney += amount;
         }
     }
 }
