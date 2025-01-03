@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Unit.Group;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Core.Factions
 {
@@ -9,7 +10,8 @@ namespace Core.Factions
     public class LizardFaction : Faction
     {
         [Header("Lizard Settings")] 
-        [SerializeField] private float attackSpeedIncreaseFactorOnHit = 0.95f;
+        [SerializeField] private float attackDurationDecreaseOnHit;
+        [SerializeField] private float maxHitStacks;
         [SerializeField] private float healPortionOfEnemyHit = 0.5f;
 
         public override float CalculateAttackSpeed(Player player, UnitGroup ownUnitGroup, UnitGroup[] otherUnitGroups)
@@ -24,7 +26,7 @@ namespace Core.Factions
                 ownUnitGroup.Heal(combatData.lastDamageTaken * healPortionOfEnemyHit);
             }
             
-            var increasedAttackSpeed = attackSpeed * Mathf.Pow(attackSpeedIncreaseFactorOnHit, combatData.hitsDealt);
+            var increasedAttackSpeed = attackSpeed - attackDurationDecreaseOnHit * Mathf.Min(maxHitStacks, combatData.hitsDealt);
             combatData.hitsDealt++;
             player.FactionRuntimeData.Write(ownUnitGroup, combatData);
             return increasedAttackSpeed;

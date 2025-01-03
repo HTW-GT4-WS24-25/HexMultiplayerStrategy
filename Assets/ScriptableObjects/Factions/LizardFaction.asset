@@ -17,5 +17,6 @@ MonoBehaviour:
   description: 
   baseAttackSpeed: 2
   baseMoveSpeed: 0.05
-  attackSpeedIncreaseFactorOnHit: 0.97
-  healPortionOfEnemyHit: 0.6
+  attackDurationDecreaseOnHit: 0.2
+  maxHitStacks: 5
+  healPortionOfEnemyHit: 0.5
