@@ -68,11 +68,9 @@ namespace Core.NightShop
             
             RequestPurchaseRpc(amount, requestId, NetworkManager.Singleton.LocalClientId);
             
-            Debug.Log("Starts waiting for Request Response");
             while (_clientPurchaseRequestResultsById[requestId] == null)
                 await Task.Delay(PurchaseRequestPollDelayInMs);
             
-            Debug.Log("Got answer!");
             var gotAccepted = _clientPurchaseRequestResultsById[requestId].Accepted;
             _clientPurchaseRequestResultsById.Remove(requestId);
             return gotAccepted;

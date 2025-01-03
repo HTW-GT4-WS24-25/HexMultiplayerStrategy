@@ -40,12 +40,12 @@ namespace Core.Combat
 
         private void UpdateIsPaused(DayNightCycle.DayNightCycle.CycleState newDayNightCycle)
         {
-            _isPaused = newDayNightCycle switch
+            _isPaused = newDayNightCycle == DayNightCycle.DayNightCycle.CycleState.Night;
+
+            if (_isPaused)
             {
-                DayNightCycle.DayNightCycle.CycleState.Day => false,
-                DayNightCycle.DayNightCycle.CycleState.Night => true,
-                _ => throw new ArgumentException("Invalid DayNightCycle state")
-            };
+                _ongoingCombats.ForEach(combat => combat.PauseCombat());
+            }
         }
 
         private void TriggerAllCombatUpdates()

@@ -216,7 +216,7 @@ namespace Core.HexSystem
         {
             var hexagonData = _hexDataByCoordinates[coordinate];
             
-            var newBuilding = BuildingFactory.Create(buildingType);
+            var newBuilding = BuildingFactory.Create(buildingType, hexagonData);
             hexagonData.Building = newBuilding;
         }
 

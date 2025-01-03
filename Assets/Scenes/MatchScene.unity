@@ -744,6 +744,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4423819880621845921, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6548401546078417604, guid: a98cdba32fdef12468812fcf1f4b8d1c, type: 3}
       propertyPath: m_Name
       value: 'InGameUI '
@@ -836,6 +840,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   scoreDisplay: {fileID: 398356727}
   victoryBanner: {fileID: 1565702506}
+  delayTimeToShowVictoryBanner: 2
 --- !u!4 &1429588807
 Transform:
   m_ObjectHideFlags: 0

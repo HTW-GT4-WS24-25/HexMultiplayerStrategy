@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d2a7c46b4deb8b4d9dcacf3e951a17c, type: 3}
+  m_Name: PlayerOrange
+  m_EditorClassIdentifier: 
+  <Type>k__BackingField: 4
+  <BaseColor>k__BackingField: {r: 1, g: 0.38597694, b: 0, a: 1}
+  <UnitColoringMaterial>k__BackingField: {fileID: 2100000, guid: ba8c9b9fb6864ce439fc8e5eacf354f2, type: 2}
+  <HighlightedUnitMaterial>k__BackingField: {fileID: 2100000, guid: ba8c9b9fb6864ce439fc8e5eacf354f2, type: 2}
+  <HexBorderMaterial>k__BackingField: {fileID: 2100000, guid: 033ae9b69f524f8449665c4a14ba1eca, type: 2}
+  <TravelLineMaterial>k__BackingField: {fileID: 2100000, guid: 033ae9b69f524f8449665c4a14ba1eca, type: 2}
+  <HighlightedTravelLineMaterial>k__BackingField: {fileID: 2100000, guid: d8f558b245574d9419d9fd6f974c809b, type: 2}
+  <TravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: e360207d58fe90548b3e4f4ca6a72581, type: 2}
+  <HighlightedTravelEndPointMaterial>k__BackingField: {fileID: 2100000, guid: d2ea731a57c6c524e8101ab02cb21b04, type: 2}

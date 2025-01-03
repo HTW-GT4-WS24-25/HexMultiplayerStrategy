@@ -96,16 +96,16 @@ namespace Core.Startup
             buildingPlacement.Initialize(hexGridData);
 
             var players = HostSingleton.Instance.GameManager.GetPlayers();
-            foreach (var playerData in players)
+            foreach (var player in players)
             {
                 var playerStartCoordinate = _remainingStartCoordinates[Random.Range(0, _remainingStartCoordinates.Count)];
                 _remainingStartCoordinates.Remove(playerStartCoordinate);
                 var playerStartHex = mapBuilder.Grid.Get(playerStartCoordinate);
             
-                ServerEvents.Player.OnInitialPlayerUnitsPlaced!.Invoke(playerStartCoordinate, playerData.ClientId);
-                unitPlacement.TryAddUnitsToHex(playerStartCoordinate, playerData, 30);
+                ServerEvents.Player.OnInitialPlayerUnitsPlaced!.Invoke(playerStartCoordinate, player.ClientId);
+                unitPlacement.TryAddUnitsToHex(playerStartCoordinate, player, player.Faction.StartUnitCount);
             
-                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(playerData.ClientId);
+                var clientRpcParams = HelperMethods.GetClientRpcParamsToSingleTarget(player.ClientId);
                 AlignCameraToStartClientRpc(playerStartHex.transform.position, clientRpcParams);
             }
         }

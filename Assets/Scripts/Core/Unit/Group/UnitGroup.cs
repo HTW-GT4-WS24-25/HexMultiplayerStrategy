@@ -160,6 +160,11 @@ namespace Core.Unit.Group
             combatPosition.y = transform.position.y;
             transform.LookAt(combatPosition);
         }
+
+        public void StopCurrentHitAnimation()
+        {
+            StopFightingAnimationClientRpc();
+        }
         
         public void EndFighting()
         {

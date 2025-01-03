@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: LionFaction
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 3
+  <StartUnitCount>k__BackingField: 20
   description: 
   baseAttackSpeed: 1.5
-  baseMoveSpeed: 0.3
+  baseMoveSpeed: 0.05
   damageReductionFactorOnBuilding: 0.7

@@ -1,4 +1,5 @@
 using Core.HexSystem;
+using Core.HexSystem.Hex;
 using Core.Unit.Group;
 using Unity.Collections;
 using UnityEngine.Events;
@@ -17,6 +18,7 @@ namespace Core.GameEvents
             public UnityAction<ulong, FixedString32Bytes> OnPlayerConnected;
             public UnityAction<ulong, int> OnPlayerColorChanged;
             public UnityAction<AxialCoordinates, ulong> OnInitialPlayerUnitsPlaced;
+            public UnityAction<ulong, int> OnPlayerScoreChanged;
         }
     
         public class DayNightCycleEvents
@@ -38,6 +40,7 @@ namespace Core.GameEvents
             public UnityAction<UnitGroup> OnUnitGroupLeftHexCenter;
             public UnityAction<UnitGroup, UnitGroup> OnCombatTriggered;
             public UnityAction<UnitGroup> OnUnitGroupShouldReceiveMoveSpeedUpdate;
+            public UnityAction<HexagonData, int> OnUnitsShouldBeSpawnedOnBarrackHex;
         }
     }
 }

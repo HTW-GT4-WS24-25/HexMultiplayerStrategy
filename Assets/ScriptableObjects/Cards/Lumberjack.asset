@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Lumberjack
   m_EditorClassIdentifier: 
   cardName: Lumberjack
-  cost: 1
+  cost: 3
   placeable: {fileID: 11400000, guid: 988ababc864a928419223bec07a2bf9d, type: 2}

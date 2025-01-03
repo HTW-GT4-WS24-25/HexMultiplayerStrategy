@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: RabbitFaction
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 0
+  <StartUnitCount>k__BackingField: 15
   description: 
   baseAttackSpeed: 1.5
-  baseMoveSpeed: 0.3
+  baseMoveSpeed: 0.05
   grassMoveSpeedFactor: 1.2
   forestMoveSpeedFactor: 0.9
   attackSpeedFactorAgainstHigherScore: 0.7

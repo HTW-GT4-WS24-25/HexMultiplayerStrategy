@@ -51,3 +51,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 95239fe1abaa2fa409ef99c3fdc18ea6, type: 2}
   - {fileID: 11400000, guid: c5b5427605baf4c4f834d8eb95eb9c6d, type: 2}
   - {fileID: 11400000, guid: 50e51a5f5d5d33949b952af436314199, type: 2}
+  - {fileID: 11400000, guid: e3375c178c3526c46b1f4885a6786e34, type: 2}
+  unitModelPrefabs:
+  - {fileID: 2775784481036110402, guid: 024f6ee0c3eee4049a132895d97f69f6, type: 3}
+  - {fileID: 2775784481036110402, guid: c519111328f33fd449a8452081b05cdd, type: 3}
+  - {fileID: 2775784481036110402, guid: 1fff7d92a2467c04295a8a8d506333fa, type: 3}
+  - {fileID: 2775784481036110402, guid: 2324292674e4ea147a307539d67d015a, type: 3}
+  sceneNameAfterInitialization: Menu

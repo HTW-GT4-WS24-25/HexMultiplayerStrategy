@@ -62,6 +62,15 @@ namespace Core.Combat
                 End();
         }
 
+        public void PauseCombat()
+        {
+            foreach (var unitGroup in _unitGroups)
+            {
+                _attackChargeProgress[unitGroup] = 0;
+                unitGroup.StopCurrentHitAnimation();
+            }
+        }
+
         private void ProcessHit(UnitGroup unitGroup)
         {
             _attackSpeeds[unitGroup] = CalculateUnitGroupAttackSpeed(unitGroup);

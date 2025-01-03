@@ -421,7 +421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e97fc6045a775214fadf1bd56b9df3a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerColorType: 2
+  playerColorType: 4
   faction: {fileID: 11400000, guid: 4c162f9d818e1c34b9b2da801364bff9, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

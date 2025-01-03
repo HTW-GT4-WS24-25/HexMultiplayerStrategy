@@ -12,6 +12,9 @@ namespace Core.Input
 
         public override void HandleMouseDown()
         {
+            if(EventSystem.current.IsPointerOverGameObject()) // Todo: why do we need this?
+                return;
+            
             if (TryGetUnitOnScreenPosition(InputReader.MousePosition, out var clickedUnit) &&
                 clickedUnit.PlayerId == NetworkManager.Singleton.LocalClientId)
             {

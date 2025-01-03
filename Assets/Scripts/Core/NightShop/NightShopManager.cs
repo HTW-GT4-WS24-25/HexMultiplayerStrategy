@@ -24,10 +24,9 @@ namespace Core.NightShop
         [SerializeField] private List<Card> cards;
         [SerializeField] private TextMeshProUGUI readyPlayersText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
-        [FormerlySerializedAs("mouseOverHighlighter")] [SerializeField] private MouseOverHexHighlighter mouseOverHexHighlighter;
+        [SerializeField] private MouseOverHexHighlighter mouseOverHexHighlighter;
         
         private Card _selectedCard;
-        private Placeable _placeableOnSuccessfulPurchase;
         private HexagonData _selectedHexagon;
         private bool _readyForDawn;
         private int _localPlayerMoneyAmount;
@@ -81,7 +80,6 @@ namespace Core.NightShop
         public void HandleSelectedCard(Card card)
         {
             _selectedCard = card;
-            _placeableOnSuccessfulPurchase = null;
             _selectedCard.placeable.Initialize(NetworkManager.Singleton.LocalClientId);
             ClientEvents.Hexagon.OnHideValidHexagonsForPlacement?.Invoke();
             
@@ -120,8 +118,8 @@ namespace Core.NightShop
             var hexagonData = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
             if (!_selectedCard.placeable.IsHexValidForPlacement(hexagonData)) 
                 return;
-            
-            _selectedHexagon = gridData.GetHexagonDataOnCoordinate(hexagon.Coordinates);
+
+            _selectedHexagon = hexagonData;
             
             PlaceCurrentSelectionOnSelectedHexAsync();
         }
@@ -131,13 +129,12 @@ namespace Core.NightShop
             if (_localPlayerMoneyAmount < _selectedCard.cost)
                 return;
             
-            _placeableOnSuccessfulPurchase = _selectedCard.placeable;
+            var placeableOnSuccessfulPurchase = _selectedCard.placeable;
             var purchaseSucceeded = await moneyController.RequestPurchaseAsync(_selectedCard.cost);
             if(!purchaseSucceeded)
                 return;
             
-            _placeableOnSuccessfulPurchase?.Place(_selectedHexagon);
-            _placeableOnSuccessfulPurchase = null;
+            placeableOnSuccessfulPurchase?.Place(_selectedHexagon);
             
             if (!_selectedCard)
             {
@@ -145,23 +142,6 @@ namespace Core.NightShop
                 return;
             }
             
-            _stateManager.ChangeState(new ChoosingHexagonState(this));
-        }
-        
-        public void OnMoneyComparison(bool success)
-        {
-            if (success)
-            {
-                _stateManager.ChangeState(new ChoosingHexagonState(this));
-                return;
-            }
-        
-            _stateManager.ChangeState(new ChoosingCardState(this));
-        }
-    
-        public void OnFailedPurchase()
-        {
-            _placeableOnSuccessfulPurchase = null;
             _stateManager.ChangeState(new ChoosingHexagonState(this));
         }
 

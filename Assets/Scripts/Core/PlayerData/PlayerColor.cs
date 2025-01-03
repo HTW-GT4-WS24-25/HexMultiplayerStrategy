@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Core.PlayerData
 {
-    [CreateAssetMenu(fileName = "New PlayerColor", menuName = "Create Player Color")]
+    [CreateAssetMenu(fileName = "New PlayerColor", menuName = "Player Color")]
     public class PlayerColor : ScriptableObject
     {
         [field: SerializeField] public ColorType Type { get; private set; }
@@ -42,7 +42,8 @@ namespace Core.PlayerData
             None = 0,
             Red = 1,
             Blue = 2,
-            Green = 3
+            Green = 3,
+            Orange = 4
         }
     }
 }

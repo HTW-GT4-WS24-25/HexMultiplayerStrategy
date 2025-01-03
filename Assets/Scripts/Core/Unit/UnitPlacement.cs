@@ -1,5 +1,6 @@
 ﻿using Core.GameEvents;
 using Core.HexSystem;
+using Core.HexSystem.Hex;
 using Networking.Host;
 using Unity.Netcode;
 using UnityEngine;
@@ -24,12 +25,18 @@ namespace Core.Unit
         {
             if (IsClient)
                 ClientEvents.NightShop.OnUnitPlacementCommand += HandlePlacementCommand;
+
+            if (IsServer)
+                ServerEvents.Unit.OnUnitsShouldBeSpawnedOnBarrackHex += SpawnUnitsOnBarrackHex;
         }
 
         public override void OnNetworkDespawn()
         {
             if (IsClient)
                 ClientEvents.NightShop.OnUnitPlacementCommand -= HandlePlacementCommand;
+            
+            if (IsServer)
+                ServerEvents.Unit.OnUnitsShouldBeSpawnedOnBarrackHex -= SpawnUnitsOnBarrackHex;
         }
     
         #region Server
@@ -74,6 +81,14 @@ namespace Core.Unit
             newUnitGroup.InitializeOnHexCenter(unitAmount, playerId, hexagon);
         
             _gridData.PlaceUnitGroupOnHex(coordinate, newUnitGroup);
+        }
+        
+        private void SpawnUnitsOnBarrackHex(HexagonData hexagon, int unitAmount)
+        {
+            var controllingPlayer =
+                HostSingleton.Instance.GameManager.GetPlayerByClientId(hexagon.ControllerPlayerId!.Value);
+            
+            TryAddUnitsToHex(hexagon.Coordinates, controllingPlayer, unitAmount);
         }
 
         #endregion

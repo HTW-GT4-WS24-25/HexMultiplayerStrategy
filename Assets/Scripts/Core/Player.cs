@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Buildings;
 using Core.Factions;
 using Core.GameEvents;
 using Core.HexSystem;
@@ -28,9 +29,18 @@ namespace Core
             }
         }
 
+        public int Score
+        {
+            get => _score;
+            set
+            {
+                _score = value;
+                ServerEvents.Player.OnPlayerScoreChanged?.Invoke(ClientId, _score);
+            }
+        }
+
         public int NumberOfControlledHexes => _hexagonsUnderControl.Count;
-            
-        public int Score { get; set; }
+        
         public Faction Faction { get; set; }
         public GridData GridData { get; set; }
         
@@ -59,9 +69,10 @@ namespace Core
 
         #region ValueCalculation
         
-        public int CalculateScoreToGainAtNightfall()
+        public int CalculateScoreToGainAtNightfall(List<BuildingYield> buildingYields)
         {
-            return Faction.CalculateScoreToGainAtNightfall(this);
+            var buildingScores = GetScoreFromBuildingYields(buildingYields);
+            return Faction.CalculateScoreToGainAtNightfall(this) + buildingScores;
         }
 
         public int CalculateGoldToGainAtNightfall()
@@ -101,12 +112,48 @@ namespace Core
 
         public void OnDawn()
         {
-            
+            List<BuildingYield> yields = new();
+            foreach (var hexagon in _hexagonsUnderControl)
+            {
+                if (hexagon.Building == null)
+                    continue;
+
+                var yield = hexagon.Building.OnDawn();
+                if(yield != null)
+                    yields.Add(yield);
+            }
         }
 
         public void OnNightfall()
         {
+            List<BuildingYield> yields = new();
+            foreach (var hexagon in _hexagonsUnderControl)
+            {
+                if (hexagon.Building == null)
+                    continue;
+
+                var yield = hexagon.Building.OnNightFall();
+                if(yield != null)
+                    yields.Add(yield);
+            }
             
+            Score += CalculateScoreToGainAtNightfall(yields);
+        }
+
+        private int GetGoldFromBuildingYields(List<BuildingYield> yields)
+        {
+            var totalGoldYield = 0;
+            yields.ForEach(y => totalGoldYield += y.Gold);
+            
+            return totalGoldYield;
+        }
+        
+        private int GetScoreFromBuildingYields(List<BuildingYield> yields)
+        {
+            var totalScoreYield = 0;
+            yields.ForEach(y => totalScoreYield += y.Score);
+            
+            return totalScoreYield;
         }
 
         public void OnGainedControlOfHex(HexagonData hexagon)

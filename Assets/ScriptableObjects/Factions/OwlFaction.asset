@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: OwlFaction
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 1
+  <StartUnitCount>k__BackingField: 20
   description: 
   baseAttackSpeed: 1.5
-  baseMoveSpeed: 0.3
+  baseMoveSpeed: 0.05
+  forestAttackSpeedFactor: 0.8

@@ -64,8 +64,6 @@ namespace Core.Unit
             if(!hit.collider.transform.parent.TryGetComponent<UnitGroup>(out var unitGroup))
                 return;
             
-            Debug.Log("Unit hit!");
-            
             if(unitGroup.PlayerId != _owningPlayerId)
                 return;
             

@@ -216,8 +216,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 3192039604157038953}
   cameraHandle: {fileID: 571385015680087656}
-  minZoom: -2
-  maxZoom: 2
+  minZoom: -4.5
+  maxZoom: 0.5
   zoomPerInput: 1
   dragPerInputOnMaxZoom: 0.0015
   dragPerInputOnMinZoom: 0.0035

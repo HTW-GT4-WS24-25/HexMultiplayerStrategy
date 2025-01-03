@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Barrack
   m_EditorClassIdentifier: 
   cardName: Barrack
-  cost: 1
+  cost: 5
   placeable: {fileID: 11400000, guid: afcebaa9729ac1042b3bac64c416d272, type: 2}

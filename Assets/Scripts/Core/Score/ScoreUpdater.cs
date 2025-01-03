@@ -1,8 +1,12 @@
 ﻿using System.Linq;
 using Core.GameEvents;
+using Core.PlayerData;
 using Core.UI.InGame;
 using Core.UI.InGame.Score;
+using DG.Tweening;
 using Networking.Host;
+using Sirenix.OdinInspector;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,6 +17,7 @@ namespace Core.Score
         {
                 [SerializeField] ScoreDisplay scoreDisplay;
                 [SerializeField] VictoryBanner victoryBanner;
+                [SerializeField] private float delayTimeToShowVictoryBanner = 2f;
         
                 private ScoreCalculator _scoreCalculator;
 
@@ -23,6 +28,7 @@ namespace Core.Score
                         
                         ServerEvents.DayNightCycle.OnTurnEnded += DistributeScoresAtNight;
                         ServerEvents.DayNightCycle.OnGameEnded += DistributeScoresAtEndOfGame;
+                        ServerEvents.Player.OnPlayerScoreChanged += HandlePlayerScoreChanged;
                 }
 
                 public override void OnNetworkDespawn()
@@ -32,6 +38,7 @@ namespace Core.Score
                         
                         ServerEvents.DayNightCycle.OnTurnEnded -= DistributeScoresAtNight;
                         ServerEvents.DayNightCycle.OnGameEnded -= DistributeScoresAtEndOfGame;
+                        ServerEvents.Player.OnPlayerScoreChanged -= HandlePlayerScoreChanged;
                 }
 
                 #region Server
@@ -41,23 +48,27 @@ namespace Core.Score
                         _scoreCalculator = scoreCalculator;
                         InitializeVictoryPointDisplayClientRpc(GetPlayersInDisplayDataSortedByScore());
                 }
+                
+                private void HandlePlayerScoreChanged(ulong playerId, int newScore)
+                {
+                        UpdatePlayerScoreDisplayClientRpc(playerId, newScore);
+                }
 
                 private void DistributeScoresAtNight()
                 {
-                        IncrementScoresAtNight();
+                        //IncrementScoresAtNight();
                         
                         DistributeScoresAtNightClientRpc(GetPlayersInDisplayDataSortedByScore());
                 }
 
                 private void DistributeScoresAtEndOfGame()
                 {
-                        IncrementScoresAtNight();
+                        //IncrementScoresAtNight();
                         var sortedDisplayData = GetPlayersInDisplayDataSortedByScore();
                         var winnerDisplayData = sortedDisplayData[0];
-                        var winnerName = HostSingleton.Instance.GameManager
-                                .GetPlayerByClientId(winnerDisplayData.ClientId).Name;
+                        var winnerName = HostSingleton.Instance.GameManager.GetPlayerByClientId(winnerDisplayData.ClientId).Name;
                         
-                        DistributeScoresAtEndOfGameClientRpc(sortedDisplayData, winnerName);
+                        DistributeScoresAtEndOfGameClientRpc(winnerDisplayData.ClientId, winnerName, winnerDisplayData.PlayerColorType);
                 }
 
                 private void IncrementScoresAtNight()
@@ -94,20 +105,27 @@ namespace Core.Score
                 }
 
                 [ClientRpc]
-                private void DistributeScoresAtNightClientRpc(ScoreDisplay.PlayerScoreDisplayData[] playerData)
+                private void UpdatePlayerScoreDisplayClientRpc(ulong playerId, int newScore)
                 {
-                        scoreDisplay.UpdateScoresFromData(playerData);
+                        scoreDisplay.UpdateScoreForPlayer(playerId, newScore);
                 }
 
                 [ClientRpc]
-                private void DistributeScoresAtEndOfGameClientRpc(ScoreDisplay.PlayerScoreDisplayData[] playerData, string winnerName)
+                private void DistributeScoresAtNightClientRpc(ScoreDisplay.PlayerScoreDisplayData[] playerData)
                 {
-                        var winner = playerData[0];
-                        scoreDisplay.UpdateScoresForGameEnd(playerData, () =>
+                        //scoreDisplay.UpdateScoresFromData(playerData);
+                        scoreDisplay.PlayGrowShrinkAnimation();
+                }
+
+                [ClientRpc]
+                private void DistributeScoresAtEndOfGameClientRpc(ulong winnerClientId, FixedString32Bytes winnerName, PlayerColor.ColorType winnerColorType)
+                {
+                        scoreDisplay.PlayGrowAnimation();
+                        DOVirtual.DelayedCall(delayTimeToShowVictoryBanner, () =>
                         {
                                 var winnerIdentifier =
-                                        winner.ClientId != NetworkManager.LocalClientId ? winnerName : "You";
-                                victoryBanner.ShowFor(winnerIdentifier, winner.PlayerColorType); 
+                                        winnerClientId != NetworkManager.LocalClientId ? winnerName.Value : "You";
+                                victoryBanner.ShowFor(winnerIdentifier, winnerColorType);
                         });
                 }
                 

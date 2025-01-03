@@ -38,7 +38,7 @@ namespace Core.Buildings
             
             Debug.Assert(existingBuilding == null);
             
-            var newBuilding = BuildingFactory.Create(type);
+            var newBuilding = BuildingFactory.Create(type, hexData);
             
             _gridData.SetBuildingOnHex(coordinate, newBuilding);
             SetBuildingToppingClientRpc(coordinate, hexData.HexType, newBuilding.Type);
