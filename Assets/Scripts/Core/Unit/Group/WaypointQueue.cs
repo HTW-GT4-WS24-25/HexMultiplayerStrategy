@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Sirenix.Utilities;
 using Unity.Netcode;
 using UnityEngine.Events;

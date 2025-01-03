@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

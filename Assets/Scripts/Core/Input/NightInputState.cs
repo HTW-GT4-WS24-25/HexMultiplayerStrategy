@@ -6,7 +6,7 @@ namespace Core.Input
 {
     public class NightInputState : InputState
     {
-        public NightInputState(InputReader inputReader, LayerMask selectionLayer) : base(inputReader, selectionLayer)
+        public NightInputState(InputReader inputReader, LayerMask groundLayer, LayerMask unitLayer) : base(inputReader, groundLayer, unitLayer)
         { }
 
         public override void HandleMouseDown()

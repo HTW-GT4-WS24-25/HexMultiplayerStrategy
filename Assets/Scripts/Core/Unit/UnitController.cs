@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using Core.GameEvents;
 using Core.HexSystem;
 using Core.HexSystem.Generation;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.HexSystem.VFX;
 using Core.Unit.Group;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Core.Unit
 {
@@ -15,14 +16,15 @@ namespace Core.Unit
         [SerializeField] private GridData gridData;
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private UnitGroup unitGroupPrefab;
-        [SerializeField] private MouseOverHighlighter mouseOverHighlighter;
+        [SerializeField] private MouseOverHexHighlighter mouseOverHexHighlighter;
 
         private UnitGroup _selectedUnitGroup;
         private int _clientSelectionUnitCount;
 
         public override void OnNetworkSpawn()
         {
-            ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement += HandleHexClick;
+            ClientEvents.Input.OnHexSelectedForUnitMovement += HandleHexClick;
+            ClientEvents.Input.OnUnitGroupSelected += SelectUnitGroup;
             ClientEvents.DayNightCycle.OnSwitchedCycleState += HandleDayNightSwitchState;
             ClientEvents.Unit.OnUnitSelectionSliderUpdate += UpdateSelectedUnitCount;
             ClientEvents.Unit.OnUnitGroupDeselected += CancelCurrentUnitSelection;
@@ -33,7 +35,8 @@ namespace Core.Unit
 
         public override void OnNetworkDespawn()
         {
-            ClientEvents.Input.OnHexSelectedForUnitSelectionOrMovement -= HandleHexClick;
+            ClientEvents.Input.OnHexSelectedForUnitMovement -= HandleHexClick;
+            ClientEvents.Input.OnUnitGroupSelected -= SelectUnitGroup;
             ClientEvents.DayNightCycle.OnSwitchedCycleState -= HandleDayNightSwitchState;
             ClientEvents.Unit.OnUnitSelectionSliderUpdate -= UpdateSelectedUnitCount;
             ClientEvents.Unit.OnUnitGroupDeselected -= CancelCurrentUnitSelection;
@@ -105,26 +108,16 @@ namespace Core.Unit
             {
                 RequestMoveCommandRpc(clickedHex.Coordinates, _selectedUnitGroup.NetworkObjectId, _clientSelectionUnitCount);
             }
-            else
-            {
-                SelectUnitGroupOnHex(clickedHex);
-            }
         }
 
-        private void SelectUnitGroupOnHex(Hexagon hex)
+        private void SelectUnitGroup(UnitGroup unitGroup)
         {
-            var unitOnHex = gridData.FirstPlayerUnitOnHexOrNull(hex.Coordinates, NetworkManager.Singleton.LocalClientId);
-            if (unitOnHex == null) 
-                return;
-            
             CancelCurrentUnitSelection();
-                
-            _selectedUnitGroup = UnitGroup.UnitGroupsInGame[unitOnHex.Value];
-            _selectedUnitGroup.EnableHighlight();
+            
+            _selectedUnitGroup = unitGroup;
+            _selectedUnitGroup.EnableSelectionHighlight();
             _selectedUnitGroup.OnUnitCountUpdated += HandleUnitCountOfSelectedChanged;
-            mouseOverHighlighter.Enable();
-                
-            ClientEvents.Unit.OnUnitGroupSelected?.Invoke(_selectedUnitGroup);
+            mouseOverHexHighlighter.Enable();
         }
 
         private void HandleUnitCountOfSelectedChanged(int newUnitCount)
@@ -138,9 +131,9 @@ namespace Core.Unit
                 return;
             
             _selectedUnitGroup.OnUnitCountUpdated -= HandleUnitCountOfSelectedChanged;
-            _selectedUnitGroup.DisableHighlight();
+            _selectedUnitGroup.DisableSelectionHighlight();
             _selectedUnitGroup = null;
-            mouseOverHighlighter.Disable();
+            mouseOverHexHighlighter.Disable();
         }
 
         private void UpdateSelectedUnitCount(int count)

@@ -13,7 +13,7 @@ namespace Core.Unit.Model
         {
             var unitModelPrefab = UnitModel.GetModelPrefabFromType(unitModelType);
             var unitModel = Instantiate(unitModelPrefab, unitHolder.position, unitHolder.rotation, unitHolder);
-            unitModel.MaskTint.ApplyMaterials(playerColor.UnitColoringMaterial);
+            unitModel.MaskTint.ApplyColoringMaterial(playerColor.UnitColoringMaterial);
             unitModel.Animator.PlayDeathAnimation();
             
             DOVirtual.DelayedCall(deathAnimationDuration, () => { Destroy(gameObject); });

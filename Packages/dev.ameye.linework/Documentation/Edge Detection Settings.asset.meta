@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e1bb6646214c84437814a6e99de108c9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Easy Outlines, Edges and Fills'
+  packageVersion: 1.3.1
+  assetPath: Packages/dev.ameye.linework/Documentation/Edge Detection Settings.asset
+  uploadId: 718955

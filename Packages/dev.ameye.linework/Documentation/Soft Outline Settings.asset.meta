@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 175e846df6f884c13ac188909568c953
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Easy Outlines, Edges and Fills'
+  packageVersion: 1.3.1
+  assetPath: Packages/dev.ameye.linework/Documentation/Soft Outline Settings.asset
+  uploadId: 718955

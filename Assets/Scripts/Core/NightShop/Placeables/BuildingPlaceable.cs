@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Core.Buildings;
 using Core.GameEvents;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 
 namespace Core.NightShop.Placeables
 {

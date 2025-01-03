@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: c3d9423b8a94407596116cb6ff8e3e59
+timeCreated: 1719059574
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Easy Outlines, Edges and Fills'
+  packageVersion: 1.3.1
+  assetPath: Packages/dev.ameye.linework/Runtime/FastOutline/FastOutlineSettings.cs
+  uploadId: 718955

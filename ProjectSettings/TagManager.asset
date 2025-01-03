@@ -13,8 +13,8 @@ TagManager:
   - Water
   - UI
   - Ground
-  - Trigger
-  - 
+  - CombatTrigger
+  - Unit
   - 
   - 
   - 
@@ -51,3 +51,5 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  - HoverOutline
+  - SelectedOutline

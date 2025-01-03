@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f6a15b1d0142a4d41a49c7a79c66f3d9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Easy Outlines, Edges and Fills'
+  packageVersion: 1.3.1
+  assetPath: Packages/dev.ameye.linework/Samples~/Linework/Settings/Fast Outline
+    Settings.asset
+  uploadId: 718955

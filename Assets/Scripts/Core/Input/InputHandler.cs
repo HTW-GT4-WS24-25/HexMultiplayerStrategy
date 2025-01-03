@@ -2,13 +2,15 @@ using System;
 using Core.GameEvents;
 using Core.Unit;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Core.Input
 {
     public class InputHandler : MonoBehaviour
     {
         [SerializeField] private InputReader inputReader;
-        [SerializeField] private LayerMask selectionLayer;
+        [SerializeField] private LayerMask groundLayer;
+        [SerializeField] private LayerMask unitLayer;
         [SerializeField] private UnitPlacement unitPlacement;
     
         private InputState _currentInputState;
@@ -17,8 +19,8 @@ namespace Core.Input
 
         private void Awake()
         {
-            _dayInputState = new DayInputState(inputReader, selectionLayer);
-            _nightInputState = new NightInputState(inputReader, selectionLayer);
+            _dayInputState = new DayInputState(inputReader, groundLayer, unitLayer);
+            _nightInputState = new NightInputState(inputReader, groundLayer, unitLayer);
             
             _currentInputState = _dayInputState;
         }

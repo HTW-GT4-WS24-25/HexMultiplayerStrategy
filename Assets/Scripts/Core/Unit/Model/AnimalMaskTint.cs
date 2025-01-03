@@ -4,11 +4,12 @@ namespace Core.Unit.Model
 {
     public class AnimalMaskTint : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private Renderer currentBody;
         [SerializeField] private Renderer currentWeapon;
         [SerializeField] private Renderer currentShield;
 
-        public void ApplyMaterials(Material coloringMaterial)
+        public void ApplyColoringMaterial(Material coloringMaterial)
         {
             currentBody.material = coloringMaterial;
             currentShield.material = coloringMaterial;

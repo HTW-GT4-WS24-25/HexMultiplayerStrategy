@@ -1,5 +1,5 @@
 using Core.GameEvents;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.UI.InGame.NightShop;
 
 namespace Core.NightShop.NightShopStates

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Combat;
 using Core.GameEvents;
-using Core.HexSystem.Hexagon;
+using Core.HexSystem.Hex;
 using Core.Player;
 using Core.Unit.Group.Display;
 using Core.Unit.Model;
@@ -48,6 +48,7 @@ namespace Core.Unit.Group
         private float _combatHealth;
         private PlayerColor _playerColor;
         private UnitModel.ModelType _modelType;
+        private UnitModel _model;
         
         public override void OnNetworkSpawn()
         {
@@ -213,22 +214,15 @@ namespace Core.Unit.Group
             PlayerId = playerId;
             
             _modelType = playerModelType;
-            var model = Instantiate(UnitModel.GetModelPrefabFromType(playerModelType), modelHolder.position, modelHolder.rotation, modelHolder);
-            UnitAnimator = model.Animator;
+            _model = Instantiate(UnitModel.GetModelPrefabFromType(playerModelType), modelHolder.position, modelHolder.rotation, modelHolder);
+            UnitAnimator = _model.Animator;
             Movement.OnMoveAnimationSpeedChanged += UnitAnimator.SetMoveSpeed;
             
             _playerColor = PlayerColor.GetFromColorType(playerColorType);
-            model.MaskTint.ApplyMaterials(_playerColor.UnitColoringMaterial);
+            _model.MaskTint.ApplyColoringMaterial(_playerColor.UnitColoringMaterial);
 
             travelLineDrawer.InitializeTravelLine(_playerColor);
             healthBar.Initialize(_playerColor.BaseColor);
-        }
-        
-        [ClientRpc]
-        private void SetAsSelectedClientRpc()
-        {
-            if(NetworkManager.Singleton.LocalClientId == PlayerId)
-                ClientEvents.Unit.OnUnitGroupSelected?.Invoke(this);
         }
 
         [ClientRpc]
@@ -262,13 +256,6 @@ namespace Core.Unit.Group
         }
 
         [ClientRpc]
-        private void IncreaseHealthBarClientRpc(int amount)
-        {
-            healthBar.IncreaseMaxUnitCount(amount);
-            healthBar.SetHealth(_combatHealth);
-        }
-
-        [ClientRpc]
         private void PlayHitAnimationInSecondsClientRpc(float secondsUntilHit)
         {
             UnitAnimator.PlayHitAnimation(secondsUntilHit);
@@ -287,16 +274,26 @@ namespace Core.Unit.Group
             unitDeathDummy.Initialize(PlayerColor.GetFromColorType(playerColorType), _playerModelType);
         }
         
-        public void EnableHighlight()
+        public void EnableSelectionHighlight()
         {
-            //Todo: apply highlight effect on unit model
+            _model.ActivateSelectedOutline();
             OnUnitHighlightEnabled?.Invoke();
         }
 
-        public void DisableHighlight()
+        public void DisableSelectionHighlight()
         {
-            //Todo: disable highlight effect on unit model
+            _model.DeactivateSelectedOutline();
             OnUnitHighlightDisabled?.Invoke();
+        }
+
+        public void EnableHoverHighlight()
+        {
+            _model.ActivateHoverOutline();    
+        }
+
+        public void DisableHoverHighlight()
+        {
+            _model.DeactivateHoverOutline();
         }
         
         #endregion
