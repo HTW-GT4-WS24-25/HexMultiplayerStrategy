@@ -73,13 +73,13 @@ namespace Core.Unit.Group
         {
             _isPaused = pause;
             
-            if (!pause && HasMovementLeft)
+            if (!_isPaused && HasMovementLeft)
             {
                 _moveRoutine = StartCoroutine(MoveToGoal());
-                
+                transform.rotation = Quaternion.LookRotation(GoalHexagon.transform.position - transform.position);
                 OnMoveAnimationSpeedChangedClientRpc(_moveSpeed);
             }
-            else if (pause && _moveRoutine != null)
+            else if (_isPaused && _moveRoutine != null)
             {
                 StopCoroutine(_moveRoutine);
                 _moveRoutine = null;
