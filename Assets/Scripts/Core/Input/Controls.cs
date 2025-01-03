@@ -15,14 +15,12 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace Core.Input
+public partial class @Controls: IInputActionCollection2, IDisposable
 {
-    public partial class @Controls: IInputActionCollection2, IDisposable
+    public InputActionAsset asset { get; }
+    public @Controls()
     {
-        public InputActionAsset asset { get; }
-        public @Controls()
-        {
-            asset = InputActionAsset.FromJson(@"{
+        asset = InputActionAsset.FromJson(@"{
     ""name"": ""Controls"",
     ""maps"": [
         {
@@ -181,6 +179,15 @@ namespace Core.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""39a594a3-37ec-48ad-abd5-f17cd9f797cc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -234,7 +241,7 @@ namespace Core.Input
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard & Mouse"",
                     ""action"": ""MouseUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -590,6 +597,17 @@ namespace Core.Input
                     ""action"": ""Num9Pressed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1120c7d-c5e2-4116-b86c-923ae4add9ba"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""PauseToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -613,289 +631,298 @@ namespace Core.Input
         }
     ]
 }");
-            // Player
-            m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-            m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
-            m_Player_MouseDown = m_Player.FindAction("MouseDown", throwIfNotFound: true);
-            m_Player_MouseUp = m_Player.FindAction("MouseUp", throwIfNotFound: true);
-            m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
-            m_Player_ZoomScroll = m_Player.FindAction("ZoomScroll", throwIfNotFound: true);
-            m_Player_CameraMove = m_Player.FindAction("CameraMove", throwIfNotFound: true);
-            m_Player_CameraTurn = m_Player.FindAction("CameraTurn", throwIfNotFound: true);
-            m_Player_NextUnitPressed = m_Player.FindAction("NextUnitPressed", throwIfNotFound: true);
-            m_Player_Num1Pressed = m_Player.FindAction("Num1Pressed", throwIfNotFound: true);
-            m_Player_Num2Pressed = m_Player.FindAction("Num2Pressed", throwIfNotFound: true);
-            m_Player_Num3Pressed = m_Player.FindAction("Num3Pressed", throwIfNotFound: true);
-            m_Player_Num4Pressed = m_Player.FindAction("Num4Pressed", throwIfNotFound: true);
-            m_Player_Num5Pressed = m_Player.FindAction("Num5Pressed", throwIfNotFound: true);
-            m_Player_Num6Pressed = m_Player.FindAction("Num6Pressed", throwIfNotFound: true);
-            m_Player_Num7Pressed = m_Player.FindAction("Num7Pressed", throwIfNotFound: true);
-            m_Player_Num8Pressed = m_Player.FindAction("Num8Pressed", throwIfNotFound: true);
-            m_Player_Num9Pressed = m_Player.FindAction("Num9Pressed", throwIfNotFound: true);
-        }
-
-        ~@Controls()
-        {
-            UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, Controls.Player.Disable() has not been called.");
-        }
-
-        public void Dispose()
-        {
-            UnityEngine.Object.Destroy(asset);
-        }
-
-        public InputBinding? bindingMask
-        {
-            get => asset.bindingMask;
-            set => asset.bindingMask = value;
-        }
-
-        public ReadOnlyArray<InputDevice>? devices
-        {
-            get => asset.devices;
-            set => asset.devices = value;
-        }
-
-        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-        public bool Contains(InputAction action)
-        {
-            return asset.Contains(action);
-        }
-
-        public IEnumerator<InputAction> GetEnumerator()
-        {
-            return asset.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Enable()
-        {
-            asset.Enable();
-        }
-
-        public void Disable()
-        {
-            asset.Disable();
-        }
-
-        public IEnumerable<InputBinding> bindings => asset.bindings;
-
-        public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
-        {
-            return asset.FindAction(actionNameOrId, throwIfNotFound);
-        }
-
-        public int FindBinding(InputBinding bindingMask, out InputAction action)
-        {
-            return asset.FindBinding(bindingMask, out action);
-        }
-
         // Player
-        private readonly InputActionMap m_Player;
-        private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-        private readonly InputAction m_Player_MousePosition;
-        private readonly InputAction m_Player_MouseDown;
-        private readonly InputAction m_Player_MouseUp;
-        private readonly InputAction m_Player_RightClick;
-        private readonly InputAction m_Player_ZoomScroll;
-        private readonly InputAction m_Player_CameraMove;
-        private readonly InputAction m_Player_CameraTurn;
-        private readonly InputAction m_Player_NextUnitPressed;
-        private readonly InputAction m_Player_Num1Pressed;
-        private readonly InputAction m_Player_Num2Pressed;
-        private readonly InputAction m_Player_Num3Pressed;
-        private readonly InputAction m_Player_Num4Pressed;
-        private readonly InputAction m_Player_Num5Pressed;
-        private readonly InputAction m_Player_Num6Pressed;
-        private readonly InputAction m_Player_Num7Pressed;
-        private readonly InputAction m_Player_Num8Pressed;
-        private readonly InputAction m_Player_Num9Pressed;
-        public struct PlayerActions
-        {
-            private @Controls m_Wrapper;
-            public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
-            public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
-            public InputAction @MouseDown => m_Wrapper.m_Player_MouseDown;
-            public InputAction @MouseUp => m_Wrapper.m_Player_MouseUp;
-            public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
-            public InputAction @ZoomScroll => m_Wrapper.m_Player_ZoomScroll;
-            public InputAction @CameraMove => m_Wrapper.m_Player_CameraMove;
-            public InputAction @CameraTurn => m_Wrapper.m_Player_CameraTurn;
-            public InputAction @NextUnitPressed => m_Wrapper.m_Player_NextUnitPressed;
-            public InputAction @Num1Pressed => m_Wrapper.m_Player_Num1Pressed;
-            public InputAction @Num2Pressed => m_Wrapper.m_Player_Num2Pressed;
-            public InputAction @Num3Pressed => m_Wrapper.m_Player_Num3Pressed;
-            public InputAction @Num4Pressed => m_Wrapper.m_Player_Num4Pressed;
-            public InputAction @Num5Pressed => m_Wrapper.m_Player_Num5Pressed;
-            public InputAction @Num6Pressed => m_Wrapper.m_Player_Num6Pressed;
-            public InputAction @Num7Pressed => m_Wrapper.m_Player_Num7Pressed;
-            public InputAction @Num8Pressed => m_Wrapper.m_Player_Num8Pressed;
-            public InputAction @Num9Pressed => m_Wrapper.m_Player_Num9Pressed;
-            public InputActionMap Get() { return m_Wrapper.m_Player; }
-            public void Enable() { Get().Enable(); }
-            public void Disable() { Get().Disable(); }
-            public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-            public void AddCallbacks(IPlayerActions instance)
-            {
-                if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-                @MousePosition.started += instance.OnMousePosition;
-                @MousePosition.performed += instance.OnMousePosition;
-                @MousePosition.canceled += instance.OnMousePosition;
-                @MouseDown.started += instance.OnMouseDown;
-                @MouseDown.performed += instance.OnMouseDown;
-                @MouseDown.canceled += instance.OnMouseDown;
-                @MouseUp.started += instance.OnMouseUp;
-                @MouseUp.performed += instance.OnMouseUp;
-                @MouseUp.canceled += instance.OnMouseUp;
-                @RightClick.started += instance.OnRightClick;
-                @RightClick.performed += instance.OnRightClick;
-                @RightClick.canceled += instance.OnRightClick;
-                @ZoomScroll.started += instance.OnZoomScroll;
-                @ZoomScroll.performed += instance.OnZoomScroll;
-                @ZoomScroll.canceled += instance.OnZoomScroll;
-                @CameraMove.started += instance.OnCameraMove;
-                @CameraMove.performed += instance.OnCameraMove;
-                @CameraMove.canceled += instance.OnCameraMove;
-                @CameraTurn.started += instance.OnCameraTurn;
-                @CameraTurn.performed += instance.OnCameraTurn;
-                @CameraTurn.canceled += instance.OnCameraTurn;
-                @NextUnitPressed.started += instance.OnNextUnitPressed;
-                @NextUnitPressed.performed += instance.OnNextUnitPressed;
-                @NextUnitPressed.canceled += instance.OnNextUnitPressed;
-                @Num1Pressed.started += instance.OnNum1Pressed;
-                @Num1Pressed.performed += instance.OnNum1Pressed;
-                @Num1Pressed.canceled += instance.OnNum1Pressed;
-                @Num2Pressed.started += instance.OnNum2Pressed;
-                @Num2Pressed.performed += instance.OnNum2Pressed;
-                @Num2Pressed.canceled += instance.OnNum2Pressed;
-                @Num3Pressed.started += instance.OnNum3Pressed;
-                @Num3Pressed.performed += instance.OnNum3Pressed;
-                @Num3Pressed.canceled += instance.OnNum3Pressed;
-                @Num4Pressed.started += instance.OnNum4Pressed;
-                @Num4Pressed.performed += instance.OnNum4Pressed;
-                @Num4Pressed.canceled += instance.OnNum4Pressed;
-                @Num5Pressed.started += instance.OnNum5Pressed;
-                @Num5Pressed.performed += instance.OnNum5Pressed;
-                @Num5Pressed.canceled += instance.OnNum5Pressed;
-                @Num6Pressed.started += instance.OnNum6Pressed;
-                @Num6Pressed.performed += instance.OnNum6Pressed;
-                @Num6Pressed.canceled += instance.OnNum6Pressed;
-                @Num7Pressed.started += instance.OnNum7Pressed;
-                @Num7Pressed.performed += instance.OnNum7Pressed;
-                @Num7Pressed.canceled += instance.OnNum7Pressed;
-                @Num8Pressed.started += instance.OnNum8Pressed;
-                @Num8Pressed.performed += instance.OnNum8Pressed;
-                @Num8Pressed.canceled += instance.OnNum8Pressed;
-                @Num9Pressed.started += instance.OnNum9Pressed;
-                @Num9Pressed.performed += instance.OnNum9Pressed;
-                @Num9Pressed.canceled += instance.OnNum9Pressed;
-            }
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
+        m_Player_MouseDown = m_Player.FindAction("MouseDown", throwIfNotFound: true);
+        m_Player_MouseUp = m_Player.FindAction("MouseUp", throwIfNotFound: true);
+        m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
+        m_Player_ZoomScroll = m_Player.FindAction("ZoomScroll", throwIfNotFound: true);
+        m_Player_CameraMove = m_Player.FindAction("CameraMove", throwIfNotFound: true);
+        m_Player_CameraTurn = m_Player.FindAction("CameraTurn", throwIfNotFound: true);
+        m_Player_NextUnitPressed = m_Player.FindAction("NextUnitPressed", throwIfNotFound: true);
+        m_Player_Num1Pressed = m_Player.FindAction("Num1Pressed", throwIfNotFound: true);
+        m_Player_Num2Pressed = m_Player.FindAction("Num2Pressed", throwIfNotFound: true);
+        m_Player_Num3Pressed = m_Player.FindAction("Num3Pressed", throwIfNotFound: true);
+        m_Player_Num4Pressed = m_Player.FindAction("Num4Pressed", throwIfNotFound: true);
+        m_Player_Num5Pressed = m_Player.FindAction("Num5Pressed", throwIfNotFound: true);
+        m_Player_Num6Pressed = m_Player.FindAction("Num6Pressed", throwIfNotFound: true);
+        m_Player_Num7Pressed = m_Player.FindAction("Num7Pressed", throwIfNotFound: true);
+        m_Player_Num8Pressed = m_Player.FindAction("Num8Pressed", throwIfNotFound: true);
+        m_Player_Num9Pressed = m_Player.FindAction("Num9Pressed", throwIfNotFound: true);
+        m_Player_PauseToggle = m_Player.FindAction("PauseToggle", throwIfNotFound: true);
+    }
 
-            private void UnregisterCallbacks(IPlayerActions instance)
-            {
-                @MousePosition.started -= instance.OnMousePosition;
-                @MousePosition.performed -= instance.OnMousePosition;
-                @MousePosition.canceled -= instance.OnMousePosition;
-                @MouseDown.started -= instance.OnMouseDown;
-                @MouseDown.performed -= instance.OnMouseDown;
-                @MouseDown.canceled -= instance.OnMouseDown;
-                @MouseUp.started -= instance.OnMouseUp;
-                @MouseUp.performed -= instance.OnMouseUp;
-                @MouseUp.canceled -= instance.OnMouseUp;
-                @RightClick.started -= instance.OnRightClick;
-                @RightClick.performed -= instance.OnRightClick;
-                @RightClick.canceled -= instance.OnRightClick;
-                @ZoomScroll.started -= instance.OnZoomScroll;
-                @ZoomScroll.performed -= instance.OnZoomScroll;
-                @ZoomScroll.canceled -= instance.OnZoomScroll;
-                @CameraMove.started -= instance.OnCameraMove;
-                @CameraMove.performed -= instance.OnCameraMove;
-                @CameraMove.canceled -= instance.OnCameraMove;
-                @CameraTurn.started -= instance.OnCameraTurn;
-                @CameraTurn.performed -= instance.OnCameraTurn;
-                @CameraTurn.canceled -= instance.OnCameraTurn;
-                @NextUnitPressed.started -= instance.OnNextUnitPressed;
-                @NextUnitPressed.performed -= instance.OnNextUnitPressed;
-                @NextUnitPressed.canceled -= instance.OnNextUnitPressed;
-                @Num1Pressed.started -= instance.OnNum1Pressed;
-                @Num1Pressed.performed -= instance.OnNum1Pressed;
-                @Num1Pressed.canceled -= instance.OnNum1Pressed;
-                @Num2Pressed.started -= instance.OnNum2Pressed;
-                @Num2Pressed.performed -= instance.OnNum2Pressed;
-                @Num2Pressed.canceled -= instance.OnNum2Pressed;
-                @Num3Pressed.started -= instance.OnNum3Pressed;
-                @Num3Pressed.performed -= instance.OnNum3Pressed;
-                @Num3Pressed.canceled -= instance.OnNum3Pressed;
-                @Num4Pressed.started -= instance.OnNum4Pressed;
-                @Num4Pressed.performed -= instance.OnNum4Pressed;
-                @Num4Pressed.canceled -= instance.OnNum4Pressed;
-                @Num5Pressed.started -= instance.OnNum5Pressed;
-                @Num5Pressed.performed -= instance.OnNum5Pressed;
-                @Num5Pressed.canceled -= instance.OnNum5Pressed;
-                @Num6Pressed.started -= instance.OnNum6Pressed;
-                @Num6Pressed.performed -= instance.OnNum6Pressed;
-                @Num6Pressed.canceled -= instance.OnNum6Pressed;
-                @Num7Pressed.started -= instance.OnNum7Pressed;
-                @Num7Pressed.performed -= instance.OnNum7Pressed;
-                @Num7Pressed.canceled -= instance.OnNum7Pressed;
-                @Num8Pressed.started -= instance.OnNum8Pressed;
-                @Num8Pressed.performed -= instance.OnNum8Pressed;
-                @Num8Pressed.canceled -= instance.OnNum8Pressed;
-                @Num9Pressed.started -= instance.OnNum9Pressed;
-                @Num9Pressed.performed -= instance.OnNum9Pressed;
-                @Num9Pressed.canceled -= instance.OnNum9Pressed;
-            }
+    ~@Controls()
+    {
+        UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, Controls.Player.Disable() has not been called.");
+    }
 
-            public void RemoveCallbacks(IPlayerActions instance)
-            {
-                if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
-                    UnregisterCallbacks(instance);
-            }
+    public void Dispose()
+    {
+        UnityEngine.Object.Destroy(asset);
+    }
 
-            public void SetCallbacks(IPlayerActions instance)
-            {
-                foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
-                    UnregisterCallbacks(item);
-                m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
-                AddCallbacks(instance);
-            }
-        }
-        public PlayerActions @Player => new PlayerActions(this);
-        private int m_KeyboardMouseSchemeIndex = -1;
-        public InputControlScheme KeyboardMouseScheme
+    public InputBinding? bindingMask
+    {
+        get => asset.bindingMask;
+        set => asset.bindingMask = value;
+    }
+
+    public ReadOnlyArray<InputDevice>? devices
+    {
+        get => asset.devices;
+        set => asset.devices = value;
+    }
+
+    public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
+
+    public bool Contains(InputAction action)
+    {
+        return asset.Contains(action);
+    }
+
+    public IEnumerator<InputAction> GetEnumerator()
+    {
+        return asset.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Enable()
+    {
+        asset.Enable();
+    }
+
+    public void Disable()
+    {
+        asset.Disable();
+    }
+
+    public IEnumerable<InputBinding> bindings => asset.bindings;
+
+    public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
+    {
+        return asset.FindAction(actionNameOrId, throwIfNotFound);
+    }
+
+    public int FindBinding(InputBinding bindingMask, out InputAction action)
+    {
+        return asset.FindBinding(bindingMask, out action);
+    }
+
+    // Player
+    private readonly InputActionMap m_Player;
+    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
+    private readonly InputAction m_Player_MousePosition;
+    private readonly InputAction m_Player_MouseDown;
+    private readonly InputAction m_Player_MouseUp;
+    private readonly InputAction m_Player_RightClick;
+    private readonly InputAction m_Player_ZoomScroll;
+    private readonly InputAction m_Player_CameraMove;
+    private readonly InputAction m_Player_CameraTurn;
+    private readonly InputAction m_Player_NextUnitPressed;
+    private readonly InputAction m_Player_Num1Pressed;
+    private readonly InputAction m_Player_Num2Pressed;
+    private readonly InputAction m_Player_Num3Pressed;
+    private readonly InputAction m_Player_Num4Pressed;
+    private readonly InputAction m_Player_Num5Pressed;
+    private readonly InputAction m_Player_Num6Pressed;
+    private readonly InputAction m_Player_Num7Pressed;
+    private readonly InputAction m_Player_Num8Pressed;
+    private readonly InputAction m_Player_Num9Pressed;
+    private readonly InputAction m_Player_PauseToggle;
+    public struct PlayerActions
+    {
+        private @Controls m_Wrapper;
+        public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+        public InputAction @MouseDown => m_Wrapper.m_Player_MouseDown;
+        public InputAction @MouseUp => m_Wrapper.m_Player_MouseUp;
+        public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
+        public InputAction @ZoomScroll => m_Wrapper.m_Player_ZoomScroll;
+        public InputAction @CameraMove => m_Wrapper.m_Player_CameraMove;
+        public InputAction @CameraTurn => m_Wrapper.m_Player_CameraTurn;
+        public InputAction @NextUnitPressed => m_Wrapper.m_Player_NextUnitPressed;
+        public InputAction @Num1Pressed => m_Wrapper.m_Player_Num1Pressed;
+        public InputAction @Num2Pressed => m_Wrapper.m_Player_Num2Pressed;
+        public InputAction @Num3Pressed => m_Wrapper.m_Player_Num3Pressed;
+        public InputAction @Num4Pressed => m_Wrapper.m_Player_Num4Pressed;
+        public InputAction @Num5Pressed => m_Wrapper.m_Player_Num5Pressed;
+        public InputAction @Num6Pressed => m_Wrapper.m_Player_Num6Pressed;
+        public InputAction @Num7Pressed => m_Wrapper.m_Player_Num7Pressed;
+        public InputAction @Num8Pressed => m_Wrapper.m_Player_Num8Pressed;
+        public InputAction @Num9Pressed => m_Wrapper.m_Player_Num9Pressed;
+        public InputAction @PauseToggle => m_Wrapper.m_Player_PauseToggle;
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayerActions instance)
         {
-            get
-            {
-                if (m_KeyboardMouseSchemeIndex == -1) m_KeyboardMouseSchemeIndex = asset.FindControlSchemeIndex("Keyboard & Mouse");
-                return asset.controlSchemes[m_KeyboardMouseSchemeIndex];
-            }
+            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
+            @MouseDown.started += instance.OnMouseDown;
+            @MouseDown.performed += instance.OnMouseDown;
+            @MouseDown.canceled += instance.OnMouseDown;
+            @MouseUp.started += instance.OnMouseUp;
+            @MouseUp.performed += instance.OnMouseUp;
+            @MouseUp.canceled += instance.OnMouseUp;
+            @RightClick.started += instance.OnRightClick;
+            @RightClick.performed += instance.OnRightClick;
+            @RightClick.canceled += instance.OnRightClick;
+            @ZoomScroll.started += instance.OnZoomScroll;
+            @ZoomScroll.performed += instance.OnZoomScroll;
+            @ZoomScroll.canceled += instance.OnZoomScroll;
+            @CameraMove.started += instance.OnCameraMove;
+            @CameraMove.performed += instance.OnCameraMove;
+            @CameraMove.canceled += instance.OnCameraMove;
+            @CameraTurn.started += instance.OnCameraTurn;
+            @CameraTurn.performed += instance.OnCameraTurn;
+            @CameraTurn.canceled += instance.OnCameraTurn;
+            @NextUnitPressed.started += instance.OnNextUnitPressed;
+            @NextUnitPressed.performed += instance.OnNextUnitPressed;
+            @NextUnitPressed.canceled += instance.OnNextUnitPressed;
+            @Num1Pressed.started += instance.OnNum1Pressed;
+            @Num1Pressed.performed += instance.OnNum1Pressed;
+            @Num1Pressed.canceled += instance.OnNum1Pressed;
+            @Num2Pressed.started += instance.OnNum2Pressed;
+            @Num2Pressed.performed += instance.OnNum2Pressed;
+            @Num2Pressed.canceled += instance.OnNum2Pressed;
+            @Num3Pressed.started += instance.OnNum3Pressed;
+            @Num3Pressed.performed += instance.OnNum3Pressed;
+            @Num3Pressed.canceled += instance.OnNum3Pressed;
+            @Num4Pressed.started += instance.OnNum4Pressed;
+            @Num4Pressed.performed += instance.OnNum4Pressed;
+            @Num4Pressed.canceled += instance.OnNum4Pressed;
+            @Num5Pressed.started += instance.OnNum5Pressed;
+            @Num5Pressed.performed += instance.OnNum5Pressed;
+            @Num5Pressed.canceled += instance.OnNum5Pressed;
+            @Num6Pressed.started += instance.OnNum6Pressed;
+            @Num6Pressed.performed += instance.OnNum6Pressed;
+            @Num6Pressed.canceled += instance.OnNum6Pressed;
+            @Num7Pressed.started += instance.OnNum7Pressed;
+            @Num7Pressed.performed += instance.OnNum7Pressed;
+            @Num7Pressed.canceled += instance.OnNum7Pressed;
+            @Num8Pressed.started += instance.OnNum8Pressed;
+            @Num8Pressed.performed += instance.OnNum8Pressed;
+            @Num8Pressed.canceled += instance.OnNum8Pressed;
+            @Num9Pressed.started += instance.OnNum9Pressed;
+            @Num9Pressed.performed += instance.OnNum9Pressed;
+            @Num9Pressed.canceled += instance.OnNum9Pressed;
+            @PauseToggle.started += instance.OnPauseToggle;
+            @PauseToggle.performed += instance.OnPauseToggle;
+            @PauseToggle.canceled += instance.OnPauseToggle;
         }
-        public interface IPlayerActions
+
+        private void UnregisterCallbacks(IPlayerActions instance)
         {
-            void OnMousePosition(InputAction.CallbackContext context);
-            void OnMouseDown(InputAction.CallbackContext context);
-            void OnMouseUp(InputAction.CallbackContext context);
-            void OnRightClick(InputAction.CallbackContext context);
-            void OnZoomScroll(InputAction.CallbackContext context);
-            void OnCameraMove(InputAction.CallbackContext context);
-            void OnCameraTurn(InputAction.CallbackContext context);
-            void OnNextUnitPressed(InputAction.CallbackContext context);
-            void OnNum1Pressed(InputAction.CallbackContext context);
-            void OnNum2Pressed(InputAction.CallbackContext context);
-            void OnNum3Pressed(InputAction.CallbackContext context);
-            void OnNum4Pressed(InputAction.CallbackContext context);
-            void OnNum5Pressed(InputAction.CallbackContext context);
-            void OnNum6Pressed(InputAction.CallbackContext context);
-            void OnNum7Pressed(InputAction.CallbackContext context);
-            void OnNum8Pressed(InputAction.CallbackContext context);
-            void OnNum9Pressed(InputAction.CallbackContext context);
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
+            @MouseDown.started -= instance.OnMouseDown;
+            @MouseDown.performed -= instance.OnMouseDown;
+            @MouseDown.canceled -= instance.OnMouseDown;
+            @MouseUp.started -= instance.OnMouseUp;
+            @MouseUp.performed -= instance.OnMouseUp;
+            @MouseUp.canceled -= instance.OnMouseUp;
+            @RightClick.started -= instance.OnRightClick;
+            @RightClick.performed -= instance.OnRightClick;
+            @RightClick.canceled -= instance.OnRightClick;
+            @ZoomScroll.started -= instance.OnZoomScroll;
+            @ZoomScroll.performed -= instance.OnZoomScroll;
+            @ZoomScroll.canceled -= instance.OnZoomScroll;
+            @CameraMove.started -= instance.OnCameraMove;
+            @CameraMove.performed -= instance.OnCameraMove;
+            @CameraMove.canceled -= instance.OnCameraMove;
+            @CameraTurn.started -= instance.OnCameraTurn;
+            @CameraTurn.performed -= instance.OnCameraTurn;
+            @CameraTurn.canceled -= instance.OnCameraTurn;
+            @NextUnitPressed.started -= instance.OnNextUnitPressed;
+            @NextUnitPressed.performed -= instance.OnNextUnitPressed;
+            @NextUnitPressed.canceled -= instance.OnNextUnitPressed;
+            @Num1Pressed.started -= instance.OnNum1Pressed;
+            @Num1Pressed.performed -= instance.OnNum1Pressed;
+            @Num1Pressed.canceled -= instance.OnNum1Pressed;
+            @Num2Pressed.started -= instance.OnNum2Pressed;
+            @Num2Pressed.performed -= instance.OnNum2Pressed;
+            @Num2Pressed.canceled -= instance.OnNum2Pressed;
+            @Num3Pressed.started -= instance.OnNum3Pressed;
+            @Num3Pressed.performed -= instance.OnNum3Pressed;
+            @Num3Pressed.canceled -= instance.OnNum3Pressed;
+            @Num4Pressed.started -= instance.OnNum4Pressed;
+            @Num4Pressed.performed -= instance.OnNum4Pressed;
+            @Num4Pressed.canceled -= instance.OnNum4Pressed;
+            @Num5Pressed.started -= instance.OnNum5Pressed;
+            @Num5Pressed.performed -= instance.OnNum5Pressed;
+            @Num5Pressed.canceled -= instance.OnNum5Pressed;
+            @Num6Pressed.started -= instance.OnNum6Pressed;
+            @Num6Pressed.performed -= instance.OnNum6Pressed;
+            @Num6Pressed.canceled -= instance.OnNum6Pressed;
+            @Num7Pressed.started -= instance.OnNum7Pressed;
+            @Num7Pressed.performed -= instance.OnNum7Pressed;
+            @Num7Pressed.canceled -= instance.OnNum7Pressed;
+            @Num8Pressed.started -= instance.OnNum8Pressed;
+            @Num8Pressed.performed -= instance.OnNum8Pressed;
+            @Num8Pressed.canceled -= instance.OnNum8Pressed;
+            @Num9Pressed.started -= instance.OnNum9Pressed;
+            @Num9Pressed.performed -= instance.OnNum9Pressed;
+            @Num9Pressed.canceled -= instance.OnNum9Pressed;
+            @PauseToggle.started -= instance.OnPauseToggle;
+            @PauseToggle.performed -= instance.OnPauseToggle;
+            @PauseToggle.canceled -= instance.OnPauseToggle;
         }
+
+        public void RemoveCallbacks(IPlayerActions instance)
+        {
+            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlayerActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PlayerActions @Player => new PlayerActions(this);
+    private int m_KeyboardMouseSchemeIndex = -1;
+    public InputControlScheme KeyboardMouseScheme
+    {
+        get
+        {
+            if (m_KeyboardMouseSchemeIndex == -1) m_KeyboardMouseSchemeIndex = asset.FindControlSchemeIndex("Keyboard & Mouse");
+            return asset.controlSchemes[m_KeyboardMouseSchemeIndex];
+        }
+    }
+    public interface IPlayerActions
+    {
+        void OnMousePosition(InputAction.CallbackContext context);
+        void OnMouseDown(InputAction.CallbackContext context);
+        void OnMouseUp(InputAction.CallbackContext context);
+        void OnRightClick(InputAction.CallbackContext context);
+        void OnZoomScroll(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
+        void OnCameraTurn(InputAction.CallbackContext context);
+        void OnNextUnitPressed(InputAction.CallbackContext context);
+        void OnNum1Pressed(InputAction.CallbackContext context);
+        void OnNum2Pressed(InputAction.CallbackContext context);
+        void OnNum3Pressed(InputAction.CallbackContext context);
+        void OnNum4Pressed(InputAction.CallbackContext context);
+        void OnNum5Pressed(InputAction.CallbackContext context);
+        void OnNum6Pressed(InputAction.CallbackContext context);
+        void OnNum7Pressed(InputAction.CallbackContext context);
+        void OnNum8Pressed(InputAction.CallbackContext context);
+        void OnNum9Pressed(InputAction.CallbackContext context);
+        void OnPauseToggle(InputAction.CallbackContext context);
     }
 }

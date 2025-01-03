@@ -157,6 +157,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "PauseToggle",
+                    "type": "Button",
+                    "id": "39a594a3-37ec-48ad-abd5-f17cd9f797cc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -210,7 +219,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard & Mouse",
                     "action": "MouseUp",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -564,6 +573,17 @@
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
                     "action": "Num9Pressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1120c7d-c5e2-4116-b86c-923ae4add9ba",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard & Mouse",
+                    "action": "PauseToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

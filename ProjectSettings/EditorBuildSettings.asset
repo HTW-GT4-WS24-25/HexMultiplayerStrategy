@@ -33,5 +33,5 @@ EditorBuildSettings:
     path: Assets/Scenes/ToniTestScene.unity
     guid: 771ee7bd0c3b8fd40b6fa540d0f7a9b0
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: c4ba632c9b12aab46b52d9bb0b0b5af5, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -177,5 +177,13 @@ namespace Core.Input
             if (!context.performed) 
                 return;
         }
+
+        public void OnPauseToggle(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+            
+            ClientEvents.Input.PauseTogglePressed?.Invoke();
+        }
     }
 }
